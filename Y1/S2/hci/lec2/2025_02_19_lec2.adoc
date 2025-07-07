@@ -1,0 +1,143 @@
+= HCI for DH
+:toc:
+:toc-title: Contents
+:nofooter:
+
+== Gestural Interfaces
+
+* Useful for public spaces
+** So that people don't touch or damage it
+** Also for accessibility
+*** People in wheelchairs don't need to go up to touch the screen
+
+=== Issues with (and solutions to) Touchless gestural Interfaces
+
+* legacy bias
+** you have to learn a whole new medium
+* immediate usability
+** how do you activate a touchless screen?
+*** get a sample of people and see what they come up with
+
+=== Usability indices
+
+* NASA Task Load Index (NASA TLX)
+** standard questionnaire validated on thousands of users
+* One study showed that all NASA TLX measures are lower when avatars are present (good)
+** p = 0.07 (lol)
+* when there was no activation gesture (sit on icon for 3s) people used both hands
+
+== User centered design
+
+* Norman described it as a "philosophy based on the needs and interests of the user"
+* emphasis on making products usable and understandable
+
+4 elements of UCD:
+
+. Place the user at the center of design
+. Involve the user
+. Integrate knowledge/expertise from different HCI fields
+. High interactivity
+
+There are multiple paradigms
+
+* Breadcrumb paradigm
+** Follow the steps to complete some procedure
+** Ideally should be a way to go back, not cancel outright
+** People often forget things they don't use
+** go back should be easily remembered unlike Rewind in the Paper app
+
+=== Problems in traditional software development
+
+* Software engineering treats users as inputs/outputs
+* Focuses on large batch processed systems
+* Importance of users is forgotten
+** Waterfall model is very common
+*** Puts design near the end (bad)
+** Spiderweb model also exists
+*** includes prototyping (better)
+*** still too rigid
+
+HCI approach/star life cycle
+
+Do a bit of:
+
+* implementation
+* task/functional analyisis
+* requirements specifications
+* conceptual/formal design
+* prototyping
+
+at every iteration
+
+=== UCD Process
+
+Design is based upon users':
+
+* abilities and real needs
+** you want to write documents, not learn an interface
+* context
+** where is this software/system used? factory/office/home/hospital
+* work
+** consider the work environment and interface performance
+* tasks
+** what does the software/system need to do? what do users want it to do?
+* need for a usable and useful products
+
+Assumptions:
+
+* good design leads to satisfied customers
+* design processes require designers and customers to collaborate
+* constant communication between designers and customers
+
+==== Methods for involving the user
+
+* talk to users
+** many designers don't
+** beware subconscious needs/requirements
+** beware idiot customers as well
+** explain the design
+*** describe what you're going to do
+*** get input at all design stages
+** have visuals/demos
+*** people react differently to verbal explanations
+*** prototypes are critical
+
+* contextual interviews+site visits
+** interview users their workplace while they're working
+** discover their culture, requirements, expectations
+
+
+==== Participatory design
+
+End users participate actively in all phases of the design process
+
+Problems
+
+* Intuitions can be wrong
+* Interviews are not accurate
+* Designers don't know users sufficiently well to deeply understand their requirements
+
+Solution
+
+* designers should have access to representative users
+** *END USERS*, not their managers
+
+End users are considered subject matter experts
+
+There are ups and downs
+
+Ups:
+
+* users react well to suggested system designs
+** designs must be complete
+* users bring in important knowledge
+* greater buy-in rate
+
+Downs:
+
+* hard to get a good pool of users
+* users are not expert designers
+* users are not always right
+** they often don't know what they want
+
+==== Sketching & Prototyping 

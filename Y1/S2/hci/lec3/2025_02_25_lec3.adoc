@@ -1,0 +1,56 @@
+= HCI for DH
+:toc:
+:toc-title: Contents
+:nofooter:
+
+== App design
+
+Apps:
+
+self contained programs
+deal with a specific function
+provide a specific function
+use code
+made for specific devices
+
+=== Responsive websites
+
+Responsive websites are kind of like web apps that only require one webdev team instead of 2 dedicated app teams (Apple & Android)
+
+=== Native and hybrid apps
+
+Use system tools to simplify the user's life
+
+* Location services
+** Know when close to pharmacy
+* Purchasing channels
+** Buy straight from app
+* Sensors
+** touching screen/shaking/rotating do different things
+* Multimedia
+** Images and video tutorials
+* Notifications
+** Notify that meds are low
+* Social connections
+** connect with other users/caretakers/whoever
+
+== App development life cycle
+
+. Concept
+. Prototyping
+. Development*
+.. not in our case
+. Testing
+. Deployment*
+.. figma builds fake app
+. Release
+
+=== Where do great app ideas come from?
+
+. Problem solving
+* Simple solution to a common problem
+. Evolutionary
+* Take an old idea and put it in a new dress
+. Revolutionary
+* Apps that do something no other app has done before
+

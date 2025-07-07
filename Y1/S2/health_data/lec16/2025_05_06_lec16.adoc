@@ -1,0 +1,321 @@
+= Security Privacy and Availability of Health Data - Intrusion Discovery and Analysis
+:toc:
+:toc-title: Contents
+:nofooter:
+:stem: latexmath
+
+== Analyzing Intrusions
+
+Understanding what attackers can do is required to be able to stop them
+
+Can't blindly use IDS/EDR/NDR on raw attack data
+
+* have to know what intrusions these attacks enable
+
+*HOWEVER*
+
+Stopping a single attack in the chain then that intrusion is no longer possible
+
+* attackers could attack again I guess
+
+WARNING: blocking a few intrusions can make the attackers' life easier by reducing their uncertainty
+
+Have to consider the entire system
+
+=== Attack/Intrusion Graphs
+
+Directed graph that describes how an attacker can reach a certain goal in a given system
+
+This graph is acyclic (unless attacker is stupid or makes a mistake)
+
+* Graph doesn't draw failures
+** It doesn't draw useless attacks either
+* Assumes initial access is successful
+* Graph can become horrendously complicated
+** multiple attackers with multiple goals
+** real systems with many nodes also very annoying to represent
+
+.What does it do?
+* Each node of the graph has a set of rights that the attacker has at that node
+** other than the first node (all legal) all nodes require illegal actions to escalate privileges
+* acquiring privilege escalation requires chicanery
+** buffer overflow against Node 25 Operating System
+* no link without a vulnerability
+* if link then attack preconditions are fulfilled
+* if attack is successful then number of rights are those from previous node + postcondition
+
+.Attack Graph Properties
+* Monotonic granting of rights since doesn't represent defense
+* No self loops since failures aren't represented
+
+=== Attack Trees
+
+Simplified attack graph
+
+Intrusions are leaves of a tree
+
+Each node is a single attack or a chain (complex attack)
+
+Still massively complicated to compute and represent
+
+== How To Build an Intrusion
+
+Attack graphs can represent 1000s of possible attack paths
+
+Real attackers may only pick one (for a variety of reasons)
+
+* *Adversary emulation* is used to prune the graph to focus on specific attackers
+
+Defenders know (in theory) the attack graph because they know the system and its vulnerabilities
+
+Attackers don't know these things (ideally)
+
+* they can't build an attack graph beforehand
+* they have to attack something first
+* the things they know depend on the rights they have at a given time
+* attackers *collect* info before *exploiting* vulnerabilities
+** their success depends on the balance between collecting and exploiting
+** these things take time
+** defenders need time to deploy countermeasures
+
+== Stopping Intrusions/Attackers
+
+By blocking the path from one node to another in an attack graph we stop aanothern intrusion based on a given attack
+
+Attackers can also try again
+
+There can be multiple paths from one node to another
+
+* blocking the source of the fork is more efficient than blocking 2 paths
+
+There are useless attacks as well
+
+* blocking them is useless because they wouldn't help the attacker anyway
+* blocking useful attacks is the most important thing to do
+* some attacks might not be blockable
+** too expensive
+** impractical
+** whatever
+* have to find alternative attacks that reach the same goal to block
+** or block entrance in the first place
+
+== Automating Intrusions
+
+Modern AI are good at building single attacks
+
+Not good at building chains
+
+* humans still required for that
+
+== Attacker actions
+
+=== Persistence
+
+Attackers can carve out a nook in the system and sit there
+
+* trojan
+* backdoor
+* making an account
+
+They do this for a variety of reasons
+
+* building a botnet
+* restarting intrusion from checkpoint if interrupted/caught
+* collecting more info
+* generally being a nuisance
+
+The tools they install communicate with the C2 infrastructure
+
+* often multiple parts of C2 infrastructure to reduce noise
+* addresses hidden in plain sight in public blockchains
+* DNS requests are abused to send info
+** is detectable
+
+=== Evasion
+
+Dodging defense mechanisms
+
+* IDS
+* EDR
+* NDR
+
+Many ways to dodge:
+
+* Encrypting messages
+* Fragmenting single message in multiple packets
+* Rebuilding messages
+* Sending fake messages
+** using wrong ECC
+* Token manipulation to avoid authentication
+* Running malware on container
+** dodges host IDS
+** calls are made on/by container
+** IDS has no real idea
+
+=== Mitre attack matrix
+
+Not actually a matrix
+
+Database that stores information about attacker actions
+
+* has pre attack info
+** building C2
+** gathering info
+* one for most system types
+** PRE
+*** pre attack matrix
+** enterprise (Linux, Windows, macOS, networks)
+** ICS (industrial machinery)
+** mobile (Android/iOS)
+** cloud (massively pruned of all malware)
+** containers (even more pruned)
+* columns are objectives (persistence, execution, ...)
+* rows of a column are techniques
+
+Describes possible intrusion steps but not whole intrusions
+
+No real info about attacker strategy
+
+* says nothing about order of tactics
+* just says what attackers can do
+* focuses on tactic detection
+
+*TTPs* are keys that map certain actions to somewhere in the matrix
+
+* MITRE defense matrix maps techniques to possible countermeasures
+
+=== Cyber Kill Chain
+
+Developed by Lockheed-Martin (LOL)
+
+Has 7 stages:
+
+. Reconnaissance
+* same as MITRE
+. Weaponization
+* building malware
+. Delivery
+* putting malware on victim system
+. Exploitation
+* abusing vulnerabilitities
+. Installation
+* installing the malware on the victim
+. Command and Control
+* setting up C2
+. Actions and Objectives
+* perform chicanery
+
+Sequential description of attacker behavior
+
+Lacks information collection
+
+Kinda just cringe overall
+
+=== Tactics
+
+First 3 are mandatory
+
+. Reconnaissance
+* gathering info on potential victim
+** what OS it's using
+** what ports are open
+** whatever
+** scanning
+** web searches
+** website analysis
+. Resource development
+* establishing resources to attack
+** building C2
+** writing loaders
+** writing payloads
+*** in reality they can often be bought
+** making accounts
+** compromising accounts
+. Initial access
+* getting into the network/machine
+** attacking exposed applications
+** phishing/spear phishing
+** adding hardware devices
+*** planting malware USB drives somewhere
+** supply chain attacks
+. Execution
+* acquiring rights and running code
+** running system interpreter (bash, PowerShell)
+** deploying a container to troll IDS
+** running RAT, trojan, whatever
+. Persistence
+* maintaining foothold in the system
+** making account
+** adding components to bootloader
+*** TPM should counter this
+. Privilege escalation
+* abusing elevation control mechanisms
+** attacking `su`/`sudo`/`doas`/ Run as Administrator
+** exploitation for privileges
+** process injection
+** escape to host
+*** leaving VM and running on bare metal
+. Defense evasion
+* Dodging countermeasures
+** abusing privileges (admins dodge checks by default)
+** Deploying containers/VMs
+** Manipulating indicators of compromise
+** attacking IDS directly
+. Credential access
+* obtaining credentials
+** keylogging
+** phishing
+. Discovery
+* exploring the system
+* understanding what they can/can't do with current rights
+. Lateral movement
+* accessing another node in a network
+. Collection
+* by this point the attacker already has the rights they need
+* gathering target data
+. Command & Control (C2)
+* messages between victim and attacker's infrastructure
+. Exfiltration
+* stealing target data
+. Impact
+* manipulating the victim in some way
+** deleting files
+** deleting registry entries
+** deleting software
+** encrypting with ransomware
+
+Strategy involves some ordering of these tactics
+
+* attack matrix doesn't describe this
+
+=== ICS Attack Matrix
+
+Typically no exfiltration because no data saved on machinery
+
+* information on machinery can be manipulated but generally no point stealing it
+
+*Greater focus on impact*
+
+ICS machines have safety systems built in that don't go through network
+
+* mechanical shutoff systems
+* automatic warnings
+
+Attackers can send false information to operator screens to fool them into blowing up their system
+
+=== APT3
+
+Advanced Persistent Threats group
+* Has like 12 aliases
+* Based in China
+
+Some known attacks:
+
+* Operation Clandestine Wolf
+* Operation Clandestine Fox
+* Operation Double Tap
+
+Often attacks high tech/industrial companies
+
+* Exfiltrates documents, intellectual property and such
+* Attacks printers, file shares, whatever

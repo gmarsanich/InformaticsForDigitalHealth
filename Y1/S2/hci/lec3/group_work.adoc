@@ -1,0 +1,36 @@
+= Group Work
+:nofooter:
+
+*Background*: Despite medication effectiveness, poor adherence leads to worse health outcomes. Users struggle with complex medication schedules, forget doses, or get confused about instructions, especially with multiple medications. Propose an app using the feature you have been assigned
+
+== Touch screen
+
+Touch screen to write in medication info
+
+* name
+* dosage
+* treatment duration
+* Use to check for unwanted interactions
+** can draw connections between medications
+* Interact with menus and stuff idk
+* can also describe medicine container/medicine tablet/pill
+** e.g. when it's pill time the app says take [medicine name] ([color] tablet in the [color] box)
+
+== Internal sensors
+
+* gyroscope
+* accelerometer
+
+Shake the phone to stop alert
+
+* app communicates that it's pill time
+* shake the phone to confirm that you took the medicine
+
+Turn the phone over to postpone
+
+* (i.e. you're not currently in a position to take your medicine and it wont shut up)
+
+Squeeze phone to postpone
+
+* if turning over isn't feasible
+

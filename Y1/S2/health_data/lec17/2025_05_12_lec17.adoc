@@ -1,0 +1,385 @@
+= Security Privacy and Availability of Health Data
+:toc:
+:toc-title: Contents
+:nofooter:
+:stem: latexmath
+
+== Common TTPs of modern ransomware groups
+
+Kaspersky ransomware report lists common ransomware techniques used by some gangs
+
+Most use the same techniques
+
+* BITS jobs is uncommon
+** abusing cronjobs/scheduled tasks
+* Phising is not that common
+* All attack external remote services
+* All run malicious scripts
+** only a few troll the users to run malicious executables
+* Most abuse account systems to increase privileges
+** only one uses privilege escalation exploits
+
+== MITRE Tools
+
+=== Caldera
+
+FOSS framework developed by MITRE
+
+Used to create adversary emulation plans
+
+* offensive platform
+* basically attacker training
+
+Attackers specify attack techniques
+
+MITRE was scared shitless that real attackers could use it
+
+* it was neutered to make it less dangerous
+* premade agents were required to be installed on the victims
+* C2 told agents to do/simulate various tasks
+
+Had a planner that was used to plan (lol) and generate attacks
+
+* apparently very good
+
+Then Caldera II came out
+
+* shit planner
+* plugin based
+
+=== Cascade
+
+C2 tool to analyze attack infrastructure made by MITRE
+
+* based on ATT&CK matrix
+
+=== D3FEND
+
+Defense matrix made of a few high level defense tactics
+
+* attacker specific
+
+Used the following defense techniques/classes:
+
+. Model
+* know your system
+** build inventory
+. Hardening
+* reduces attack surface
+** increase checks
+** reduce vulnerabilities
+. Detection
+* discovering attacks
+** IDS/EDR/YARA/firewalls
+. Isolation
+* putting compromised hosts in quarantine
+. Deception
+* honeypots
+** can be dangerous if not properly isolated
+. Eviction
+* get rid of attacker and their tools
+. Restore
+* have a (few) backup(s)
+
+=== EMB3D
+
+Framework for defending embedded devices
+
+* sensors
+* actuators
+* software memes
+* whatever the fuck
+
+Overview:
+
+. Enumerates defects/vulnerabilities on embedded devices
+. Checks if those defects have associated attacks
+. Deploys (or checks) mitigations
+
+Builds glossary of security problems/solutions for device owners/operators and security providers
+
+* basically stadndardized language (e.g. ISO)
+
+== Reacting to Intrusions
+
+Prevention is best but shit happens
+
+2 kinds of reactions:
+
+. Target system reaction
+* something has to change on that system
+. Intrusion source reaction
+* counterattacks are pretty much useless
+** C2 infrastructure is made up of victims (botnets and such)
+** mapping the C2 infrastructure is much more useful
+
+=== Incident Response
+
+[start=0]
+. Preparation
+* hardening
+* adversary emulation is important here
+** *ADVERSARY EMULATIONS ARE NOT PENETRATION TESTS*
+** prunes intrusion/attack tree
+* all the usual stuff
+. Identification
+* what's happening
+* where is it happening
+* where is it going
+. Containment + escalation
+* limit impact of incident
+** quarantine: block host at firewall level
+** string matching: filter connections based on stringL
+** connection throttling: limit number of host connections
+** prevent him from moving forward with his attack
+* inform victims
+* establish reparation activities
+. Analysis+eradication
+* find attacker traces
+* look through logs
+* remove malicious software (lol)
+* *COLLECT EVIDENCE AND KEEP IT SAFE*
+** sign evidence and timestamp
+. Recovery
+. Lessons learned
+* what went wrong?
+* what can we improve?
+
+=== Forensics
+
+Involving lawyers/judges
+
+. Call police/lawyers/incident response
+. Copy memory, processes, files, active connections
+. Power down (!)
+* unplug without shutting down
+* there might be some funny memes in the shutdown process that deletes evidence
+. Copy disk
+. Analyze copied images
+
+=== Logs as an eradication + forensics source
+
+Logs are very important
+
+Save these things:
+
+. Successful logins
+. Failed logins
+. Access to critical resources
+. Anomalous messages
+* network traffic peaks
+* extreme disk IO ops
+. Error messages
+
+WARNING: PROTECT LOGS AT ALL COSTS
+
+. save them to write once memory
+* shrimply print to paper
+* write to CD
+. insert a sequence number
+* every time a log is produced it has a sequence number
+** don't use trivial sequences (1234)
+** use PSEUDO RNG to generate seq otherwise can't predict next number
+. create blockchain (lol)
+* each block has hash of previous block + hash of current block + hash of next block
+
+CAUTION: these things (except blockchains) only tell you if log has been tampered with, not what was in it
+
+Used to monitor system but also in trial to prosecute attacker/defend yourself from cringe CEOs
+
+What if my log file is full? (??? how can it be full :sob:)
+
+* if it gets too big it can slow the system down
+
+. Throw it away (don't)
+. Reset (rotate within file)
+. Compress and archive
+
+== Automating Simple Intrusions
+
+Intrusions can be pretty complicated
+
+Attackers tend to automate them to save themselves the headache
+
+
+=== Worms
+
+The only real automated malware are worms
+
+* spreads on its own without attack infrastructure
+** unless the attacker has a specific requirement
+** often used to build one
+
+Many kinds of worms:
+
+* email
+** inside message
+** inside attachment
+* IRC
+* Instant Messages
+* File sharing
+** hidden in file
+* Internet/network worms through wormable vulnerabilities
+** some vulnerability that enables code execution on a remote node
+
+.worm process structure (naive scheme)
+. Generates random IP address/email address/whatever required for task
+. Checks if IP address is used
+.. If used probe for vulnerabilities
+.. If vulnerable attack
+.. If successful spread
+. Else try again
+
+Real worms are much more insidious
+
+Conficker (old worm) is a bit more involved
+
+* does specific geolocation checks
+* checks for specific processes
+* uses domain flux
+** makes a ton of DNS requests in a short time to find its C2 node
+** good defenders can notice this and take action
+
+Worms obfuscate their code (as all good malware does)
+
+They can also have sandbox detection systems that upload a fake payload
+
+* often the real payload is a tor client
+
+=== Domain Flux
+
+Assigns many domains to a single IP address and rotates them rapidly to hide the C2 node's IP address
+
+Worms have algorithms to generate domain names
+
+.Optimizing address generation
+* Density -> probability that a random address in a set corresponds to a real node
+* Local (high density) -> similar to domain of infected node
+* Global (low density) -> completely random
+* If the ratio of local addresses and global addresses is:
+** too low: the worm can be detected
+** too high: the worm can infect the same node multiple times
+* small changes can have large effects
+
+Not all worms use IP addresses
+
+* some use logical addresses
+** email addresses
+** whatever
+
+=== Theoretical Spreading Model
+
+Theoretically we can model the spreading of worms epidemiologically
+
+* i.e. as if it were a real disease (obviously simplfied)
+
+Expressed as cyclical finite state
+
+.Model states
+* S: Susceptible to disease
+* I: infected
+* R: Recovered
+* S can become R by vaccination
+** hardening the system
+* S can also become I and then R
+** becoming infected
+** recovering system
+* R systems can become S to new worm/disease
+
+Can be expressed as differential equations (1927 study btw)
+
+* assumes a node can infect any other node
+
+.Epidemiology meme
+[stem]
+++++
+\frac{d \mathit{s}}{d \mathit{t}} = - \beta si
+
+\\
+
+\frac{d \mathit{i}}{d \mathit{t}} = \beta si - \gamma i
+
+\\
+
+\frac{d \mathit{r}}{d \mathit{t}} = \gamma i
+++++
+
+Change in S is -infection rate * potentially infected * infected
+
+Change in I is infection rate
+
+//slides xd
+
+This system doesn't have an exact solution but we can approximate it if initial stem:[I] is low (near 0)
+
+* usually safe bet
+
+.Solutions
+[stem]
+++++
+//math memes
+++++
+
+The solution is a logistic curve with 3 main phases:
+
+. slow start
+. epidemic phase
+* rapid growth
+. slow finish
+* some nodes/people are hard to infect for whatever reasons
+** nodes are behind like 12 firewalls and 6 routers and such
+
+The infection spreads slowly at the start so worms should be detected and removed ASAP (no shit?)
+
+Worms are too quick to recover from so stem:[\gamma] isn't usually taken into consideration
+
+.In our case:
+* stem:[\beta] is a function of:
+** the IP address generation function
+** the number of systems affected by the vulnerabilities
+** the higher it is the more virulent
+* stem:[\gamma] should not be ignored any time
+** the spread is relatively slow
+** patching can be automated
+** there are automated countermeasures/mitigations
+
+The stem:[\beta] value of worm can be computed:
+
+.Worm stem:[\beta]
+[stem]
+++++
+\beta = \frac{C}{N} \cdot \frac{\alpha}{\tau}
+++++
+
+Where:
+
+* stem:[C] is some magical parameter
+
+.Epidemiological Threshold
+stem:[R_0 = \frac{\beta \sigma}{\gamma}] is indicator of spread
+
+* if stem:[R_0 \lt 1] the disease is reducing
+* if stem:[R_0 \gt 1] the disease is spreading
+
+There is another model that takes patching into consideration
+
+* requires changing the state model
+* adding P
+** P = patching
+
+There is another even more complex model with 8 states (lol)
+
+==== Topologies
+
+We need to take topologies into consideration because we dont all live in a net
+
+* the less connected a population/network is the slower the spread
+
+.Scale free (the rich get richer)
+* When a new node is connected to a network connecting to a hub with many connections is preferred
+* Few hubs with many connections
+* Many nodes with few connections
+* likely the topology of the Internet
+* Strong against random attacks and faults
+* Weak against targeted attacks
+** cutting an undersea cable can disrupt many devices

@@ -1,0 +1,284 @@
+= AI for DH - Encoder-Decoder Architectures and Neural Attention
+:toc:
+:toc-title: Contents
+:nofooter:
+:stem: latexmath
+
+== Sequence to Sequence Learning
+
+Sequential data is made up of multiple related observation
+
+RNNs handle this kind of data despite different sequence input lenghts/topologies
+
+*What about weird lenght output?*
+
+Since structured data is compound information we need to take only the most important/relevant parts
+
+* this is called *attention*
+* networks learn this automatically
+
+=== Sequence Transduction
+
+Transforming data types
+
+* vector -> image
+* graph -> matrix
+* whatever
+
+In this case we want to do sequence to sequence
+
+* stem:[x_1 \neq y_1] because they can have vastly different forms/lenghts
+* like machine translation
+** input language A can have `len == 6` and output B can have `len == 5`
+* inputs and outputs cannot be hard aligned but they are still related
+
+RNNs cannot do this
+
+== Encoder-Decoder Architectures
+
+Models that learn to encode an input and use it to get the output
+
+* Autoencoders are very specialized EDA models
+
+. Take input stem:[\mathbf{x}]
+. Compress it in encoder
+* strip unnecessary details from input
+* keep only relevant patterns
+. Take hidden state stem:[\mathbf{h}]
+. Feed it into decoder
+. Output stem:[\mathbf{y}]
+
+=== Encoder/Decoder Definitions
+
+.Encoder
+* Takes input sequence of any length and compresses it into fixed length output stem:[\mathbf{c}]
+
+.Decoder
+* Uses stem:[c] to inform next cells of initial input
+* used in input to each cell
+
+.Autoregressive Generation
+* The output at each prediction is used as input for next prediction with stem:[c]
+* During training can use correct input (from stem:[\mathbf{x}]) to learn - *teacher forcing*
+* However at real prediction time it won't work because the input stem:[\mathbf{x}] is new
+* Reduce teacher forcing gradually during training
+* final output stem:[y_m] will be End Of Sequence string `<EOS>`
+
+=== Early Encoder-Decoder Architectures
+
+Can use RNNs for basic EDA
+
+Encode hidden state stem:[h_T] when done parsing input
+
+Feed it with SOS tag (transformer meme)
+
+* SOS tells network to start decoding
+* input stem:[y_2] to generate stem:[y_3] while also knowing about stem:[y_1] because of hidden state
+* errors are backpropagated through every item in the output and also through input
+** AIDS to deal with
+
+== Neural Attention in RNNs
+
+Take the following:
+
+* Input: "the cat is on the table"
+* Output: "il gatto è sul tavolo"
+
+. "Table" is in stem:[h] -> stem:[c] (context)
+. "gatto" is next in line
+* stem:[h] is used for context but "cat" is really early in the sequence
+* "sul" is mapped to "on the" which is 2 words
+* static stem:[c] is cringe
+* need to have separate stem:[c] for each output I want to generate
+
+EDA assumes last input item is enough to predict the output (lol?)
+
+Take all hidden states stem:[\mathbf{h}] and combine them into stem:[c] using *attention module*
+
+* attention also needs to know the current output to generate specific contexts for all outputs
+
+=== Cross Attention Overview
+
+.Black box view:
+* Context info stem:[S]
+* stem:[S] is encoding of previous/latest output sequence
+* stem:[s_1] has no context because first element
+* i.e. output of RNN
+* Encodings stem:[\{h_1, \dots, h_n\}]
+* Output aggregated seed stem:[c]
+* Use gates to cherry pick which encodings are used
+* Use *sigmoid* gate
+
+.Less black box view
+
+There are 3 main components, each with its own formula
+
+.Relevance
+[stem]
+++++
+e_i = a(s, h_i)
+++++
+
+The higher it is the more relevant token stem:[i] is in the current state stem:[s]
+
+.Normalization
+[stem]
+++++
+\alpha_i = \frac{\exp{(e_i)}}{\sum_j \exp{(e_j)}}
+++++
+
+This normalizes the relevance stem:[\alpha \in [0, 1]]
+
+* it's basically a softmax
+* generates a probability
+
+.Aggregation
+[stem]
+++++
+c = \sum_i a_i h_i
+++++
+
+Weighted sum of hidden states stem:[h_i] of the tokens where stem:[\alpha_i] is used to compute the contribution of each token's stem:[h_i]
+
+* more relevant tokens will have higher values
+
+As a whole:
+
+. First part takes in stem:[\{h_1, \dots, h_n\}] and stem:[S]
+* tuples of stem:[S] with each element of stem:[\mathbf{h}] separately stem:[(S, h_1), (S, h_2)], etc
+* this is fed into some function to generate stem:[e_i] which is a single value
+* stem:[e_i] computes how relevant stem:[h_i] is to stem:[S]
+** stem:[\cos] similarity
+** or simple MLP
+*** copies of same MLP are used to scale attention model to different length inputs
+*** this deletes positional information
+*** can be good or bad depending on application
+. Feed stem:[e_i] to stem:[\text{softmax}] -> stem:[\alpha_i]
+* generates multinomial distribution/probability
+* stem:[\alpha] is normalized relevance
+* higher the stem:[\alpha] the more relevant the corresponding input is to the context
+. weighted sum of coefficients stem:[\alpha _i] and stem:[h_i]
+* stem:[c = \sum_i \alpha _i \cdot h_i]
+** stem:[c] is same length as stem:[\mathbf{h}]
+
+=== Limitations of RNN approach
+
+Assumes input encodings are robust
+
+* assumes they capture enough information about history
+* not entirely true because of fat backprop
+
+Gradient issues as well
+
+Long range dependencies are hard to learn
+
+* requires a lot of backwards jumps
+
+== Self Attention
+
+Evolution of cross attention
+
+Does not use recurrence to capture relationships between sequence elements
+
+Forces all elements to be at distance stem:[n = 1]
+
+* explicitly compute the relationship between stem:[\mathbf{x}_i] and stem:[\mathbf{x}_j] for all choices of stem:[i] and stem:[j]
+** good for model but bad for computational efficiency stem:[(O)^2]
+** shrimply use multithreading LOL
+** if GPU has enough VRAM this can be computed in one shot
+
+To do this each input element stem:[\mathbf{x}_i] into 3 vector embeddings:
+
+* stem:[K]ey -> stem:[K_i]
+* stem:[Q]uery -> stem:[Q_i]
+* stem:[V]alue -> stem:[V_i]
+
+For all stem:[i] in input stem:[x_i, \dots, x_n]
+
+=== stem:[K, Q, V] generation
+
+Take input stem:[X] and multiply with parameter matrices
+
+//add later
+
+Then:
+
+. Match all combinations of inputs
+
+. Take query from input stem:[x_1]
+
+. Compute attention with keys of current and following inputs
+
+. Can use dot product:
+* stem:[q_i \cdot k_i] for all combinations of stem:[i]
+* produces a scalar stem:[e] (relevance)
+* pass stem:[e] into softmax
+* weighted summation of value vector stem:[v_i]
+** stem:[\sum_i v_i \cdot \alpha_{i}]
+** returns a vector stem:[O_i] -> self attention vector for stem:[x_i]
+** includes information from current stem:[i] and all other stem:[x]
+
+== Transformers
+
+Encoder/decoder architecture
+
+* encoder takes input and represent it some way
+* decoder generates output sequence
+
+Entirely attention based
+
+* instead of recurrence
+
+.Encoder Components
+* Input embedding
+* Positional encoding
+* Add & norm
+* FFNN/MLP
+
+.Decoder Components
+* Same as encoder plus:
+* Masked multi head self attention
+** don't look into the future
+** only look at previous generations
+* Multi head cross attention
+** query vectors come from encoder
+
+=== Transformer Architecture
+
+. Input: single sequence
+. Transforms into another vector using self attention
+. Attention vector is normalized
+. Throw into FFNN (MLP)
+. Apply layer normalization
+
+CAUTION: Low inductive bias models that need *huge* datasets to generalize
+
+=== Multi-Head Self Attention
+
+Transformers don't really care about sequence order
+
+Any word in a sequence can be anywhere and the model doesn't care
+
+Which can be good or bad depending on application
+
+=== Positional Encoding
+
+Values that associate unique values to each position in the input sequence
+
+Summed with original embedding
+
+Using one-hot encoding is impractical because large sequences require large vectors
+
+Uses stem:[\sin] and stem:[\cos] functions to encode positions for some magical reason
+
+== Vision Transformers (ViTs)
+
+Instead of predicting the next word in a sentence we predict the next frame of a video?
+
+. Take image
+. Chop it into pieces
+. Flatten them into vectors
+. Show them to model
+. Model learns to predict piece
+
+This can be used to teach the model to fill in gaps in images based on the self attention

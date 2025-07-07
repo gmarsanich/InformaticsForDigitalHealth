@@ -1,0 +1,332 @@
+= AI for DH - Deep Learning with Textual Sequences
+:toc:
+:toc-title: Contents
+:nofooter:
+:stem: latexmath
+
+== Text
+
+Items in text sequences don't have numerical interpretations
+
+Very strong symbolic meaning
+
+Text items can have multiple meanings
+
+CAUTION: not necessarily natural language (molecular chains, code, idk)
+
+== Text Sequences in Healthcare
+
+EHR reports are very informationally rich
+
+Info is buried in language (model doesn't like this)
+
+*How does the model know what it's reading? How does it know what to keep and what to throw away?*
+
+EHR language has its own special memes
+
+* shorthand
+* acronyms
+* codes
+
+[WARNING]
+====
+* these things are *extremely important* to keep
+* models trained on normal NLP tasks cannot be trusted with these things because medical jargon is weird
+====
+
+=== Prototypical tasks in healthcare NLP
+
+* Entity recognition
+** assigning a meaning from some taxonomy onto words/phrases
+* Determine if a portion of input has privileged information (GDPR momento)
+* Determine date/time/location/certainty/whatever the fuck data
+* Relation extraction
+** Determine the relationship between relevant entities
+* Identify fragments that are relevant for specific medical questions
+* Summarize medical info accurately
+
+Healthcare tasks are not limited to NLP (LOL)
+
+== Representing Text
+
+Text is is extremely non numerical but extremely information rich
+
+How do we turn text into numbers?
+
+* encodings ofc you dunce
+* some encodings are better than others
+
+.One hot encoding bad
+. massive encoding vectors (Chinese has 100k+ terms glhf)
+. one hot vectors are orthogonal (?)
+* identical-ish representations
+* vastly different meanings
+
+So what do we do?
+
+=== Word Embeddings
+
+Based on context -> context matters
+
+Words can change meaning depending on where they are in the sentence
+
+We can use probability distributions to estimate meaning based on context
+
+* *distributional hypothesis*
+
+This works for natural language and other types of language (e.g. gene functions)
+
+Word embeddings need to be consistent with distribution of word
+
+* new encoding needs to be way smaller than one hot encoding
+
+Need to map semantic similarity to vector similarity
+
+* represent words as vectors in a vector space
+* model = stem:[[0, \dots, 0, 1, 0, \dots, 0]] -> bad
+** stem:[\cos] similarity of one hot vectors is 0 -> useless
+* model = stem:[[0.23, \dots, 0.61, 0.12, \dots, 0.4]] -> good
+
+
+.Similarity:
+[stem]
+++++
+\text{sim}(e_1, e_2) = \frac{e_1 \cdot e_2}{\lVert{e_1}\rVert \cdot \lVert{e_2}\rVert}
+++++
+
+Where:
+
+* stem:[e_i] is an embedding
+
+To get a word embedding we need to take one hot vector and map it to word embedding
+
+[stem]
+++++
+\mathbf{e}_w = \mathbf{EI}_w
+++++
+
+Where:
+
+* stem:[w] is a word
+* stem:[\mathbf{e}_w] is a word embedding
+* stem:[\mathbf{E}] is the embedding matrix of height == len(stem:[\mathbf{e}]) and width == vocab size
+* stem:[\mathbf{I}_w] is the one hot encoding of stem:[w]
+
+=== Learning Word Embeddings
+
+. Take corpus of sentences (scrape Wikipedia)
+. One hot encode words
+. Make dataset of pairs of a word and a contextually associated word
+. Make LNN that:
+
+.. takes one hot vector stem:[V = ] `n_neurons = len(vocab)` as input
+.. has hidden layer stem:[d = ]`n_neurons = len(one_hot_vec)`
+* information bottleneck compresses info
+.. output layer same size as input -> `n_neurons` stem:[ = V]
+
+=== Skip-Gram Approach
+
+.Input
+* One hot embedding of target word
+* e.g. stem:[\mathbf{V}] of length 10,000 with a 1 in the position corresponding to the word ants
+
+.Projection
+* LNN from earlier
+** A bunch of linear neurons
+
+.Output
+* One hot embedding of the stem:[N] words that are most likely to co-occur with the input word
+* A bunch of softmax classifiers to generate probability
+** e.g. probability that a word chosen at a random nearby position is abandon
+* Can be sigmoid as well depending on what you want to output
+
+Many pretrained frameworks for various tasks
+
+.Biomedical domain models:
+* BioWordVec
+* dio stracane
+
+=== Embedding spaces hit at a semantic organization
+
+Words are embedded in multidimensional space
+
+In a 2D plane a word would be at some stem:[x, y] position, and so on
+
+You can compute the distance between points that represent words and get the difference between the words
+
+Similar words will be aligned
+
+This means that we have semantics for numerical values (lol)
+
+* e.g. stem:[\vec{(1, 2, 3)}] is similar to stem:[\vec{(1, 2, 4)}] but not stem:[\vec{(7, 8, 9)}]
+
+We can use embeddings to learn about any kind of textual data, not just NLP
+
+== Language Modeling
+
+We can use transformers to use word embeddings
+
+They are trained similarly to the embeddings themseleves
+
+.Basic terminology:
+* Tokens: atomic elements in our sequence modeling problem
+** tokens are not necessarily words
+** basing models on dictionaries is not enough because language changes
+** we have to be more flexible
+** tokens also disentangle language from natural language
+* Language model: probabilistic model of how tokens can be combined to obtain valid and meaningful sequences
+** general idea: train LM to reconstruct the full input sequence from a noisy version (like autoencoders)
+
+=== Training LMs
+
+.2 phases:
+* Pretraining: fit parameters to solve gap filling problems (my _ is Jeff)
+** doesn't need labeled data
+** finds legal tokens in language
+* Fine tuning: train pretrained model on task specific dataset to solve an end task
+
+.Relevant architectures
+. BERT (encoder)
+* Bidirectional encoder that looks at a sequence from start to end and from end to start
+** uses bidirectional self attention
+* Introduced masked language modeling as the task used to generate model parameters
+* There's like a billion offshoots for specific tasks
+. GPT (decoder)
+
+=== BERT
+
+==== BERT pretraining
+
+Fill in the gap training task
+
+Place a specialized token (e.g. [MASK]) in place of the word to be predicted
+
+* e.g. how are [MASK] doing?
+
+More formally:
+
+* [CLS] how are [MASK] you doing [SEP]
+
+Predict probability of word that goes where [MASK] is
+
+* e.g. you -> 99%, dog -> 0.3%, etc.
+* pick highest
+* if wrong tell model the answer for next time
+
+BERT can also do next sentence classification
+
+* given 2 sentences and CLS/SEP tags BERT tells you if 2 sentences are consecutive in a text
+
+==== BERT fine tuning
+
+* Get pretrained BERT from huggingface
+* Prepare data with required tokenizer
+* Train output layer to solve the task by giving it the right embedding
+
+=== GPT
+
+Generative model -> decoder only
+
+Language model only
+
+Uses masked self attention
+
+* only allowed to look in the past
+
+Trained on simpler fill in the gap than BERT since it's only used for next token prediction
+
+Many types of GPT:
+
+. GPT-1 was pretrained and fine tuned at the same time on multiple tasks (language modeling and others)
+
+==== General GPT Training
+
+OpenAI is cringe so they don't tell you how to train them
+
+In principle it's classic LM tasks + specialized tasks
+
+Uses self supervised learning
+
+==== GPT Tasks
+
+Natually designed for solving tasks via generation
+
+* Sequence completion/generation
+* Sequence classification as generation
+* Summarization
+* Translation
+
+Embeddings work well for sentence/token prediction tasks
+
+Allegedly good at zero shot/few shot learning
+
+* more like zero shot generalization
+** if can transform task into linguistic query then it can probably solve it (lol)
+
+== Processing Textual Data in Healthcare
+
+Many prebuilt tools/pipelines for textual data in healthcare
+
+* sciSpacy is good
+** can label ULMS tokens in text automatically and map them to a concept
+** can also recognize diseases/chemical compounds
+
+There are also specialized language models
+
+* specialized embedders
+* specialized modelers
+
+=== Specialized Language Models
+
+Most use pretrained models (i.e. BERT) and fine tune it on biomedical text or some other specialized task
+
+* rarely do people start from scratch
+
+==== BioBERT
+
+Specialized BERT for biomed stuff
+
+. Initialized with weights from normal BERT
+. pretrained again with PubMed/PMC biomedical text
+. Fine tuned on a few tasks
+* named entity recognition
+* relation extraction
+* question answering
+
+==== ClinicalBERT
+
+Trained on EHR instead of biomedical text
+
+* trained on MIMIC-III
+** contains diagnoses about patients
+
+Predicts probability of ICU readmission based on EHR data
+
+==== COMPOSE
+
+Uses language modeling to recruit patients for randomized trials
+
+Takes list of constraints + eligibility criteria
+
+Filters cohort of patients according to list of constraints and eligibility criteria
+
+Pretty contrived process
+
+. Encode constraints/eligibility using ClinicalBERT
+. Make taxonomy from EHR data
+* e.g. need people who have x-rays available, people taking beta blockers
+. Use criteria embedding to match EHR data
+
+=== Handling Medical Timeseries with LMs
+
+Tokenize things like EEG/EKG sequences
+
+* need specialized tokenizer
+
+Combine patient info encoded with BioBERT or whoever with tokenized EEG sequence
+
+.Typical tasks:
+. Boundary detection
+* when is there a change?
+. Anomaly detection
+. Something else idk

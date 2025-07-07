@@ -1,0 +1,123 @@
+= HCI For DH - Design Brief And Ideation
+:toc:
+:toc-title: Contents
+:nofooter:
+:stem: latexmath
+
+== Role Of The Design Brief 
+
+Contains project definition:
+
+. Problem to solve
+. Target audience
+. Goals
+. Success criteria
+. Constraints
+. Deliverables
+
+Frames challenge
+
+Anchor ideation in user needs
+
+Required to solve the right problem
+
+Keeps project vision focused and aligned
+
+Prevents jumping to conclusions
+
+=== Design Briefs in UX
+
+Focus on:
+
+. user needs
+. experience
+. goals
+. use case
+
+Good design briefs have a structure:
+
+. Project
+* what's the focus of this project
+. Problem
+* what issue are we solving
+. Audience
+* who are the users?
+. Scope
+* what do we include/exclude?
+* avoids overdoing/bloating
+. Constraitnt
+* what limits do we need to follow
+* budget, time
+. Goal
+* what *measurable* outcome are we aiming for?
+
+=== Writing Effective Briefs
+
+Phrase the problem instead of the solution
+
+Be specific
+
+Involve stakeholders early 
+
+Make success measurable
+
+Be clear but not oppressive
+
+Refer to the brief during ideation
+
+== Generating Ideas And Solutions - Ideation
+
+Creative process for generating many ideas
+
+Encourages designers to explore ideas before converging
+
+.Divergent Techniques
+* Generating many ideas with no judgement 
+* Brainstorming
+* Brainwriting
+* Mind mapping
+* Sketching/crazy 8s
+* Bodystorming
+* SCAMPER
+** Modify existing idea with new memes
+* Worst Possible Ideas
+
+.Convergent Techniques
+* Filter divergent ideas into actionable ideas
+* Dot Voting
+* Feasibility Impact Matrix
+* Embrace Opposites
+* 3-way comparisons
+* Affinity Mapping
+* Six Thinking Hats
+
+Helps learn to be creative on command
+
+Good briefs generate user focused ideation questions
+
+Problems should become *how might we ...?* questions
+
+* how might we help users avoid emergency refills?
+* how might we decrease task completion times?
+
+Not all ideas survive the filter
+
+* kill gracefully
+* pivot
+
+== Team Techniques
+
+Often good to do these things solo and then in teams
+
+* go deep solo
+* discuss solo solutions in groups
+* parallel convergence
+
+Groups/teams bring in diversity and different viewpoints
+
+Good ideation sessions use one or more of the following:
+
+* Set visual tone (sticky notes, whiteboards, sketch pads)
+* Have a warmup round
+* Use prompts to kickstart idea generation
+* Take a break before filtering

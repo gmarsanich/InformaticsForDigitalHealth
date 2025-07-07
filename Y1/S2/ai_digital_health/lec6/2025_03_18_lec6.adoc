@@ -1,0 +1,346 @@
+= AIDH - Risk Stratification
+:toc:
+:toc-title: Contents
+:stem: latexmath
+:nofooter:
+
+Tool designed to better understand population needs by segmenting it into smaller similar subsamples
+
+*Risk* is the likelihood of an adverse clinical outcome
+
+== Population Health Management
+
+Split a patient population into multiple samples based on risk
+
+Associated with interventions that target high risk subjects specifically
+
+== Risk Scoring and Stratification
+
+Examples:
+
+* Does a patient need to be admitted to the intensive coronary care unit?
+
+We can't admit everyone or we will overload the ICU and someone's gonna die in the ambulance
+
+=== Traditional Risk Stratification
+
+==== Apgar Scoring System
+
+Specialized for newborns
+
+Simple scoring system computed on data entered by a human using a questionnaire like table
+
+. Activity -> [0, 2]
+. Pulse -> [0, 2]
+. Grimace -> [0, 2]
+. Appearance -> [0, 2]
+. Respiration -> [0, 2]
+
+Sum the score and assign to classes:
+
+* 7 stem:[\leq] score stem:[\leq] 10:
+** normal
+* 4 stem:[\leq] score stem:[\leq] 6:
+** moderately abnormal
+* 0 stem:[\leq] score stem:[\leq] 3:
+** critical
+
+Lower score = bad, more likely to need resuscitation
+
+Being phased out because not informative enough and too slow
+
+Need new score to be computed *BEFORE* the child is born
+
+==== Finland diabetes risk stratification
+
+Self assessment form that computes 5 classes
+
+Not ideal because subjective
+
+* am I doing enough physical activity?
+** depends on definition
+
+==== Limitations
+
+Can't simply use variables to compute score (e.g. you can't know the color of the skin [like for jaundice or whatever not racism] while the baby is inside the mother)
+
+Manual screenings have to be done for all subjects
+
+* costly
+* time consuming
+* Unfeasible for millions of people
+
+Hard to adapt to multiple surrogates especially when variables are missing
+
+* finding surrogates is hard
+
+== ML for Risk Stratification
+
+Use models with very high True Positive ratings
+
+There's also a data collection problem:
+
+* What is the risk of severe morbidity as adults in early preterms?
+** Need to follow the patient along to collect data (at least 18 years)
+** Easy to get things wrong
+*** Dropouts, missing data
+
+Need to predict the future by extracting patterns from noisy articulated data
+
+Also need to know what risk factors contribute to the risk level
+
+* Clinicians should know/be able to explain
+
+=== Longitudinal data
+
+Data about a population across a long timespan
+
+* not a timeseries
+* population level predictions
+* individual level predictions in the future
+
+=== Risk Scoring
+
+Numerical representation of the likelihood blahblah
+
+Linear risk modeling:
+
+[stem]
+++++
+RiskScore = w_1x_1+w_2x_2+\dots+w_Dx_D
+++++
+
+Where stem:[x] are the input variables/features and stem:[w] are the weights/risk factors
+
+Higher risk score -> more likely to experience a given health event
+
+=== Risk Scoring as Supervised Learning
+
+Measure risk today
+
+Measure risk in 4 years
+
+Measure risk in 8 years
+
+How?
+
+Fit 3 models using retrospective data from 2 years in the past
+
+Models should split high risk people from low risk people (in this example) using linear risk scoring
+
+* Classification problem (kNN, log reg)
+* Need something very interpretable
+* Can apply L1 reg to use as few risk factors as possible
+
+=== A Simple Scoring Model
+
+Pass linear risk model into a sigmoid
+
+[stem]
+++++
+P(y = 1 | \mathbf{x}) = \sigma \Biggr(\sum_{k=1}^D \theta_k x_k \Biggl) = \sigma(\mathbf{\theta x})
+++++
+
+With loss
+
+[stem]
+++++
+\text{Loss} =\sum_{n=1}^N -y \log({\sigma(\mathbf{\theta x}_n)) - (1 - y) \log (1 - \sigma (\mathbf{\theta x}_n))} + \lambda || \mathbf{\theta} ||_1
+++++
+
+Very widely used because its coefficients have nice properties (ok?)
+
+==== Odds Ratio
+
+Case control study - no statistically valid measures of the population
+
+Subpop C of pop P has received treatment or has condition
+
+Subpop N does not have condition -> picked up randomly
+
+We can't control C and N
+
+[stem]
+++++
+OR = \frac{P(O | C) / (1 - P(O | C))}{P(O | N) / (1 - P(O | N))}
+++++
+
+Top part is stem:[ODD_c]: prob of having lung cance if I smoke
+
+Bottom part is stem:[ODD_n]: prob of not getting lung cancer if I don't smoke
+
+* stem:[OR \ge 1]: Higher odds of the outcome in exposed group C
+* stem:[OR \sim 1]: No difference in odds
+* stem:[OR \le 1]: Lower odds of the outcome in exposed group C
+
+*Example*
+
+Outcome: lung cancer
+
+Condition: smoking/not smoking
+
+Given a case study:
+
+* Smokers: 30 have lung cancer, 70 don't
+** Odds of lung cancer in smokers: stem:[30/70 = 0.43]
+* Non smokers: 10 have lung cancer, 90 don't
+** Odds of lung cancer in non smokers: stem:[10/90 = 0.11]
+
+[stem]
+++++
+\therefore OR = \frac{0.43}{0.11} = 3.9
+++++
+
+Meaning that smokers are 3.9 times more likely to develop lung cancer than non-smokers.
+
+==== OR and LogReg
+
+Coefficients of LogReg are related to OR between outcome var and free var
+
+Given:
+
+[stem]
+++++
+P(y = 1 | \mathbf{x}) = \sigma \Biggl(\sum^{D}_{k=1} \theta_{k} x_{k}\Biggr)
+++++
+
+Then
+
+[stem]
+++++
+OR(y | x_k, \mathbf{x}_{1/k}) \approx e^{\theta x}
+++++
+
+That is the OR between outcome stem:[y] (lung cancer) and risk factor stem:[x_k] (smoking) when the other independent variables stem:[\mathbf{x}_{1/k}] (height, weight, sex, age, etc.) are fixed
+
+=== Predicting Risk in Time
+
+Reasses risk as new measurements come in
+
+* risk of someone sitting in hospital can change over time
+
+Introduce time marked patient features and outcomes
+
+i.e.
+
+* patient features stem:[\mathbf{x_t}] at time t
+* patient risk stem:[y_t] = patient risk at time t
+
+If all features vary in time (naive solution):
+
+[stem]
+++++
+P(y_t = 1 | \mathbf{x}_t) = \sigma \Biggl( \sum^{D}_{k=1}  \sum_t  \theta_{k} x_{tk}\Biggr) = \sigma (\mathbf{\theta x}_t)
+++++
+
+This models pools all training samples together and produces a single model
+
+We might want a mode that changes with time spent in the hospital since risk factors will change with time
+
+stem:[\theta_k] mixes weight of feature of same in time -> mixing people with 1 day in hospital with people with 10 days in the hospital
+
+If you expect risk to grow over time then you need a different model
+
+==== Accounting for time varying effects
+
+New parameter stem:[j]: time bin (e.g. 24 hour bins)
+
+for j in n_bins:
+stem:[\theta_j]
+
+where stem:[j = 0] is the baseline
+
+This increases the number of parameters and we increase risk of overfitting
+
+Similarity with odds ratio is retained for each bin/window/slice *separately*
+
+Also:
+
+* Partition days into periods/windows stem:[j = 1 \dots T] with stem:[\mathcal{t}_j] being the set of days of the stem:[j]th period
+
+* Re parametrize the logistic regression such that the subject risk on day stem:[t \in t_j] is proportional to stem:[(\theta_0 + \theta_j)\mathbf{x}_t] where:
+** stem:[\theta_0] is shared time invariant knowledge
+** stem:[\theta_j] is changing time specific knowledge
+
+=== Performance assessment in risk prediction
+
+Calibration
+
+* ability to accurately predict the absolute risk level
+* how confident I am in my ability to accurately predict the risk level
+
+Discrimination
+
+* Ability to accurately separate individuals into low and high risk
+* AUC is good for binary values:
+** insensitive to class imbalance
+
+Compare predicted risk with expected real risk
+
+Assess/validate on validation/*calibration* set
+
+Use *calibration plot* to visualize
+
+N subjects in D have high risk of something
+
+Take N known high risk and ask predictor to predict risk for these N
+
+Compare predicted with real
+
+Red diagonal is stem:[y=x]
+
+Overfitting:
+
+if below red line near the top:
+
+* model is overestimating high risk
+* overconfident on the risk -> uncalibrated
+
+if above red line near the bottom:
+
+* model is underestimating low risk
+* underconfident on the risk
+
+Underfitting:
+
+inverse of above
+
+Calibration can also be used to check grouped data:
+
+* is the model more or less confident at predicting group A than group B?
+
+== Data Challenges in Risk Scoring
+
+=== Censoring
+
+Data that is measured across time may not be there
+
+2 types of censoring:
+
+. Left censoring
+* I don't have past data for specific patient
+. Right censoring
+* I don't have future outcomes about some patients
+** I don't know exactly why I don't have that data
+
+==== Dealing with left censoring
+
+You can impute measurements
+
+Fine if missing a few random values but not always
+
+Better to represent the feature as multiple factors
+
+. stem:[x_1] is measurement available -> stem:[\{0, 1\}]
+. stem:[x_2] is result normal/low/high -> stem:[\{0, 1, 2\}]
+. stem:[x_3] is it increasing/decreasing with respect to previous measurement if present -> stem:[\{0, 1\}]
+
+==== Dealing with right censoring
+
+Instead of classifying (affected/not affected) -> predict *when* will be affected
+
+Time to event models/survival modeling models
+
+== Competing risks
+
+Risks are not isolated - patients may have multiple comorbidities

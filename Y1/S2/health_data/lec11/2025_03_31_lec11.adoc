@@ -1,0 +1,653 @@
+= Security Privacy and Availability of Health Data - Defense
+:toc:
+:toc-title: Contents
+:nofooter:
+:stem: latexmath
+
+== Honeypots
+
+Honeypots:
+
+* A system desgined to be attacked to slow down and collect information about attackers
+** threat intelligence
+** vulnerability discovery
+** attack strategy
+* Inherently dangerous
+** can become attack vector
+
+Honeynet:
+
+* Network of honeypots
+
+Honeypots have to be convincing to work
+
+* don't use old stuff
+* change default settings
+* don't use blatantly fake names
+* make running services/open ports realistic
+** don't have 1 morbillion ports open
+
+Honeytokens:
+
+* Bait data that looks real but is meant to be captured
+
+=== Honeypots taxonomy
+
+Different ways of classifying them
+
+. Goal based:
+* production: as a line of defense
+* research: exclusively for threat intelligence
+. Implementation based
+* Virtual: bait VMs/containers
+** more flexible
+* Physical: physical machines
+. Interaction based
+* High
+** real system (OS with applications)
+** respond as they normally would
+** best used for research
+* Medium
+** rule based (if see packet X send response Y)
+** emulate real service to entice attacker
+* Low
+** listens for traffic (vulnerability scanning, fingerprinting)
+* Monitoring required to avoid getting bummed
+
+=== Honeyd
+
+Honeypot tool with many features
+
+* Simulating large networks
+* Highly configurable
+* Supports several routers for more networks
+* Can deal with virtual/physical networks
+* Monitors unallocated IP addresses (*dark space*)
+** ACME Inc has range 172.10.0.0 to 172.10.0.20 but only uses 0-10
+** Unallocated addresses can be dangerous
+** Assumes any interaction with dark space is illegal and will respond accordingly
+
+=== Honeyd Architecture
+
+Multiple parts
+
+* Configuration database
+** used to configure systems
+** want node with Rhel 2.7 with such and such software
+* Packet dispatcher
+** larps as a network
+* Personality engine
+** responds according to configuration database
+** rule based but still cost effective
+** low end of medium interaction
+
+=== LaBrea
+
+Sticky honeypot/tar pit that traps attackers for some time
+
+Listens for ARP requests and replies
+
+If it sees consecutive unreplied ARP requests it assumes the IP address is unoccupied
+
+It then creates a VM with a fake MAC address and responds to the request
+
+Responds with 2x the response time of the previous attempt
+
+* response 1 -> 1 sec
+* response 2 -> 2 sec
+* response 3 -> 4 sec
+* etc.
+
+Smart attackers will realize this quickly and leave
+
+== Robust Programming
+
+Programming style that minimizes vulnerabilities and limit the capabilities of surviving vulnerabilities
+
+Not the easiest or simplest programming style
+
+Some rules:
+
+. Input is evil 
+* validate ALL inputs against what you expect
+. Prevent buffer overflows
+* Check sizes
+** either manually or using the compiler
+. Minimize information leakage
+.. Logical pointers > physical pointers
+* i.e. use indices to point at vector index instead of C pointer
+.. Validate any exchanged information
+. Check values sent to other functions
+* don't send evil inputs to someone else
+. Check returned results
+* Make sure functions return what they should
+
+=== Input Validation
+
+Define the legal input structure
+
+Check inputs against structure
+
+* Environment variables
+* File names
+* URLs
+* Email addresses
+* HTML
+* data
+
+Use default deny paradigm
+
+==== Strings
+
+For strings (especially dangerous):
+
+* Define legal characters
+** e.g. only aA-09 allowed
+* define a max length
+* define an input grammar
+
+Define alphabet and encoding to be accepted
+
+* e.g. accept only latin alphabet with UTF-8 encoding
+
+Web programming languages often have prebuilt string checks
+
+=== No Buffer Overflows
+
+Do _not_ use functions that don't check input parameters
+
+* C/C++ libraries/functions often have safe and unsafe variants
+** *USE SAFE FOR THE LOVE OF GOD*
+** `strcpy()` (unsafe) vs `strncpy()` (safe)
+
+Don't malloc too much extra memory
+
+* holes in memory can be used to inject malicious code
+
+=== Implementation
+
+Implementation of abstract data structure/types/whatever
+
+2 types of functions
+
+. ADS allocators
+. ADS manipulators
+
+In C/C++ pointers are used to pass data around during allocation and manipulation
+
+If `foo()` returns a pointer you can't assume that `bar()` will only receive the pointer from `foo()`
+
+Unexpected pointers could be data but they could also be code
+
+=== Weaknesses vs Vulnerabilities
+
+Weaknesses are bad practices that could introduce vulnerabilities
+
+If a malicious entity can use a weakness to attack you then that weakness is a vulnerability
+
+For example:
+
+A web app uses encryption to protect sensitive user data
+
+. The encryption key is hardcoded in the source code
+* Immediately exploitable vulnerability
+. They use MD5 (old and decrepit) to store passwords
+* Less immediately exploitable vulnerability
+
+CWE is a database of weaknesses that is updated every year
+
+Weaknesses are scored based on the number of vulnerabilities that exploit it multiplied by the resulting CVSS score
+
+* stem:[\text{CWE score} = \text{Number of vulnerabilities} \cdot \text{CVSS}]
+
+Weaknesses of this score:
+
+* Doesn't say whether weakness is due to design flaw or implementation error
+* Prefers frequency over severity
+** when calculating a mean this reduces effect of uncommon but dangerous weaknesses/vulnerabilities
+* Uses NVD database (USA)
+* Uses publicly reported CVE records
+* No information on chains
+* No information on weakness interactions
+
+== Logging
+
+Some laws force us to violate security practices
+
+* e.g. there must be some computer/operator that can shut down gas distribution in a city
+
+This implies that there is some all powerful entity that can control important parts of the system
+
+We can mitigate this by keeping a record of who/what/when did what
+
+* e.g. operator Bobethy turned off the gas at 03:01 from station 12
+
+Event logging is also useful to find vulnerabilities, errors etc.
+
+Also after an attack
+
+Logs have to be analyzed to be useful
+
+Also need to be kept (at least for a while)
+
+Operating systems have built in logging mechanisms to remember what it has done
+
+* Syslog (UNIX/Linux)
+* Event viewer (Windows)
+
+Logs for node i should not be stored on i
+
+* store it on j OR a central logging node
+* attackers can attack node i and delete the log
+* blockchains are a good mechanism for logging
+** can't be modified
+** can only be extended
+** replicated on multiple machines
+* optical (WORM) discs also good
+** data can't really be deleted
+** can only be modified
+** original copy can be recovered
+
+=== Compromise logging
+
+Syslog aware programs write into `/dev/syslog`
+
+This produces a file `syslogd` which is copied on `/etc/syslog.conf`
+
+`syslogd` can then be passed around
+
+
+Syslog has security levels:
+
+[start=0]
+. EMERGENCY: panic condition
+. ALERT: correct asap
+. CRITICAL: correct asap but before alert
+. ERROR: non urgent failures (e.g. printer not working)
+. WARNING: warning messages (e.g. disk space almost full)
+. NOTICE: unusual but noncritical events
+. INFORMATIONAL
+. DEBUG
+
+==== Logs and ransomware
+
+Certain ransomwares kill all Windows processes in a short period of time
+
+* hundreds of shutdown events
+
+== Segmentation & Firewalling
+
+Most important countermeasure/defense strategy to protect networks
+
+=== Segmentation
+
+Break up a flat network (network where all nodes are connected) into structured network
+
+* split networks into areas
+* make rules that define what can happen in that area
+
+Flat networks are ideal for attackers because they have unlimited lateral movement
+
+Subnets are separated by firewalls
+
+* Subnet A only itself
+* Communication with subnet B happens through a firewall
+
+Can combine with honeypots for extra protection
+
+Don't put a web server and a GDPR protected database in the same subnet
+
+* web server speaks to the outside world
+* database has sensitive data
+* attackers have to go through multiple hoops
+** put enough hoops and they probably give up and attack someone else
+
+The main issue with subnetting is physically changing the network topology
+
+* subnetting an existing flat network is very hard
+* best to do it from the start
+
+==== Subnetting vs VLAN
+
+VLANs assign tags (n bits) to packets in a network to distinguish its members
+
+Based on MAC addresses
+
+* NIC A expects tag A
+* ignores packets with tag B
+
+More of a guideline
+
+Subnets logically partitions the IP addresses of a network into ranges
+
+=== Firewalls
+
+Can be physical or virtual (opnsense, pfsense)
+
+* filters messages exchanged by 2 networks or 2 subnets
+* monitors messages exchanged by 2 networks or 2 subnets
+
+Firewalls are described by 2 attributes:
+
+. The protocols it knows and can filter
+* determines the checks it can implement
+* firewall between A and B must know all the protocols A and B use to exchange messages
+* if protocol is unknown *BLOCK IT*
+. Its implementation
+* determines firewall robustness
+* distributed or centralized
+
+==== Firewall architecture
+
+Doesn't define how many filters there are, but rather how robust filters are ???
+
+Same checks can be implemented on various types:
+
+. Firewall that sends/receives on same NIC
+.. this can be more easily exploited by attackers
+.. they can manipulate routing to go from in to out without hitting the firewall
+. Firewall that sends on one NIC and receives on another
+.. more robust since connections are forced to go through the firewall
+.. more expensive because it requires 2 NICs and so on
+. Main firewall+router firewalls
+.. routers can drop packets before they even hit the firewall
+
+==== Firewall checks
+
+Checks are implemented based on the protocols the firewall knows
+
+for example:
+
+. Packet filtering
+* can only check header
+** sender
+** receiver
+** ports
+** protocol
+** source/dest of level 4 connection
+* they decide whether to drop or route based header alone
+* this IP is not allowed -> drop
+. TCP/circuit level gateway
+* firewall can rebuild TCP packet groups and do more comprehensive checks
+. Application level gateway
+* checks packet content
+. Stateful inspection is similar to above
+
+==== Routing in Linux
+
+Linux (by default) uses iptables
+
+Remix of routing tables
+
+A Linux node can:
+
+* send
+* receive
+* act as gateway if has multiple NICs (send packets around)
+
+Uses chains:
+
+* input chain
+** set of rules to manage received packets
+* output chain
+** set of rules to manage sending packets
+* forward chain
+** set of rules to manage packets that go through the node
+* uses DEFAULT ALLOW
+** turn it to DEFAULT DENY by adding drop all at the end of each list
+
+It can perform multiple actions:
+
+* Drop
+** Throw packet away
+* Route
+** Let it through
+* Goto
+** invoke a different chain
+* Return
+** go back to previous chain
+* Queue
+** pass to user code
+** e.g. to some app I wrote or whatever
+* Log
+** send it in but remember packet
+** useful for debugging and threat intelligence
+* Reject
+** throw packet away and inform sender
+* Dnat/Snat/Masquerade
+** change sender address especially when sending
+** if 100 private nodes and 1 public node -> force all packets from private to have public IP
+
+==== Circuit level gateway/stateful gateway
+
+Verifies that packet (TCP/UDP) is:
+
+* a connection request
+* part of a connection
+* part of a virtual circuit
+
+If TCP it checks that there has been a handshake before doing anything
+
+Uses a circuit table to store connection info
+
+If packet is in table then good else make new
+
+When connection is terminated the row is deleted
+
+This firewall remembers who made the request and who should answer/has answered
+
+* Catches spoofing
+
+Sensitive to DDOS because undropped connections saturate the table
+
+* apply default deny to mitigate problem
+
+==== Proxy vs reverse proxy
+
+Proxy protects clients from external server attacks
+
+Reverse proxy protects internal servers from external attacks
+
+Similar architecture but specific checks
+
+Reverse proxy can be used as load balancer
+
+=== Border router
+
+Connects internal network to Internet
+
+First line of defense
+
+Good routing configurations decrease load on internal firewalls
+
+=== Intrusion Prevention & Egress Filtering
+
+You can find out if somehow an attacker bypassed the firewall and data is flowing out of the network by applying egress filtering
+
+* Monitoring outgoing traffic
+* Discovery is always a posteriori
+
+Takes up some bandwidth but if have enough then better to do it
+
+Useful in critical systems (e.g. GDPR databases etc.)
+
+Can prevent becoming a bot in a botnet
+
+Can't blanket ban outside nodes because then you won't be able to go on the internet
+
+=== Things to block according to SANS
+
+Best to filter these types of protocols:
+
+* MS RPC
+* NETBios
+* SMB/IP
+* TFTP
+* Syslog
+* SNMP
+* SMTP from all but your mail server (how)
+* IRC
+* ICMP Echo/reply
+* ICMP host unreachable
+
+Filter as early as possible
+
+=== Firewall Architecture
+
+==== Screening router + bastion hosts
+
+Screening router to do initial filtering and bastion host that has the firewall software
+
+All nodes go through the bastion host before going to the router and into the internet
+
+==== Screened subnet
+
+Put bastion host into its own subnet
+
+. Exterior router
+* Speaks to the internet
+* Routes traffic to bastion host
+* Blocks exit traffic
+. Bastion host
+* Circuit level/stateful inspection of traffic
+. Interior router 
+* Routes packets that exit the bastion
+
+Malware has to fight 2 routers instead of 1 
+
+* better to buy 2 different routers from different manufacturers
+* attackers will have to attack twice rather than doing the same attack twice
+
+Security redundancy = robustness
+
+==== High availability star
+
+Most popular case
+
+Router goes directly to DMZ
+
+* DMZ hosts dangerous things
+** web server
+** email server
+* Have to regard with suspicion
+
+Else router goes to Firewall with multiple network cards
+
+Network cards go to:
+
+* cold redundant firewall 
+* switch/hub
+
+Switch/hub goes to specific subnets
+
+Inter subnet comms must go through firewall first
+
+==== Layered Defense
+
+. Internet goes to boundary router
+. Goes to external firewall
+. Goes to switch
+.. Goes to DMZ network
+. Internal firewall
+.. goes to internal protected network
+
+Internal network can be subnetted if have money to burn
+
+=== Attacking segmented networks
+
+Flat networks are easy to attack (implying success)
+
+. gain initial access on a node
+. ???
+. can talk to any node on the network
+
+Attacking segmented networks is a bit more involved
+
+Attackers can use weak nodes to *pivot* from a subnet into another
+
+* have to attack these pivot nodes before they can use them
+* attackers can leave beacons to exfiltrate data
+** permanent software that acts as exit channel segment
+
+== Purdue Segmentation Model for ICS
+
+Mixing enterprise and control systems in a flat network is dumb
+
+Network plan for more safely connecting production network to enterprise network
+
+Aims to protect ICS from pivot attacks
+
+Should definitely apply this model to hospital networks
+
+Level 4/5 has firewalling/segmentation/whatever before connecting to the internet
+
+Between level 4/5 and level 3 there is a DMZ
+
+* has stuff that flows to and from enterprise and production
+** e.g. inventory info
+* has firewall(s) between DMZ and level 3
+
+Level 3 has production orders (or patient diagnoses/treatments)
+
+* build 12000 v8 engines
+* give patient X 0.05 ml of whatever
+
+Level 1 has interface computers
+
+* computers that control machines
+* don't care about internet
+
+Level 0 has patients instead of machines (for hospital settings)
+
+* Sensors and actuators
+** sensors: things that acquire data
+** actuators: things that act based on data
+
+Very few known malware that attacks operation control machines directly
+
+* Most attack the enterprise/IT network instead
+** causing enough trouble makes defenders more likely to turn it off to avoid blowing up
+** Colonial pipelines case
+* physical checks make it harder to attack them
+* OT networks worth attacking are often custom made
+** collecting information is very complicated and time consuming
+
+== Cloud computing
+
+Clouds have many advantages but also some downsides
+
+=== Micro segmentation
+
+Imagine some node that we want to protect
+
+Making a dedicated network is impractical
+
+Can use virtualization:
+
+* VM1/container1 has the node (i.e. virtualize whole PC)
+** can even containerize each application
+* VM2/container2 has firewall
+* use different OSes 
+
+CAUTION: Virtualization layer adds vulnerabilities (more software = more vulnerabilities), VMs are more secure than containers
+
+Cheap if you own the stuff but even cheaper if using a cloud service
+
+Workloads are the resources and processes required to do something
+
+Need to protect workloads when using public cloud services
+
+* same physical server can have multiple VPSes that do stuff
+* one or more of these could be malicious
+
+=== Beyond perimeter security
+
+Clouds have 2 directions:
+
+* North-South
+** traffic from rest of world into cloud service
+** cloud provider provides protection from these attacks
+* Eeast-West
+** traffic within the cloud VPS/server
+** Jimmy's webserver and Jimmy's database server
+* Protection from malicious east-est traffic is provided by microsegmentation

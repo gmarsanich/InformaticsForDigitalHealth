@@ -1,0 +1,66 @@
+= AI for Digital Health
+:toc:
+:toc-title: Contents
+:nofooter:
+
+== Info
+
+https://elearning.di.unipi.it/enrol/index.php?id=1024
+
+Simon JD Prince Understanding Deep Learning
+
+AI and ML in Health Care and Medical Sciences
+
+=== Assessment
+
+* 1 lab tutorial/week
+* 2 lectures/week
+* weekly homework (*UNGRADED*) probably do them cuz ur a fool
+* monthly lab assignments (*GRADED*)
+* monthly methodological quizzes (*GRADED*)
+
+mathematical formalism will be used in exam (*LEARN IT*)
+
+=== Methodology quizzes
+
+Closed book
+
+10 mins
+
+Stuff like apply this algo to these samples, which model is most adapted
+
+out of 1 (can be fraction (terms and conditions apply))
+
+randomly delivered LOL
+
+max 4 points
+
+== Lab tutorials
+
+Python in jupyter notebook (colab but can locally if u want)
+
+=== Lab assignments
+
+1 every 4 labs
+
+test understanding of concepts
+
+graded 0-3
+
+max 12 points
+
+== Oral exam
+
+if quiz + lab > 8 => go exam
+
+exam is out of 18
+
+final grade -> `min(lab + quiz + oral, 30lode)`
+
+== Optional Final project
+
+10 page report
+
+10/15 slide presentation
+
+code

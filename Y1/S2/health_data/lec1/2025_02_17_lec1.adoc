@@ -1,0 +1,122 @@
+= Security Privacy and Availability of Health Data
+:toc:
+:toc-title: Contents
+:nofooter:
+
+== Overview
+
+* Keeping patient data secure
+
+* Using NIST framework (security, availability etc.)
+** Identify (identify data to protect)
+*** Asset management
+*** Risk assessment
+** Protect (protect data)
+** Detect (find flaws/intrustions)
+** Respond (respond to intrusions)
+** Recover (fix breaches and whatnot)
+** Govern
+
+* Security (persistency, discovering past intrusions etc.)
+* Purdue model: framework for security of industrial control systems
+
+=== Assessment
+
+(its on the couse page add it later)
+
+=== Material
+
+* Security Engineering (Ross Anderson)
+
+* Building Secure and Reliable Systems
+
+* Computer Security and the Internet (Paul C. van Ooorschot)
+
+== Anonymization
+
+Removing names is not enough: with DOB + postal code you can easily retrieve a person's identity (UK voter survey)
+
+== Medical devices
+
+Medical devices are often connected to the Internet -> they are reachable
+
+This is a security risk:
+
+* Hacking into an industrial machine can be dangerous
+* Hacking into a medical device can be dangerous (depending on the device)
+** It can also be dangerous
+* Ransomware attacks are especially dangerous
+** If medical data is encrypted healthcare providers cannot provide care -> someone might die
+** No time to negotiate because people's lives are at stake so they are forced to pay the attacker
+
+
+== Why is this so hard?
+
+. The nature of biomedical data
+.. e.g. you can't compress/corrupt/modify a CT scan -> it could change a diagnosis (bad)
+. Complex organizational roles
+.. Certain wards have access to certain data
+. Patients can decide who can access their information and change their mind at any time
+. Personal preferences
+
+== Cybersecurity is everywhere
+
+* A system is smart if there is some kind of computer+peripherals that can be programmed to do stuff
+* The system needs to receive software updates (security, features, etc.)
+* A remote agent can inject malware into updates and compromise the device
+* A smart TV isn't a TV -> it's a computer that can transmit data (movies, shows, ads, apps, whatever)
+* Imagine a smart pacemaker with a hostile firmware update that kills your patient
+* A smart device is only usable if you are in control
+
+
+== Cybersecurity of a cyberphysical system
+
+* A cyber system whose actions affect the physical world
+** e.g. factory systems that manage what robots/machines do
+** when you steal money from a bank you are essentially modifying a database -> no physical change (kinda)
+** if someone tampers with a radiotherapy machine you can reset it, but someone could have received the wrong dose of radiation (:skull:)
+* IT systems are built on connecting modules that define operations (i.e. services) to be invoked by other parts of the system or by end users
+* Good IT systems have rules (i.e. security policies) that define who/when/where/what can read/write data or perform other actions
+** e.g. doctors in the oncology wing of a hospital only has access to oncology patients or explicitly defined patients
+** In cyberphysical systems these actions can affect the physical world
+* These rules are enforced by specialized modules
+** e.g. theres a patient data database and a doctor data database
+** the module should check if that doctor has access to that patient
+
+=== IT systems and security properties
+
+* Security policies should preserve 3 basic information properties:
+. Confidentiality
+*** Information is readable only to those who have the right to access it
+. Integrity
+** Information is writeable only by those who have the right to write
+. Availability
+*** the system should ensure that those who have the right to execute an operation can do so (within a time window)
+
+1. and 2. tell us that system implementation should respect the specifications defined by the security policy
+
+3 includes a temporal constraint, which is important for security but can cause problems if the system has few resources available
+
+*!!! Satisfiying one of these properties does not imply the others are satisfied !!!*
+
+== Preserve CIA (Confidentialty Integrity Availability) against what?
+
+2 key terms:
+
+. Safety: the system functions despite random events
+
+. Security: the system functions despite deliberate events
+
+* Faults and natural events (power outage/earthquake/flood) -> safety
+* intelligent adversary with a plan -> security
+* data leaks and data loss -> privacy
+
+* Robustness evaluates the system's ability to withstand attacks from an adversary (security)
+** e.g. if you are attacked with a ransomware your system resists adversary encryption
+** Robustness is expensive
+* Resilience evaluates the system's ability to restore itself to normal behavior after an attack
+** preferable to robustness (more cost effective)
+** e.g. if you are attacked with a ransomware you can simply pull out a backup of your data and be done
+* Vulnerabilities = defects in a system that reduce robustness and thus safety/security
+** not all defects are a vulnerability
+** all vulnerabilities are a defect (unless it's a backdoor I guess)

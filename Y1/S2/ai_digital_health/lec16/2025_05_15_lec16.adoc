@@ -1,0 +1,349 @@
+= AIDH - Deep Learning for Graphs
+Giacomo Marsanich
+:toc:
+:toc-title: Contents
+:nofooter:
+:stem: latexmath
+
+== Graph Fundamentals
+
+Context is required to correctly understand information
+
+Graphs are good at representing information in context
+
+Graphs have nodes/vertices and edges/arcs (the connections)
+
+* data stored in nodes for ML/DL
+** can be vectorial
+* if node stem:[v] is a person then data stem:[x_v] is data about that person
+** data can be vectorial, timeseries, whatever you want
+* if 2 nodes are connected then there is some sort of relationship
+** context is given by the arcs going into a node and arcs leaving a node
+** there can be multiple connections between the same nodes depending on the context
+** some relationships are symmetrical (no arrow, only line)
+* since cycles are legal we can't consistently/easily define an ordering in a graph
+
+== Why graphs in DH?
+
+Graphs are everywhere in biomedicine
+
+* human disease networks
+** relationships between different diseases
+* disease gene network
+** represents how genes co regulate in abnormal behaviors (what)
+** genes aren't allowed to change without their neighbors changing as well
+* representing drug molecules
+** structure of molecule determines whether it will work on a given disease
+** if a drug doesn't physically sit on the protein then it's useless
+* mapping active brain areas from fMRIs
+** link brain areas that co activate/activate soon after another
+** used to infer things about the patients
+
+Input graphs can have any topology
+
+=== Predictive tasks
+
+If data is a single big graph (network data) then we can do some of these:
+
+==== Identifiying clusters of like linked nodes
+e.g. patients with similar status/conditions
+
+* labeled nodes are classified based on vectorial representation
+* new (unlabeled) nodes will be placed in the graph near patients with similar conditions
+
+==== Link Prediction
+
+Predicting whether 2 unlinked nodes should be linked
+
+* binary prediction stem:[0, 1] if shouldn't/should be connected
+* uses pairs of unlinked/linked nodes to undersand whether or not other nodes should be
+
+==== Community/module detecton
+
+Clustering nodes into same communities
+
+For example:
+
+* assigning a function to proteins in an interactome
+* predicting whether a drug can cure a disease
+** if you know a drug cures a similar disease then maybe it can cure another disease
+* identifying disease proteins in interactome
+** identifiny misbehaving proteins that cause a disease
+
+=== Predictive Tasks for multiple graphs
+
+If instead we have multiple graphs we can do these things:
+
+* graph classification
+** classifying toxic/nontoxic molecules
+* graph regression
+** given a dataset of molecules with properties mapped between stem:[0, 1] make cluster like molecules idk
+
+== Deep Learning with Graphs
+
+Given some graph input learn a representation in vector form
+
+As we go deeper through a GDNN the size of the context increases
+
+* can't simply look at neighbors and then neighbors of neighbors
+** it grows exponentially
+* there is funny trickery that effectively does the same thing without visiting all nodes
+
+== Deep Graph Networks
+
+Images can be represented as graphs
+
+* a pixel is a node
+* if 2 pixels are close they are connected
+* convolutional filters suddenly become graph memes
+
+[CAUTION]
+====
+* This doesn't really generalize because not all graphs are as regular as images
+* Assumes an ordering (bad)
+====
+
+We can use weight sharing to generalize this
+
+* take 1 filter on 1 region and get matrix
+* use that everywhere
+
+
+=== DGNs complete picture
+
+. Convolve input to get node embeddings
+. Pool data to collapse nodes into a single node
+. Convolve again to extract more abstract features
+. Repeat until satisfied
+. Feed into aggregation
+. Feed into classifier
+. Get output
+
+=== DGN Training
+
+Works by backprop (of course)
+
+Don't use pooling depending on task
+
+=== The Intuition
+
+Output a new graph with the same topology as the input but relabeled with vectors
+
+* generates node representations
+* can add a predictor to solve node specific problems
+** graph representation
+* use backprop and such to get better prediction
+
+=== Neighborhood Aggregation and Layering
+
+Have to be smart about it otherwise superexponential explosion and it's gg
+
+Use *layered aggregation*
+
+==== Layered aggregation/rounds of communication
+
+Acquires info about neighbors from neighbors
+
+[start=0]
+. stem:[\mathcal{L}_0] is the first layer
+.. take some node stem:[k] and give it to an MLP
+.. MLP generates a vector stem:[h_0 (k)]
+. at stem:[\mathcal{L}_1] need to get vector stem:[h_1 (v)]
+.. can't ask current neighbors but can ask previous neighbors
+.. send stem:[h] from stem:[\mathcal{L}_0] into the next
+. stem:[u_2] knows about stem:[u_1] and stem:[v_1] and its neighbors
+
+==== Neighborhood Aggregation
+
+A NN that can handle different input sizes and is sequence agnostic
+
+* need permutation invariant NN
+
+.Simple model
+[stem]
+++++
+\mathbf{h}_v^i = \sigma (\mathbf{W}_l \text{AGG} ( \{\mathbf{h}^{l-1}_{i}: i \in N(v)\}), \widehat{\mathbf{W}}_l \mathbf{h}^{l-1}_v)
+++++
+
+Where:
+
+* stem:[\sigma] is a non-linear activation function
+** classic sigmoid, tanh, ReLU
+* stem:[\mathbf{W}] is a shared weight matrix
+* stem:[\widehat{\mathbf{W}}] is a shared weight matrix
+* stem:[\mathbf{h}] is a hidden state
+* stem:[\text{AGG}] is an aggregation function
+** takes in a set and shits out a single vector
+** can be sum, elementwise max, mean, average, whatever gives a single vector
+* stem:[\{\mathbf{h}^{l-1}_{i}: i \in N(v)\}] is the set of the hidden states of the neighbors of node stem:[v] from the previous layer stem:[l-1]
+** stem:[N(v)] is the set of neighbors of node stem:[v]
+
+Multiply my own stuff with a different set of weights
+
+Use shared weights for the rest
+
+More generally:
+
+.General Graph Convolutional Layer
+[stem]
+++++
+\mathbf{h}^{l+1}_{v} =
+
+\phi^{l+1} (\mathbf{h}^{l}_v,
+
+\Psi (
+
+\{\cancel{v}^{l+1} (\mathbf{h}^{l}_{u}) |
+
+u \in \mathcal{N}_v\}
+))
+++++
+
+The formula describes the update rule for the hidden state of node stem:[v] at layer stem:[l+1] in a graph convolutional network:
+
+.Where:
+* stem:[\Psi] is an aggregation function that operates on neighbor embeddings
+* stem:[\mathbf{h}^{l+1}_{v}] is the hidden state of node stem:[v] at layer stem:[l+1]
+* stem:[\phi^{l+1}] is function that updates the hidden state of node stem:[v] based on its current hidden state and the aggregated information from its neighbors
+* stem:[\mathbf{h}^{l}_v] is the hidden state of node stem:[v] at layer stem:[l]
+* stem:[\{\cancel{v}^{l+1} (\mathbf{h}^{l}_{u}) | u \in \mathcal{N}_v\}] is the set of transformed hidden states of the neighbors of node stem:[v] at layer \( l \)
+** stem:[\cancel{v}^{l+1}] represents a transformation function applied to the hidden state of each neighbor stem:[u] of node stem:[v]
+
+.Interpretation of stem:[\cancel{v}^{l+1}]
+* Transformation Function:
+** stem:[\cancel{v}^{l+1}] is a function that transforms the hidden state stem:[\mathbf{h}^{l}_{u}] of each neighbor stem:[u] of node stem:[v]
+** This transformation could involve applying weights, non-linearities, or other operations to the hidden state
+* Message Passing:
+** The transformed hidden states of the neighbors are aggregated using the function stem:[\Psi]
+** This aggregated information is then used, along with the current hidden state of node stem:[v], to update its hidden state for the next layer
+
+The formula describes how the hidden state of a node stem:[v] is updated in a graph convolutional network. The hidden state is updated based on its current state and the aggregated information from its neighbors, which is transformed using the function stem:[\cancel{v}^{l+1}]. This process allows the network to capture and propagate information across the graph, enabling it to learn complex patterns and dependencies.
+
+TLDR: This is just a message passing model
+
+For every layer:
+
+. ask neighbors to send me past info and I send my info to neighbors
+. aggregate info
+. update information
+
+==== GIN (Graph Isomorphism Network)
+
+Study of GNN expressivity (what)
+
+The choice of aggregation function influences what structures can be recognized
+
+* stem:[\sum] is better for certain tasks
+* stem:[\max] is better for others
+* etc.
+
+.Simple aggregation and concatenation model
+[stem]
+++++
+h^{(k)}_v = \text{MLP}^{(k)}
+
+\Biggr((1 + \epsilon^{(k)} \cdot h_v^{k-1} + \sum_{u \in \mathcal{N}(v)} h_u^{(k-1)}\Biggl)\\
+
+h_G = \text{CONCAT} ( \text{READOUT} \Bigr({h_v^{(k)} | v \in G} \Bigl) | k = 0, 1, \dots, K
+++++
+
+.Where:
+* stem:[h_v^{(k)}] is the hidden state of node stem:[v] at layer stem:[k]
+* stem:[\text{MLP}^{(k)}] transforms the aggregated information at layer stem:[k]
+* stem:[1 + \epsilon^{(k)} \cdot h_v^{k-1}] is the hidden state of node stem:[v] from layer stem:[k-1] scaled by factor stem:[1 + \epsilon^{(k)}]
+** stem:[\epsilon^{(k)}] is a learnable parameter that scales the node's hidden state
+* stem:[\sum_{u \in \mathcal{N}(v)} h_u^{(k-1)}] is the sum of the hidden states of stem:[v]'s neighbors from layer stem:[k-1]
+** represents the aggregation of information from stem:[v]'s local neighborhood
+** stem:[\mathcal{N}(v)] is the set of stem:[v]'s local neighbors
+* stem:[h_G] is a representation of the entire graph
+** stem:[G] is the graph
+* stem:[\text{READOUT}] aggregates the hidden states of all nodes in stem:[G] at layer stem:[k]
+** can be sum, max, mean pooling
+* stem:[\text{CONCAT}] is a concatenation operation that combines the graph representations from all layers stem:[k = 0, 1, \dots, K]
+
+=== Local Graph Attention
+
+Weight sharing doesn't let me differentiate between my neighbors
+
+* bad info and good info are weighted the same
+* use cross attention to get stem:[\alpha] for each neighbor
+* multiply shared weight meme with stem:[\alpha] to filter out the useless contributions
+
+CAUTION: this is local attention because it looks only at local neighbors
+
+.Local Graph Attention Formula
+[stem]
+++++
+\overrightarrow{h'_i} = \sigma \Biggr(\sum_{j \in \mathcal{N}_i} \alpha_{ij} \mathbf{W} \overrightarrow{h}_j   \Biggl)
+++++
+
+.Where:
+* stem:[\overrightarrow{h'_i}] is the updated hidden state of node stem:[i] after applying the attention mechanism
+* stem:[\sigma] is one of the usual nonlinear activation functions (sigmoid, tanh, ReLU, etc.)
+* stem:[\sum_{j \in \mathcal{N}_i}] is the sum of all neighbors stem:[j] of node stem:[i]
+** stem:[\mathcal{N}_i] represents the set of stem:[i]'s neighbors
+* stem:[\alpha_{ij}] is the attention coefficient/weight between node stem:[i] and stem:[j]
+** it encodes the importance/relevance of the information between stem:[i] and stem:[j]
+** computed with cross attention (?)
+* stem:[\mathbf{W}] is the weight matrix that transforms stem:[h_j]
+** learned during training
+* stem:[\overrightarrow{h}_j] is the hidden state of neighbor stem:[j]
+** represents the feature information of neighbor stem:[j] used to update stem:[h_i]
+
+=== Global Graph Attention
+
+Kind of like transformers
+
+Instead of string tokens we use graph nodes
+
+How?
+
+. Transform each node into vector
+. Graph becomes a sequence of nodes
+* transformers don't care about that so all good
+. compute pairwise cross attention of all nodes
+* this removes the structure of the graph
+* use positional encodings stem:[\lambda] to maintain the structure of the graph
+
+.Global Graph Attention Formula
+[stem]
+++++
+\text{Attention}(Q, K, V) = \text{softmax} \Biggr(  \frac{QK^T}{\sqrt{d_k}} \Biggl) V
+++++
+.Where:
+* stem:[Q] is the query matrix derived from hidden states of the nodes stem:[h_{i} \in \mathcal{N}(i)]
+** in this context stem:[Q] can represent the hidden states of nodes that are used to query/gather information from other nodes
+** i.e. useful nodes
+* stem:[K] is the key matrix derived from stem:[h_{i} \in \mathcal{N}(i)]
+** used to match against queries to determine relevance/attention between nodes
+* stem:[V] is the value matrix that represents the actual information/feature aggregated based on the attention scores
+** in this case it represents the information passed through the attention mechanism to update the node representations/embeddings
+* stem:[QK^T] is the dot product of stem:[Q] and stem:[K^{T}] that computes the attention scores
+** measures similarity between queries and keys
+* stem:[\frac{QK^T}{\sqrt{d_k}}] scales the attention scores based on the square root of the dimension of the keys stem:[d_k]
+** stabilizes gradient
+* stem:[\text{softmax}] is applied to the scaled attention scores to get a probability distribution
+** the model can pick the one with the highest probability
+* stem:[\text{Attention}] is obtained by multiplying the softmaxed attention scores with stem:[V]
+** generates weighted sum of values
+** weights are determined by attention scores
+
+== Beyond Graph Prediction
+
+Can we use graphs to generate data?
+
+We can generate graphs in output
+
+* *transductive tasks*
+
+=== Graph Generation
+
+==== Adjacency Based
+
+Represent input graph as matrix (doesn't matter how?) and shit out new graph
+
+==== Structure based
+
+Generates single nodes of graph until end of node tag is generated
+
+Then feed nodes into NN and decide whether they should be connected until end of arc tag is generated

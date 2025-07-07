@@ -1,0 +1,402 @@
+= AIDH - Deep Learning for Sequential Data
+:toc:
+:toc-title: Contents
+:nofooter:
+:stem: latexmath
+
+== Sequences
+
+*Ordered* series of observations of variable length
+
+Sequences cant be understood as atomic
+
+* not independent pieces of information
+* can't break it down into smaller pieces
+* *not independent of one another*
+* timeseries have weird lengths
+** images are n*m so they're easy
+* Models have to understand datasets of different topology
+* data *has* to be understood in order
+
+.Inductive Bias
+
+Element at time stem:[t] may depend only on its recent past and itself
+
+CAUTION: The NN will not know that measurements have been missed which may or may not be a problem (very relevant for heart rate for example). Add time as input to fix or restructure (downsample, supersample, whatever) data to account for missed measurements
+
+=== Kinds of Sequential Data
+
+If ordering is given by time then data becomes *timeseries*
+
+An observation stem:[x_t] in timeseries can be:
+
+* a single value (heartrate)
+* a vector (EKG/EEG)
+** if this vector also has time then *multivariate time series*
+* a matrix (FMRI, videos??)
+* text
+** natural language
+** genomic sequences
+** amino acid sequences
+
+== Physiological Time Series
+
+Collecting timeseries data from sensors attached to the body
+
+Multiple sensors measure different things each with their different rates
+
+Noise is also a problem
+
+=== Challenging Nature of PHYSTS
+
+Understanding when a variable signal is normal vs not is extremely hard
+
+Clinician moments cause missing data that cause the model to be confused
+
+These are called *interventions* and you have to be able to tell whether data is changing because patient is changing or external interventions/confounding factors
+
+Some things affect data more than others
+
+* blood tests
+* injections
+
+Deal with these using causality info from before
+
+WARNING: DO NOT NORMALIZE TS DATA FOR THE LOVE OF GOD
+
+=== Where to find timeseries?
+
+Electronic Health Records are a good source of timeseries data
+
+Integrated log of patient information
+
+* multimodal
+* integrated
+
+Example: MIMIC III/IV
+
+* family of EHR datasets
+
+Subsceptible to gradient vanish
+
+== Types of Sequential ML Tasks
+
+=== Sequence Prediction
+
+The entire sequence stem:[x] is associated with a single target stem:[y]
+
+* EKG
+* EEG
+* predict something stem:[y] at the end
+** odds of readmittance to ICU
+
+=== Element By Element Prediction
+
+Given a sequence stem:[x] generate a prediction stem:[y^t] for each element
+
+* likelihood that patient is having a stroke at time stem:[t]
+
+Final prediction stem:[T] requires knowing previous predictions
+
+=== Sequence to Sequence
+
+Read input sequence stem:[x] and generate (transduce) output sequence stem:[y]
+
+stem:[x] and stem:[y] can be very different in length
+
+=== Dealing With Sequences
+
+Need to capture observation context
+
+* shove previous observations and current into vector (context vector)
+* use to predict
+* encodes observations up to sample stem:[n-1]
+** independent of input vector size?
+
+Encode fixed length vector with previously seen data
+
+== RNN Background
+
+=== Intuiton
+
+Need NN to work with data that changes size
+
+* need same NN to work with `seq(len = 10)` and `seq(len = 15)`
+
+Use *weight sharing* (like a perceptron layer?)
+
+* 1 instance for each input layer that receives in input its current value and observation
+* problem: they are all independent
+* activation stem:[\mathbf{h}_t = tanh(\mathbf{W_{in}x_t})] does not take into account previous events
+* instead of only using output of previous layer to compute current layer, we can use inputs of previous layer as well
+
+Context is given from previous neurons:
+
+.Context activation function
+
+[stem]
+++++
+\mathbf{h}_t = tanh(\mathbf{W_{in}x_t} + \mathbf{W_{h}h_{t-1}})
+++++
+
+Where:
+
+* stem:[h_{t-1}] information from previous time step
+
+=== Interpreting stem:[h_{t-1}] state
+
+Encodes the information from the previous time step
+
+Summarizes relevant information up to that point
+
+* acts as memory/state
+
+Can be expressed recursively (uh oh)
+
+* Instead of having a copy of each input with its own h output it is rolled and then unrolled
+
+Folding involves taking sequences of different lengths and shoving them into a fixed size box
+
+.Folding/Rolling
+[source,python]
+----
+# Example sequences
+seq1 = [164, 685, 833, 24, 7, 8, 9, 568, 8, 2, 245]
+seq2 = [114, 5, 8, 424]
+
+# Encode sequences to fixed-length encodings
+h_t1 = fold_sequence(seq1)
+h_t2 = fold_sequence(seq2)
+
+# Check the length of the fixed-length encodings
+print(len(h_t1))  # Output: 5
+print(len(h_t2))  # Output: 5
+----
+
+=== RNN Flow
+
+. Combine current element of the sequence stem:[x_t] with input weights stem:[\mathbf{W}]
+. Combine state stem:[\mathbf{h}_{t-1}] with recurrent weights stem:[\mathbf{W}] (?)
+. Sum results and apply activation function
+* for RNN typically stem:[tanh]
+. Pass the result to next layer
+* For the first element stem:[\mathbf{x}_1] state stem:[\mathbf{h}_0] is a vector of zeros
+* this is because there is no previous state
+
+=== Training RNN
+
+Instead of simply unrolling we inject error at prediction
+
+Weights are shared across timesteps
+
+Gradient of loss at each time step is computed and summed
+
+* Full loss is given by sum of loss at all timesteps
+
+Having to backpropagate all the way to T1 always because all errors count
+
+* gradient vanish/explosion are a problem
+* *truncate* backprop to avoid
+* run backprop in chunks
+
+=== Learning To Encode Input History
+
+Hidden state stem:[h_t] summarizes information on the history of the input up to time stem:[t]
+
+As the distance grows this becomes more difficult
+
+== Vanilla RNN
+
+Each rolled node stem:[x_t \rightarrow fw \rightarrow h_t] has summation and nonlinearity
+
+== Gated RNNs
+
+Decide what to remember and what to forget
+
+Vanilla RNNs eventually will forget
+
+=== LSTM
+
+First model that used gates for this purpose
+
+Introduces memory stem:[c] that holds a representation of elements that the current output/state might depend on
+
+Combine c from past state with current x (input)
+
+c grows to extreme size because it remembers everything
+
+In vanilla RNNs c and h are the same
+
+In LSTM the network decides if and how to update the memory
+
+* update is managed by gates
+* gates learn how to update
+
+.Types of gates
+
+[start=0]
+. Forget
+* which parts of c to forget
+. Update
+* which parts of c to update
+. Output
+* which parts of c to use for computing the output and current state
+
+Gate has values stem:[\in \{0, 1\}]
+
+Basically a sigmoidal neuron (*logistic sigmoid*)
+
+=== LSTM Design
+
+.Input Gate
+[stem]
+++++
+\mathbf{I}_t = \sigma (\mathbf{W}_{ih} \mathbf{h}_{t-1} + \mathbf{W}_{l in} \mathbf{x}_t + \mathbf{b}_I)
+++++
+
+.Forget gate
+[stem]
+++++
+F_t(x_t, h_{t-1})
+++++
+
+.Output gate
+[stem]
+++++
+O_t (x_t, h_t - 1)
+++++
+
+More formal equations (might be useful idk)
+
+.1 - Compute activation of input and forget gates
+[stem]
+++++
+\mathbf{I}_t = \sigma (\mathbf{W}_{Ih} \mathbf{h}_{t-1} + \mathbf{W}_{Iin} \mathbf{x}_t + \mathbf{b}_I)
+
+\\
+
+\mathbf{F}_t = \sigma (\mathbf{W}_{Fh} \mathbf{h}_{t-1} + \mathbf{W}_{Fin} \mathbf{x}_t + \mathbf{b}_F)
+++++
+
+Where:
+
+* stem:[\mathbf{W}_{Ih}] is the weight matrix for the hidden state input to the input gate
+* stem:[\mathbf{W}_{Iin}] is the weight matrix for the current input to the input gate
+* stem:[\mathbf{b}_I] is the bias vector for the input gate
+* stem:[\mathbf{W}_{Fh}] is the weight matrix for the hidden state input to the forget gate
+* stem:[\mathbf{W}_{Fin}] is the weight matrix for the current input to the forget gate
+* stem:[\mathbf{b}_F] is the bias vector for the forget gate
+* stem:[\sigma] is the sigmoid activation function
+
+
+.2 - Compute potential and internal state
+[stem]
+++++
+\mathbf{g}_t = \tanh (\mathbf{W}_{h} \mathbf{h}_{t-1} + \mathbf{W}_{in} \mathbf{x}_t + \mathbf{b}_h)
+
+\\
+
+\mathbf{c}_t = \mathbf{F}_t \bigodot \mathbf{c}_{t-1} + \mathbf{I}_t \bigodot \mathbf{g}_t
+++++
+
+Where:
+
+* stem:[\mathbf{W}_h] is the weight matrix for the hidden state input to the candidate state
+* stem:[\mathbf{W}_in] is the weight matrix for the current input to the candidate state
+* stem:[\mathbf{b}_h] is the bias vector for the candidate state
+* stem:[\mathbf{g}_t] is the candiate/potential state
+* stem:[\mathbf{I}_t] is the input state
+* stem:[\bigodot] represents element wise multiplication (Hadamard product)
+* stem:[\mathbf{c}_{t-1}] is the previous state cell
+* stem:[\tanh] is the hyperbolic tangent activation function
+
+.3 - Compute output gate and output state
+[stem]
+++++
+\mathbf{O}_t = \sigma (\mathbf{W}_{Oh} \mathbf{h}_{t-1} + \mathbf{W}_{Oin} \mathbf{x}_t + \mathbf{b}_{O})
+
+\\
+
+\mathbf{h}_t = \mathbf{O}_t \bigodot \tanh (\mathbf{c}_t)
+++++
+
+Where:
+
+* stem:[\mathbf{W}_{Oh}] is the weight matrix for the hidden state input to the output gate
+* stem:[\mathbf{W}_{Oin}] is the weight matrix for the current input to the output gate
+* stem:[\mathbf{b}_O] is the bias vector for the output gate
+
+=== Deep LSTM
+
+Need multiple recurrent layers to extract more abstract features
+
+e.g. NLP
+
+. Layer 1 will learn valid character sequences
+. Layer 2 will learn syllables from character sequences
+. Layer 3 will learn words from syllables
+
+=== Bidirectional LSTM
+
+If a sequence is valid in both directions you need a specialized architecture
+
+Combine both directions of a sequence before computing prediction
+
+* like genomic sequences
+** need context -> what sequences is seq t between?
+
+CAUTION: Only usable if whole sequence is available
+
+== Gated Recurrent Unit
+
+If need less than 3 gates you can use this
+
+2 gates:
+
+. Update (stem:[z_t])
+* Decides how much of the previous hidden state to keep around and how much of the new hidden state to add
+. Reset (stem:[r_t])
+* Interacts with output state directly
+* Determines how much of the previous hidden state to ignore, allowing the model to "reset" its memory
+
+More formally:
+
+.Update gate
+[stem]
+++++
+\mathbf{z}_t = \sigma(\mathbf{W}_{zh} \mathbf{h}_{t-1} + \mathbf{W}_{zin} \mathbf{x}_t + \mathbf{b}_z)
+++++
+
+.Reset gate
+[stem]
+++++
+\mathbf{r}_t = \sigma(\mathbf{W}_{rh} \mathbf{h}_{t-1} + \mathbf{W}_{rin} \mathbf{x}_t + \mathbf{b}_r)
+++++
+
+.Final Hidden state update
+[stem]
+++++
+\mathbf{h}_t = (1 - \mathbf{z}_t) \bigodot \mathbf{h}_{t-1} + \mathbf{z}_t \bigodot \mathbf{h}_t
+++++
+
+.Candidate hidden state computation
+[stem]
+++++
+\mathbf{h}_t = \tanh (\mathbf{W}_{hh} (\mathbf{r}_t \bigodot \mathbf{h}_{t-1}) + \mathbf{W}_{hin} \mathbf{x}_t + \mathbf{b}_h)
+++++
+
+Where:
+
+* stem:[\mathbf{r}_t]: The reset gate, which determines how much of the previous hidden state stem:[\mathbf{h}_{t−1}] to ignore.
+* stem:[\mathbf{W}_{hh}]: Weight matrix applied to the modulated previous hidden state.
+* stem:[\mathbf{W}_{hin​}]: Weight matrix applied to the current input stem:[\mathbf{x}_t] ​.
+* stem:[\mathbf{b}_h​]: Bias vector.
+* stem:[\tanh⁡]: Hyperbolic tangent activation function, which introduces non-linearity and ensures the candidate state values are between -1 and 1.
+
+== Convolutional Recurrent Networks
+
+Can make a 1 dimensional filter to work on timeseries
+
+Slide in 1 dimension
+
+Window size and slide can be changed (model selection)

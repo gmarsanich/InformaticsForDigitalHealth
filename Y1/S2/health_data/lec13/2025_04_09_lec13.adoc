@@ -1,0 +1,244 @@
+= Sec health - Trusted Zones
+:toc:
+:toc-title: Contents
+:nofooter:
+:stem: latexmath
+
+Hardware components for security
+
+== IOT - SOC
+
+Many components on a single chip
+
+Board has to be small and energy efficient
+
+Almost always has a chip/trace/pin (JTAG) for hardware/software debugging
+
+If hardware debug exists there is debug bus that inspects components
+
+Best practice is to completely disable debug pin/chip before production
+
+* debugging tools can be a great attack surface
+* burn/short pin
+* desolder chip
+* whatever juts get rid of it
+
+== ARM TrustZone
+
+ARM uses a hardware architecture to provide a security framework for SOC devices called TrustZone
+
+Splits world into 2 parts (like user/root):
+
+. Secure world - really needs to be secure
+* critical hardware/software
+. Normal world - can afford it not being too secure
+* everything else
+
+Hardware ensures separation
+
+Would be easy to implement with 2 CPUs but money exists
+
+Have to find another way to guarantee separation while using the same CPU
+
+TrustZone assigns time slots to secure/insecure operations
+
+* availability problem
+
+However if secure operations leave values in the CPU cache/registers insecure operations can access them
+
+* integrity problem
+
+=== System Bus 
+
+Insecure devices have bits to mark them as insecure (e.g. 10xxxxxxx)
+
+Secure devices also use bits to mark them as secure (e.g. 01xxxxxxx)
+
+Devices with `bits[0] == 1` cannot interact with devices with `bits[0] == 0`
+
+This is implemented at the hardware level
+
+They can only meet in the CPU
+
+== System Architecture
+
+=== Processor
+
+Interface between non-secure and secure worlds
+
+* worlds can have subworlds
+** e.g. root space, user space
+
+1 physical processor with 2 vitual processors
+
+* they live on the same silicon
+* they use different cores
+
+You have to be able to switch between them else it's useless
+
+* called *monitor mode*
+* checks for information leaks during core switch
+* takes care of *context switching*
+
+=== Monitor
+
+Processor enters monitor mode when an exception is raised
+
+* context of exception are given to monitor 
+* they determine what can be done with the data in the registers
+
+Works like this:
+
+. takes insecure processor registers
+. saves them in memory
+. writes necessary stuff into secure (and vice versa)
+
+Use as little power and memory as possible
+
+Monitor software should not allow interrupts until switching is done
+
+=== Memory Subsystems
+
+Each virtual processor has its own MMU
+
+* physically they are in the same slot
+* logically they are different
+* TLB entries are tagged with secure/insecure
+
+Secure world can read insecure world memory
+
+* necessary for secure operations on insecure data
+** encryption
+** decryption
+** fuckin whatever
+
+Should empty cache since leftover secure data can potentially be read by insecure processes
+
+* caches are pretty large these days
+* emptying cache takes a long time
+
+=== Interrupts
+
+2 interruption bits:
+
+. secure: FIQ
+. insecure: IRQ
+
+Interrupts are handled in the current core if interrupt code is correct
+
+Else force context switch idk
+
+=== Debug
+
+Low level debugging (e.g. firmware level) happens in secure world
+
+* debugging can be dangerous
+
+== Intel SGX
+
+Expansion of instruction set architecture
+
+CPU instruction sets extended with security things
+
+* 18 new instructions
+** 15 supervisor instructions
+** 5 user instructions
+
+Aimed at defending from malicious cloud providers
+
+Also used with encryption/*confidential computing*
+
+* importand data is always encrypted until it goes from memory to CPU cache
+* it is stored unencrypted only in CPU cache
+* even if provider memdumps your VM/VPS they can't really do much
+
+=== SGX Enclaves
+
+Partly software defined
+
+Encrypted isolated region of memory - application defined (e.g. Firefox has an enclave, Spotify has another, etc)
+
+* can have data
+* can have instructions
+* most things can go in there
+* uses MEE (Memory Encryption Engine) to decrypt/encrypt data
+** physical chip on CPU
+** depends on data flow
+* prevents dumps
+
+Has manipulation checks
+
+* overwrite flags
+* correction checks
+
+Enclave contents can only be accessed by:
+
+* itself
+* other enclaves
+** E0 has data -> can read E1's data but not E1's instruction
+** E2 has instructions -> can read E3's instructions but not E3's data
+
+==== Enclave Memory
+
+Enclave memory lives in PRM and it's protected
+
+* *Enclave Protected Cache* (EPC)
+* applications cannot read/write directly
+* DMA is blocked
+* requests have to go through the EMM
+
+Vulnerable to boot time chicanery
+
+* on system boot critical data/instructions are added to enclaves
+* if data/instructions are malicious then you have malware in an enclave and glhf
+
+Encrypt data in insecure world before writing into enclave
+
+==== Enclave measurements
+
+Enclave code/data structures have to be *measured*
+
+* checking for duplicates/identifying stuff
+* typically hashing (SHA-256) the information
+** e.g. `hash(code) = my_hash`
+** if `hash(code) == hash(other_code)` then `code == other_code` (unless hash collision but very unlikely)
+
+An enclave itself can be measured to check if contents have been manipulated in some way
+
+* if the hash is the same then very likely correct enclave
+
+Enclaves do *_not_* tell you that code/data is bad/is vulnerable
+
+* it's simply confidential
+
+Checking if code is running in enclave requires an *attestation* to verify that everything is behaving as expected
+
+.Local Attestation
+* checks new measurement against known measurement (hash once again)
+** hash is computed and keyed using key given by CPU
+* either locally on same CPU or on remote machine
+
+.Remote Attestation
+* needs new key to identify public key node
+* verify enclave on that node
+* keys are etched into CPU during fab
+* Intel owns key database
+
+=== SGX Limitations
+
+Memory required by enclave needs to be defined in advance
+
+* not always feasible for all applications
+* dynamic allocation in v2
+
+No real security guarantees
+
+* vulnerabilities within enclave can be exploited
+* open to side channel attacks
+
+Performance overhead
+
+* enclave entry/exit are expensive
+** need to encrypt/decrypt
+* paging is expensive
+

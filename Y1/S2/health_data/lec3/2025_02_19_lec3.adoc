@@ -1,0 +1,159 @@
+= Security Privacy and Availability of Data
+:toc:
+:toc-title: Contents
+:nofooter:
+
+== Access Control
+
+
+=== Discretionary Access Control
+
+* Each object has an owner
+** the whole IT system
+** the business process that uses the object
+
+the owner is entirely free to do whatever
+
+=== Mandatory Access Control
+
+* objects/subjects are partitioned into classes
+* they are grouped by (partial order ??):
+** object importance relative to 1/2 parts of CIA
+** subject trustworthiness
+* rights are granted based on some property related to object/subject level
+** if object order is comparable then the operation may or may not be invoked
+** if not comparable cant do shit 
+* there is someone who has a final say
+** if the policy defines a hard cutoff owner cant do shit
+
+== MAC Information Flow
+
+=== MAC Information Flow 1
+
+* Typically used for confidentiality
+* Class indicates how secret the information is
+** The higher object is in the class -> the more important it is to keep reserved
+** If subject is high in the class -> more trustworthy
+* *TRUSTWORTHINESS IS KING*
+
+* If object = file:
+** Operations = {read/write/append}
+** read (non destructive): see
+** write (potentially destructive): modify
+** append (non destructive): update
+* A subject in class C may be entitled to:
+** read any file with `class < = C`
+** Write any file with `class == C`
+** Append a record to a file to a `class > C`
+** *Only within its own class*
+** Secret 1 can operate on Reserved 1/Confidential 1
+** To operate on class 2 they need to get to the top of the graph and move down 
+*** e.g. a military base has a chief
+*** chief has a secretary who books appointments and such
+*** if we don't let secretary book appointments -> low levels can't communicate with high levels 
+* This is done to avoid copying critical information to low security classes and then leaked (no write down)
+* *Information must only flow uphill*
+
+==== No write down
+
+* Bell-Padula
+
+* Prevents downhill information leak
+
+* Protects confidentiality of information
+
+* Information level at high levels increases (bad)
+** the level of information cannot decrease
+** updates cannot occur on low levels
+*** e.g. general's secretary send email with appointment info -> email becomes general level which is a bit silly
+** information is periodically declassified to reduce accumulation
+** declassifiying the wrong information provides an excellent attack surface (Snowden)
+*** they will try to get declassification rights to leak information
+
+=== MAC Information Flow 2
+
+* Typically used for Integrity
+
+* Subject level determines reliaility -> i.e. does the correct things
+** e.g. a program that does what we need correctly/an employee we trust to have his shit together
+* *RELIABILITY IS KING*
+
+* Object class indicates importance of the things within that object
+** e.g. var/struct where we keep parameters for a medical device -> we want it to be correct else bad
+*** the higher the level -> the more important the var/struct is for the system to work correctly
+
+* A subject in class C can:
+** Write any file with `class < = C`
+** Read any file with `class  = > C`
+*** we trust C -> C+1 is more trustworthy than C so we don't let C write to C+1's stuff
+*** e.g. operator cant decide when to open the valve but he can read the temperature and do things
+
+* MAC 1 and MAC 2 can't easily coexist
+** need 2 levels for each object/subject
+*** the owner of an object has to decide whether they value Integrity over Confidentialty or vice versa
+*** what a given object can do varies depending on the owner's choices
+
+==== No write up
+
+* Biba
+
+* Low integrity subjects can't update high integrity objects
+* Integrity > confidentiality
+* You can know certain info but you can't do anything with it unless explicitly allowed
+** bank account password -> important to keep safe (confidentiality)
+** nuclear power plant shutdown temperature is picked by someone who knows what they're doing -> doesn't matter if password is known it just needs to be value
+
+=== Watermark
+
+MAC policies are often dynamic:
+
+* Subject S logs in (public level)
+* S reads/writes info -> this info is public
+* S accesses reserved 1 -> S can no longer write to public level files
+* You can only increase your level
+** Unless you log out and start over
+
+== Policy and Regulation
+
+* Hard to find pure DAC/MAC systems
+* There are rules that constrain what system owners can do
+** Privacy regulation (GDPR)
+*** In the USA there is no right to protect personal information
+*** e.g. EU -> I decide who knows my home address
+*** USA -> if someone figures out where I live that information belongs to them
+*** You have to prove that you need certain data before you can store and use it
+** Pure DAC is thus impossible (owner doesn't have total freedom)
+** The less info there is -> the less they can steal
+* Critical infrastructure
+** has to satisfy regulations on the robustness of the infrastructure to prevent intrustions
+** Information on intrusions should be shared
+* Financial entities
+** have to satisfy regulations on resilience
+
+=== Standards & Best Practices
+
+There is a hierarchy:
+
+. Laws and regulations
+. Standards
+* ISO 27001 defines who is and isn't secure (best effort)
+. Best practices
+* Sets of rules agreed upon by members of a particular sector
+** kind of iffy best not to rely on them unless no other choice
+
+== Trusted Computing Base
+
+* TCB includes any modules involved in enforcing the security policy
+* Not interested in functional errors, only security
+** Unless functional errors lead to security problems
+* TCB modules are highly critical
+** any bug could be (and almost always is) a vulnerability
+* Systems need to trust all TCB components
+
+=== TCB size
+
+* System security is inversely proportional to TCB size
+** odds of errors/mistakes are lower
+** odds of exploitation are lower
+** KISS principle
+* you need to know how the TCB works otherwise what are you doing

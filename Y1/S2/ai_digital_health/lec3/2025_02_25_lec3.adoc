@@ -1,0 +1,418 @@
+= AI for Digital Health
+:toc:
+:toc-title: Contents
+:nofooter:
+:stem: latexmath
+:stylesheet: styles.css
+
+== ML fundamentals
+
+Infer knowledge from data
+
+Key components:
+
+* Data
+* Model
+* Learning algorithm
+
+=== ML Lifecycle
+
+. Task Characterization
+* characterized the problem to be solved by ML
+. Learning data
+* Relevant samples to train the model
+. Models and algorithm
+* train models on available data
+. Trained model
+* Find the model that generalizes best
+
+== Learning Paradigms
+
+=== Supervised learning
+
+Function approximation
+
+* Find a function that connects inputs X to outputs Y
+** e.g. diagnose disease given patient data
+
+Common tasks: Classification & Regression
+
+Learning from labeled data to make predictions about categorical or continuous outcomes
+
+* If Y is categorical -> classification
+* If Y is continuous -> regression
+
+=== Unsupervised learning
+
+Inferring regularities/statistics/patterns/strong knowledge about the data
+
+* e.g. anomaly detection, signaling anomalous physiological measurements
+
+Common algorithms:
+
+* k-means clustering
+* hierarchical clustering
+* DBSCAN
+
+Tasks:
+
+* Dimensionality reduction
+** simplifying data representation
+*** shrinking 1000000 row vector into 100 rows
+
+Algos:
+
+* PCA
+
+=== Reinforcement learning
+
+Learning a policy or complex behavior while only observing partial responses from its interaction with the environment
+
+== Data vs Learning Models
+
+Nature of data influences model choice and efficacy
+
+Types:
+
+* Categorical
+** Data falls into boxes
+* Continuous
+** Height, blood sugar
+* Ordinal
+** Likert scale
+* Mixed
+* Relational
+** Don't think features are independent of one another
+
+Separability:
+
+* How easy it is to classify/cluster data points
+
+Distribution:
+
+* How the data is distributed affects something idk
+
+=== Which data for which tasks?
+
+Unstructured data
+
+* tabular data 
+** Features don't really relate to one another
+
+Structured data: images, sequences 
+
+* There are regularities (e.g. areas of same/similar color, generally pixels near each other are the same/similar)
+* Features are related to one another
+
+Vectors (NOT tabular)
+
+* Numerical arrays representing features
+* e.g. spectral EEG features, word embeddings
+** Words with similar meanings will be close to each other in vector space
+
+Images
+
+* Grids of pixel intensity as matrices/tensors
+* Generally 3D matrix for RGB
+** Healthcare images are a bit more complicated
+
+The type of data influences the choice of learning model
+
+Sequential data
+
+* Ordered data with some logical order
+* Element at time t may depend on previous elements
+
+Graphs (no not bar graphs)
+
+* Represent complex relationships in compound data
+** if 2 nodes are connected then there is some dependency between the nodes
+** e.g. drug interactions
+
+*Inductive bias* = "the set of assumptions or biases that a learning algorithm employs to make predictions on unseen data based on its training data" 
+
+or crafting model in such a way that it takes into consideration what I know about the task and data
+
+Examples:
+
+* CNNs have high inductive bias for images
+* Transfomers have low inductive bias
+
+The lower inductive bias -> the more data you need
+
+== Basics of Statistical Learning Theory
+
+A single instance/observation stem:[x] = sample
+
+* e.g vector stem:[x = (x_1, \dots, x_k)]
+
+Dataset = collection of samples stem:[D]
+
+Features: Attributes or variables describing each sample (e.g. height, weight, blood pressure)
+
+Target: Desired ouctomes for supervised learning (has disease/doesn't have disease, is in group stem:[G], aka stem:[y] or stem:[Y])
+
+== ML models
+
+Ml models are parametric functions -> stem:[h(X) \Rightarrow Y]
+
+But also stem:[h_{\theta, \alpha} (X) \Rightarrow Y]
+
+Where: 
+
+* stem:[\alpha] are hyperparameters
+** Parameters I can fiddle around with based on the data (oracular knowledge, search algorithm)
+* stem:[\theta] are parameters learned by the model 
+** Contain model knowledge
+** e.g. coefficients of linear regression, NN weights
+
+Traning changes stem:[\theta] are adapted to the training dataset stem:[D] by optimizing a cost/error function
+stem:[E(h_{\theta, \alpha} | D)]
+
+=== Empirical Error (supervised learning)
+
+We want to minimize theoretical error (data that I get tomorrow)
+
+Empirical error should be a close estimation of theoretical error based on current data
+
+=== Generalization
+
+Model stem:[h_\theta] trained on dataset stem:[D] should generalize its output well to dataset stem:[D']
+
+Transfer its performance on finite data to new samples (potentially infinite data)
+
+Statistical learning theory studies the conditions under which we can generalize starting from a finite sample
+
+Empirical error should be approx equal to the integral of the loss function (minimize risk)
+
+=== Empirical risk & model complexity
+
+If model is too simple:
+
+* Underfit, cannot learn the right function
+** Linear regressions (fitting line) -> complexity of 2 for binary data, generally too simple
+
+If model is too complex:
+
+* Overfit
+* Memorized dataset but won't generalize
+
+Good models offer a compromise between complexity and error
+
+=== Bias/variance
+
+Bias: distance between learned function and target function
+
+Variance: how dataset dependent is my learned function
+
+* dependent on model complexity
+
+You want low bias and just the right amount of variance
+
+==== Measuring tradeoff
+
+Take dataset stem:[D] and split it into 3:
+
+* Training set -> to learn parameter theta
+* Validation set -> to measure underfit/overfit and find hyperparameters alpha
+* Test set -> used to reliably estimate generalization
+
+=== Parameters vs hyperparameters
+
+==== Parameters stem:[\theta]
+
+Learned automatically from data through training
+
+Contain model knowledge (data patterns)
+
+Example:
+
+* Linear regression coefficients
+* Neural network weights 
+
+==== Hyperparameters stem:[\alpha]
+
+Can be set manually or automatically
+
+Tuned during model selection to optimize generalization
+
+Example:
+
+* k (number of neighbors) in kNN
+* Neural network learning rates
+* Depth in decision trees
+
+
+== Inductive bias and model selection 
+
+Hyperparameters are not the only aspect to consider
+
+Preprocessing and architectural designs influence:
+
+* The type of tasks it can solve
+* The type of data it can handle
+* The quality of the generalization of its results
+
+
+=== Regularization
+
+Allows us to use powerful models without overfitting
+
+* Encourages model to use the fewest parameters possible to avoid overfitting
+* Especially useful in neural networks
+
+You can add constraints to the model
+
+Implemented through mechanisms to control model complexity
+
+stem:[E(h_\theta | D_{tr}) = \frac{1}{N}L(h_\theta(x^i), y^i) + \lambda P(h_{\theta, \alpha})]
+
+Term stem:[P(h_{\theta, a})] applies a penalty stem:[h_{\theta, a}] if too complex
+
+stem:[\lambda] regulates the balance between penalization and new training error 
+(stem:[\lambda \in \alpha])
+
+Pick stem:[\lambda] based on validation errors
+
+== Managing model selection
+
+=== Splitting datasets
+
+Split the dataset into training, validation, test with holdout method
+
+* Selects (at random without replacement) which samples end up in all 3 bins
+* Dream split is 33% each
+** Requires a lot (A LOT) of data
+** Use magic proportions (50/25/25, 40/30/30)
+** Computationally cheap but not the best from ML perspective
+
+WARNING: you need to keep the same proportions in the subsets as in the dataset unless sample is equispaced w/r to population
+
+This includes classes and input features (gender, age, height, whatever)
+
+This is called stratification (stratified sampling (we did it in the lab))
+
+=== Grid Hyperparameter Search
+
+* 2 hyperparameter sets
+** `a1=[1,2,3], a2=[4, 5, 6]`
+* Becomes slow when many many hyperparameters
+** Use bayesian optimization functions (implemented in many libraries)
+
+. Create a grid of hyperparameter pairs
+. Instantiate as many models as elements in the grid
+. Train each model on each pair
+. Select the best model
+. Retrain the model on combination of train+validation data
+. Check genreralization on test
+
+=== k-fold cross-validation
+
+Repeating training+validating+testing
+
+Without breaking the golden rule of separation
+
+Gives error and general estimation of error
+
+Certain combination of alpha has certain mean error
+
+* Better than single error number
+
+Better than training and validating only once
+
+For k in ks:
+
+. Split the dataset into k folds (after moving the test set out)
+. Take 1/k of the development set (training+validation) from random parts of the dataset
+. Train on gray folds and validate on the blu folde (the fraction)
+. Take mean of results
+. Run test model on hold out
+
+3, 5, 10 are magic k fold numbers
+
+
+=== leave one out cross validation
+
+Leave only one observation for validation (validation set has size 1)
+
+K fold with k = 1
+
+Allows you to use as much data for training as possible
+
+* Useful for small sample sizes
+
+
+CAUTION: Very expensive (takes a LONG time)
+
+=== Nested Cross Validation
+
+K-fold original dataset into test (blue) + development set (orange)
+
+Inside each fold: 
+
+* Take the development set
+** Take alpha combinations
+** Run model selection
+* When you have the best model run it on the test set
+
+CAUTION: Crazy expensive but the most robust way of finding models
+
+CAUTION: Use only when there are few features
+
+== Measuring predictive performance
+
+The loss functioon is not enough to validate real world performance
+
+Use 
+
+* Accuracy
+* Recall
+* F1
+* ROC
+* AUC
+* False positive/true positive rate
+
+=== Confusion matrix
+
+Shows what the model predicts vs true classes
+
+* Diagonal shows amount of correct predictions
+* Works for any number of classes
+
+=== Precision 
+
+Proportion of true positive/all predictions
+
+Reduces false positives 
+Reduces unnecessary treatments or tests
+
+=== Recall
+
+Proportion of true positive/actual positive
+
+Ensures most diseased patients are identified
+
+=== F1 Metric
+
+Harmonic mean of precision and recall for binary classification
+
+Useful when imbalanced classes
+
+Multiclass F1 has microaverage and macroaverage
+
+=== Specificity 
+
+Proportion of true negative/all predictions
+
+=== AUC-ROC curve
+
+Used to tune the cutoff value for each class
+
+if stem:[X \gt 0.5], then it's in class A 
+
+if stem:[X \leq 0.5] then it's in class B
+
+good AUC-ROC is stem:[\simeq 1]
+
+* if stem:[\simeq 0.5] then its not really better than a coinflip
+* if its stem:[\simeq 0] then just flip the classes (but also bad)

@@ -1,0 +1,331 @@
+= Security Privacy and Availability of Health Data
+:toc:
+:toc-title: Contents
+:nofooter:
+:stylesheet: styles.css
+
+
+== Discovering Assets & Vulnerabilities
+
+These processes cannot be run once
+
+Systems change and new vulnerabilites are published every day (~20 a day)
+
+Sysadmins need to perform vulnerability mapping scans every so often
+
+* the more risk averse -> the more often you should scan
+* the less risk averse -> the less often you should scan
+
+Or if:
+
+* the system has changed substantially
+* some new dangerous vulnerability has been discovered
+
+Healthcare systems should be scanned about once a month (extremely critical infrastructure)
+
+4-5 times a year for non critical systems
+
+Companies cannot eliminate all vulnerabilities from their system
+
+* they have to pick which to eliminate and when
+* generally 10% at a time (lmao??)
+* *vulnerability managing*
+
+Important to distinguish
+
+* Local vulnerabilities
+* Emerging vulnerabilities
+
+Also important to distinguish
+
+* Standard modules (off the shelf software (hardware?))
+** If one has a vulnerability -> all others have the same vulnerability
+** All users are interested in vulnerabilities
+* Specialized modules
+** Modules that are only in a particular system
+** If there's a vulnerability in my module then it's my problem
+** E.g. using a standard webserver framework to store/display custom dynamic pages
+*** if theres a vulnerability in my custom dynamic page then it's my problem
+
+Defenders should focus on specialized modules
+
+** generally safe to assume there are enough eyes on standard modules
+
+Attackers and defenders know/learn what components are part of the system and then finds public vulnerabilities
+
+Attackers only need some of the vulnerabilities
+
+Defenders need to know all vulnerabilities in their system
+
+=== Asset Inventory - SNMP
+
+Simple Network Management Protocol
+
+* used for
+** configuring
+** managing
+** supervising
+* systems on a network
+
+==== Components
+
+. Managed devices
+* Network nodes with software modules that respond to SNMP requests
+. Agent
+* software that runs on the managed devices
+. Network Management Station
+* software the runs on the manager
+* executes applications that monitor and control managed devices
+
+=== Simple Service Discovery Protocol
+
+Used to discover devices on a network
+
+When a device is connected to a network it will try to obtain an IP address
+
+when IP is acquired an existing root device will broadcast the new device's available services
+
+==== SSDP Discovery
+
+If broadcast message fails/is forgotten by a device they can do 2 things:
+
+. Send a request message
+* The device transmits what it needs and asks if there is a device that can satisfy the request (M-SEARCH methods)
+. Root devices that have the service(s) send a response message
+
+=== NMAP
+
+Host discovery
+
+* pinging an IP address to see if it responds
+** ICMP echo request
+** TCP SYN packet to port 443
+** TCP ACK packet to port 80
+** ICMP timestamp request
+* if responds we scan ports to see if we get a response
+
+Process is called *fingerprinting*
+
+=== Fingerprinting
+
+==== Active fingerprinting
+
+Checking what's running on network ports (e.g. if port 80 -> webserver, 443 -> SSH)
+
+* Version Detection
+** used to check which module is providing a service on a given port
+* we can deploy agents on these nodes to warn us of changes/updates on the node
+
+NMAP can be used by attackers/defenders/sysadmins to find vulnerabilities
+
+Attackers target one/a few addresses/ports at a time to reduce noise
+
+Defenders/sysadmins target all ports
+
+* e.g. active web server on port 80
+* scan vulnerability databases to find web server vulnerabilities
+
+By sending malformed packets we get a specific response
+
+* port 80 could have Apache webserver or some other server
+* if packet follows the standard we only know that a webserver is listening
+* if it doesn't we learn what webserver is running by the specific response
+* we then find that webserver's vulnerabilities from vulnerability databases
+
+Active fingerprinting takes up some bandwidth (because sending packets)
+
+This can be problematic if managing real time systems
+
+* sending NMAP requests and slow down some responses
+* can be bad
+
+==== Passive fingerprinting
+
+Sniffs network traffic and analyzes certain parameters
+
+Does not affect bandwidth (good for real time systems)
+
+p0f is a passive fingerprinting tool that considers:
+
+* Initial time to live -> IP header
+* Don't fragment -> IP header
+* Overall SYN packet size -> TCP header
+* TCP Options -> TCP header
+** Window scaling
+** Maximum segment size
+** etc.
+* TCP window size -> TCP header
+
+Slower than active fingerprinting
+
+Doesn't always work
+
+==== Breach and simulation tools
+
+Fingerprinting tool that tries to exploit a vulnerability 
+
+If breach works then vulnerability isn't patched
+
+WARNING: These tools are dangerous and especially dangerous on industrial control systems and healthcare systems
+*ESPECIALLY* if they are actively being used
+
+==== Client scanning
+
+Can be run by:
+
+* a server when a client connects
+* ISP when you connect to their network
+* service providers before offering a service
+
+Can have serious privacy concerns
+
+* can sometimes scan your files
+
+=== False positives and negatives
+
+Fingerprinting tools often return vulnerability identification codes and if there are patches available
+
+* False positive -> Vulnerability discovery tools flags a vulnerability that has already been patched
+
+* False negative -> Vulnerability discovery tools doesn't flag a vulnerability
+** vulnerability hasn't gone public yet
+** tool isnt working properly
+** etc.
+
+== Moving from assets to vulnerabilities
+
+=== Vulnerability classification
+
+Many ways of classifiyng them
+
+* method changes based on what we want to do
+
+For example:
+
+* executing dangerous actions 
+** procedural vulnerability
+*** sending passwords through unsealed letters
+* people not following SecPol 
+** organizational vulnerability 
+*** device with multiple administrators
+*** assigning tasks to untrained staff
+* hardware/software tools
+** actions are well defined and executed correctly but the toolchain is bad
+*** sending unencrypted passwords
+*** not checking matrix bounds
+* local vs emerging vulnerabilities
+
+=== Tool vulnerabilities
+
+==== Specification errors
+
+Reusing/using code that is too general
+
+* More code -> more vulnerabilities
+* Leaving debugging procedures in the code
+* Keep a *Software Bill of Materials (SBOM)*
+** all code used to build the system including third party libraries and packages
+** very complicated and very expensive
+* Use *hardening* to remove debugging/otherwise useless functionalities
+
+==== Implementation errors
+
+Unchecked values
+
+* User inputs
+* Function/method parameters
+* Array indices
+* Confusing data/program
+
+Using *strongly typed* languages reduces the need for runtime checks
+
+==== Structural/emerging errors
+
+Using multiple secure modules that when used together cause problems
+
+Some modules assume checks have been performed by other modules
+
+* In reality no checks have been performed
+
+Security *autonomy* is key
+
+* Never assume data has been checked by other modules
+
+Researchers pick a module and try to discover vulnerabilities
+
+=== Vulnerabilities and software quality
+
+The number of vulnerabilities is not a good metric of code quality
+
+* unless comparing relatively to equivalent code
+
+The number of public vulnerabilities in a module increases with:
+
+* the number of existing vulnerabilities
+* the number of people looking for vulnerabilities
+
+The number of people looking for a given vulnerability increases with the value of the vulnerability and the number of users of that module
+
+* your homebrew encryption is worthless -> no one cares
+* ISP vulnerabilities are much more valuable -> many people look for them
+
+=== Types of vulnerability scanning
+
+* External vulnerability scanning
+** run from outside a system
+** used by defenders to understand what attackers see before they attack
+** used by attackers to find footholds
+* Internal vulnerability scanning
+** scans that test devices on a network
+** used by defenders/sysadmins
+** also used by attackers after they perform an intrustion
+* Intrusive scanning
+** Breach and simulation
+
+=== Vulnerability life cycle
+
+. Born when someone makes a mistake
+
+. Becomes known when it's discovered
+* When someone finds out it exists and is exploitable
+
+. Becomes public when its presence is revealed to the world
+
+* typically when it's written to a database (e.g. CVE, NVD)
+** only when standard tools are involved (no one tracks vulnerabilites for your shitty apps)
+* some databases pay you for info on vulnerabilities
+** these databases are PPV
+
+. 2 things start happening in parallel (not always)
+.. building fixes/patches
+.. discovering exploits (e.g. proofs of concept)
+* if an exploit is discovered before a fix -> vulnerability is *exploitable*
+* otherwise the vulnerability is *fixable*
+* a vulnerability is no longer exploitable only when it's *fixed*
+
+Developers can release patches but it's up to the administrator to apply it
+
+This is espcially problematic where developer companies shut down and can no longer support their software (especially in healthcare)
+
+==== Types of vulnerabilities
+
+===== Public vulnerability
+
+* vulnerability in a public database
+
+===== Partially public vulnerability
+
+* vulnerability available in private databases
+
+===== Zero day
+
+* unknown vulnerability
+** known only to attackers (nation states)
+* zero days become public after ~1000 days
+* usually one-time use
+
+===== Orders of magnitude (estimated no. vulnerabilities)
+
+* Public -> 10s of thousands
+* Partially public -> hundreds
+* Zero day -> tens

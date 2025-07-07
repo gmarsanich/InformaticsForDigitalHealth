@@ -1,0 +1,101 @@
+= Human Computer Interaction
+:toc:
+:toc-title: Contents
+:nofooter:
+
+== Resources
+
+Alan dix human computer interaction
+interaction-design.org
+
+== User Experience (UX)
+
+Experiential purchases make people happier than material purchases (concerts, sports games, dates, whatever)
+
+Material purchases are cool at first but then you start using the product and it sort of fades into the background
+
+This is related to memory:
+
+* you can't remember everything minute by minute
+* you generally remember the peaks (really good/really bad) and the end of the experience
+
+=== Why UX Design?
+
+High Customer Experience Index leads to massively increased profits for companies
+
+Low Customer Experience Index leads to large losses for companies
+
+== Honeycomb scale
+
+* Usable: ease of use
+* Useful: the function it provides
+* Accessible: further ease of use, focus on disability
+** Also known as universal access
+** Provides redunancy
+*** braille and normal text in elevators
+*** audio feedback for situational disability
+* Valuable: respect people's values
+** environmentalism, open source
+
+== Natural User Interfaces
+
+Recalling: recognizing from shape/colors/intuition
+
+Memorization: remembering function from memory
+
+Various types of UI:
+
+* CLI
+** memorization required
+*** you have to know and remember commands and arguments and such
+* GUI
+** relies on recognition
+*** you can put a document in a folder (like you do IRL)
+* NUI
+** touch
+** gestures
+** voice recognition
+** NLP
+
+Is NUI really better than the other 2?
+
+Gestures are not a language (idk about that)
+
+What is a natural gesture? idk bro i just type
+
+=== Zooming
+
+* Pinch to zoom isn't natural, it was designed in a lab and we learned how to do it
+
+* Apple did it first and wanted to patent it cuz they're Apple lol
+
+* Samsung decided that to zoom you had to put 2 fingers on the screen and move the device closer/further to your eyes
+** Is a bit more natural but very awkward
+
+== Affordance
+
+There are a few definitions:
+
+* Gibson (1977): all action possibilities latent in the environment
+** e.g. a door handle doesn't really need an explanation
+*** shapes aren't really necessary (knob/handle)
+*** height and positioning isn't exactly necessary, just has to be near the average hand height
+* Norman (1988): perceived action possibilities
+* Visual clue to the function of an object
+** e.g. the shape of scissors
+*** there are 2 blades and handles for fingers
+
+=== Design without affordance
+
+* iPad manual: nudge items by pixel by holding the item with one finger and move it with another finger
+
+* not a natural gesture but it feels natural
+
+*Natural User Interfaces should be 50% intuition and 50% learning*
+
+=== Good affordance
+
+* Users are task oriented:
+** they want to do a thing, not learn how to navigate the software
+* old Google Maps showed a full screen map
+** you could swipe the corner of the map to reveal settings/options

@@ -1,0 +1,204 @@
+= Security Privacy and Availability of Health Data - VPNs
+:toc:
+:toc-title: Contents
+:nofooter:
+:stem: latexmath
+
+Turning a public network (i.e. a network without guarantee of data confidentiality/integrity) into private tunnels
+
+They do *not* guarantee availability due to encryption
+
+* bad protection against DOS/DDOS attacks
+* have to decrypt messages before deleting them
+* takes time and compute power
+
+== VPN Types
+
+. Client-server/client-site VPN
+* Used by a client (e.g. phone app) to connect to some service (work website, bank website, work network)
+. Site-site VPN
+* traffic between Site A and Site B is protected
+* Company C has nodes in multiple locations and wants to maintain security
+* Firewalls and border routers have to know to use the VPN else it's useless
+
+== IPSEC
+
+Designed as temp solution before IPv6 implementation
+
+* IPv4 has 32 bit addresses
+* IPSEC is extension for IPv4
+
+Used to encrypt site-to-site VPN traffic
+
+4 protocols:
+
+. Authentication mode
+* add header fields to authenticate packet
+* guarantees integrity
+* breaks spoofing
+. Encapsulated security payload
+* encrypts packet contents
+* guarantees confidentiality
+
+which can be used in 2 modes:
+
+. Transport mode
+* add fields to existing packets
+* auth+transport = add fields to authenticate
+* weak to traffic analysis
+** content of packets is encrypted but metadata is clear
+. Tunnel mode
+* IP packets become contents of new encrypted packets at the gateway before entering the Internet
+* Receiver extracts IP packet and sends it to their network
+
+Endpoint firewalls have public/private keys to encrypt exit packets and decrypt entry packets
+
+*HOWEVER*
+
+for efficiency reasons VPNs use symmetric key encryption to protect site to site traffic
+
+asymmetric encryption is only used to pick a symmetric key before starting transmission
+
+* called Internet Key Exchange protocol
+* the key is rotated regularly
+** time based
+** traffic based
+** called Perfect Forward Secrecy
+*** allows you to lose a key without entirely compromising all communications
+
+== Perfect Forward Secrecy
+
+Enables entirely private short term key exchanges between a client and a server
+
+This key is only used for authentication and *NOT* to encrypt communication
+
+* If someone discovers your key they could decrypt all prior communications
+
+=== Diffie-Hellman protocol
+
+a pair of group members want to speak privately
+
+stem:[g], stem:[n] are public numbers where stem:[g] is from stem:[G]
+
+Alice picks random number stem:[a] such that stem:[1 \lt a \lt n] and sends stem:[g^a \ \text{of} \ G] to Bob
+
+Bob picks random number stem:[b] such that stem:[1 \lt b \lt n] and sends stem:[g^b \ \text{of} \ G] to Alice
+
+Alice computes element stem:[(g^b)^a = g^{ba} \ \text{of} \ G]
+
+Bob computes element stem:[(g^a)^b = g^{ab} \ \text{of} \ G]
+
+Alice and Bob now the group element that they use as the secret key
+
+Only Alice and Bob know stem:[a] and stem:[b]
+
+//something with modulus idk
+
+If only Alice and Bob are speaking then there is no need for authentication
+
+If Peter wants to join in then communications have to be signed
+
+=== ISAKMP 
+
+Security Association is an entity that protects a comms line between 2 sites
+
+==== ISAKMP Functions
+
+ISAKMP performs:
+
+* authentication
+* calculates shared communications key
+
+IKE is a component of ISAKMP
+
+* Lives inside ISAKMP 
+* Performs key exchange
+
+==== ISAKMP - VPN
+
+Protocol/machine independent peer to peer network security model
+
+Peer A and Peer B
+
+One will be the initiator and the other will be a responder
+
+3 information exchanges
+
+. Initiator asks to create a channel
+* Proposes security association
+* i.e. tells the responder what security methods it can use
+. Responder responds with its own security methods
+. They agree (or not) on methods to use
+** if they disagree they stop communication
+. KeyGen info is exchanged
+* stem:[g^a] and stem:[g^b]
+. Authentication info is exchanged using previously chosen key
+* maybe even with signatures
+
+Steps 1 and 2 are weak to MITM attacks
+
+* can't be sure that you're talking to who you think
+* authentication step at the end only confirms that B is the same B from earlier
+
+==== Aggressive ISAKMP - VPN
+
+Modern doctrine dictates aggression for speed gains
+
+* Key generation info is sent with initial security association request
+* Responder replies with corresponding info
+* Authentication info is exchanged immediately
+** not encrypted??
+
+=== IKE v2
+
+Less general than ISAKMP (uses IPSec)
+
+Used to live inside ISAKMP
+
+Cisco said nah and now ISAKMP lives inside IKE v2
+
+Tunneling protocol to establish secure connection
+
+2 phase exchange with 4 messages
+
+. Agree on security association
+. Send stuff
+
+More resistant to DOS/DDOS by only processing requests from verified initiators
+
+Uses IPSec to transport information
+
+=== VPNs and segmented networks
+
+All this stuff works for flat networks
+
+*What if we have a segmented network?*
+
+Node X of Site 1 subnet 1 wants to speak to Node Y of Site 2 subnet 1
+
+Make tunnel between S1Sub1 and S2Sub2 firewalls
+
+* as many tunnels as there are subnets
+* could be additional tunnels if end to end encryption is used
+
+But also make tunnel between external firewalls (i.e. those between Site1/Site2 and the Internet)
+
+This can be mega slow
+
+* network component vendors sell hardware accelerators to make things faster
+* also reason behind symmetric key usage
+
+== Encrypted traffic and malware detection
+
+Assume previous node X was attacked with malware and is misbehaving
+
+* usually by phishing or infected USB drives
+
+X can make tunnel to Y using end to end encryption
+
+Firewall now cannot find out if traffic is evil because it's all encrypted
+
+* can only use traffic analysis
+* stateful inspection is broken
+
+Can use ML to do anomaly detection

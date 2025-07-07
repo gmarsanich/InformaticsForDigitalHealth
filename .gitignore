@@ -1,0 +1,16 @@
+# Ignore everything by default
+*
+!/.gitignore
+
+# Allow traversal into all directories (necessary to reach nested lec* dirs)
+!*/
+
+# Allow traversal into lec[number]* directories anywhere in the tree
+!**/lec[0-9]*/
+
+# Include .adoc and .png files only inside lec[number]* directories (at any depth)
+!**/lec[0-9]*/**/*.adoc
+!**/lec[0-9]*/**/*.png
+
+# Ignore all nested .git directories
+**/.git/

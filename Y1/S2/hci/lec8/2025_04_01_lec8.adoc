@@ -1,0 +1,162 @@
+= HCI for DH - Usability Testing
+:toc:
+:toc-title: Contents
+:nofooter:
+:stem: latexmath
+
+== Usability testing
+
+=== What is it?
+
+Evaluating an app/service/prototype by testing it directly on the target audience
+
+=== Why usability testing?
+
+Used to identify usabilty issues and areas for improvement
+
+To find problems that developers haven't thought of
+
+== What is usability?
+
+How easy to use is an interface for a particular set of users?
+
+Defined by 5 main quality components:
+
+* Learnability: how easy is it for users to complete their goal the first time they use the app
+* Efficiency: how quickly can users perform tasks once they have learned?
+* Memorability: how easily can users reestablish proficiency after not using the app for a while? 
+* Errors: how many errors do users make? how severe are they? how do users recover?
+* Satisfaction: how pleasant is it to use the app?
+
+=== Usability vs utility
+
+Utility: does the app provide the features you need?
+
+Have to test for functionality as well
+
+* It doesn't matter if app is easy to do if it doesn't do what you want
+* It doesn't matter if app does what you want if it's really hard to do 
+
+=== Users and usability testing
+
+Testing if principles of human centered design are met
+
+Usability testing sessions are when a researcher (*facilitator*) asks a participant to perform tasks using one or more specific interfaces
+
+.Facilitator tasks
+
+. give instructions
+. answer user questions
+. ask follow up questions
+. acquire high quality test results
+. acquire valid data
+. do *NOT* influence the user
+. ask users to think aloud
+.. do *NOT* interrupt or intervene
+
+After the session the facilitator gets the user's feedback
+
+=== Heuristic evaluations
+
+3-5 researchers pre evaluate their app but also questions to ask users
+
+==== Nielsen's usability heuristics
+
+. Visibility of system status
+* timely feedback about what's going on in the back
+* e.g. progress bars, you-are-here dots on map
+. Match between system and real world
+* use language/concepts familiar to the user
+* drag and drop file into folder
+. User control and freedom
+* help users undo their mistakes easily
+* cancel/undo buttons
+. Consistency and standards
+* follow conventions, don't reinvent the wheel
+. Error Prevention
+* prevent problems where possible
+* e.g. prefill a form with standard placeholder values
+. Recognition > recall
+* help the users recognize interface items rather than remember them
+. Flexibility and efficiency of use
+* provide shortcuts for experienced users
+. Aesthetic and minimalist design
+* Show relevant information only
+. Recognize+diagnose+recover from errors
+.. Express errors in plain language
+.. Indicate the problem
+.. Suggest a solution
+. Help and documentation
+* if all else fails point them to a book
+
+
+=== Types of usability testing
+
+2 main types
+
+* Qualitative
+** observational findings (notes from thinking aloud, etc.)
+* Quantitative
+** metric dependent
+** task completion rate
+** task time
+** number of errors
+
+== How to plan usability tests
+
+=== Tasks
+
+Realistic activities that participants might perform in real life
+
+Specific > open ended
+
+.Task examples:
+
+* add new medication
+* confirm taking medication
+* export medication list
+
+Wording is very important
+
+* minor variations can influence the participant
+
+=== Goals
+
+What is the goal of this test?
+
+Points to qualitative/quantitative/both
+
+Usually initial prototype is mostly qualitative
+
+=== Format
+
+Lab vs field
+
+* participant comes to you or you go to participant
+
+Moderated vs unmoderated
+
+* are you there physically or not?
+
+In-person or remote?
+
+* in person easier to take notes
+** easier to interact
+* remote easer to not bias the user
+
+=== Number of participants
+
+Qualitative:
+
+* 5 people is good enough according to Nielsen Norman Group
+
+Quantitative:
+
+* 20 is the bare minimum
+* for statistical validity
+
+=== Recruitment
+
+Find people similar to personas or people that can simulate the personas
+
+== What tools are there?

@@ -1,0 +1,210 @@
+= HCI for DH - Concept Validation
+:toc:
+:toc-title: Contents
+:nofooter:
+:stem: latexmath
+
+== Pretotyping
+
+Very quickly test and validate ideas before investing money into them
+
+* Comes before prototyping
+* Validates ideas
+** Why invest into a solution for a problem that doesn't exist?
+* Doesn't validate potential solution(s)
+* Test whether people actually want your product
+* Faster and lighter than prototyping
+
+=== Why Pretotype?
+
+*FAIL FAST, FAIL OFTEN*
+
+Gathers real data on real interest
+
+Avoids investing in the wrong idea(s)
+
+Faster and cheaper than lofi prototypes
+
+Can be done by yourself
+
+Don't need to finish the idea
+
+* failure is expected
+
+Making lots of pretotypes is good because you develop a lot of ideas very quickly
+
+Do weird things to find out new approaches
+
+Use pretotypes to avoid productypes
+
+* avoid overgrown prototypes that are built on bad ideas
+
+=== 7 Pillars of Pretotyping
+
+Don't need lots of infrastructure/gear to do these things
+
+. Obey the law of market failure
+. Make sure you are building the right idea
+. Don't get lost in thoughtland
+* be pragmatic
+. Trust your own data
+. Pretotype it (duh??)
+. Say it with numbers
+* Data is king
+. Think global, test local
+* lol?
+
+=== Pretotyping Flow
+
+. Isolate key assumption
+* What is required for your idea to work?
+* What is the key assumption for your idea to work?
+* "Surely these people have this problem and they want it solved"
+. Choose a pretotype
+* Pick the simplest way to test it
+. Formulate a hypothesis
+* "I hypothesize that X% of Y will do Z"
+* Where
+** X = number of people you expect to act
+** Y = target group
+** Z = what action they'll take
+* Numbers are pulled straight out of ass
+* "I hypothesize that 15% of regular bookstore customers will sign up for a loyalty card when offered at checkout"
+. Test in the real world
+* Compare real behavior to hypothesis
+. Hypozoom
+* Start broad and zoom in
+* All locations? Just Pisa? Just this bookstore? Just today?
+* "15% of customers at Feltrinelli Corso Italia (Pisa) will sign up for a loyalty card at checkout today
+* Test locally before expanding
+** cheaper to test locally
+* Avoids solutions no one cares about
+
+Apply Bayes theorem to update belief of success given the data we receive
+
+[stem]
+++++
+P(S | D) = \frac{P(S) \cdot P(D | S)} {P(S) \cdot P(D | S) + P(F) \cdot P(D | F)}
+++++
+
+Where:
+
+// slides moment
+
+=== Pretotype Types
+
+==== Fake Door
+
+Create non functional interface that suggests a product/feature exists
+
+Purpose: measure initial interest
+
+* how would people react if we introduced this feature?
+* no reaction = no build
+
+==== Facade
+
+Simulate a product/service that actually doesn't exist
+
+Offer the experience as if it were live
+
+Validate if people *really* want the product/service
+
+==== Pinocchio
+
+Build non functional mock object
+
+LARP with it
+
+Evaluates:
+
+* interaction
+* form factor
+* context
+
+Validates if product fits into daily life
+
+==== Mechanical Turk
+
+Use human effort to simulate automation
+
+* Amazon Mechanical Turk platform
+
+Test smart/AI features before building algorithm
+
+Users interact naturally if they believe the system is real
+
+==== Video Demos
+
+Make video to simulate/visualize the idea
+
+Assess reactions and evaluate hype
+
+Make some kind of sign up or mailing list/whatever
+
+See if people are interested
+
+==== Provincial
+
+Launch quietly in a small physical area
+
+Test logistics and response in a small scope
+
+Show new feature to small % of userbase
+
+Assesses local traction before scaling
+
+==== One-Night Stand
+
+Offer product for a limited time
+
+Validates temporary/time sensitive needs
+
+Proves real world willingness to pay
+
+==== Infiltrator
+
+Sneak product into real store/website
+
+See if people buy/interact without official launch
+
+Validates market demand in natural settings
+
+==== Impostor (mogus)
+
+Use an existing product as a stand in
+
+Modify/repurpose it to test reactions and collect commitments
+
+Checks interest and willingness to commit
+
+=== From Pretotype to prototypes
+
+If people are interested build Minimum Viable Product (MVP)
+
+* barebones version with core functionalities
+* tests user behavior
+
+Repeat tests with MVP
+
+* need:
+** real functioning artifact
+** real life use context
+** real users
+
+If pretotype = good but MVP bad -> something went wrong in implementation
+
+=== A/B Testing
+
+Compare 2 versions of the same solution
+
+Split users randomly into groups
+
+* Group A sees current version (control)
+* Group B sees variation (treatment)
+
+Isolate effect of a single change
+
+Measure key outcomes
+
+Need statistically significant difference between groups to have valid difference

@@ -1,0 +1,161 @@
+= HCI for DH - Applying Lab Evaluations
+:toc:
+:toc-title: Contents
+:nofooter:
+:stem: latexmath
+
+== Introduction
+
+Evaluate everything everywhere all the time
+
+Evaluate ideas before making something
+
+* pretotyping
+
+== Goals of Evaluation
+
+Assess system functionality
+
+* does my system work as expected?
+
+Assess effect of interface on user
+
+* do my users like the system?
+* are they able to complete their tasks?
+
+Identify specific problems
+
+* what can be made better?
+* e.g. is the settings icon in the best place?
+
+Provide evidence for design decisions
+
+* apply user feedback data to make new decisions
+
+Generate insights for future iterations
+
+* V1 was slow so V2 should be faster
+* idk
+
+Contribute to theoretical understanding of interaction principles
+
+== Defining Clear Research Questions
+
+RQs must be:
+
+* precise
+* measurable
+* testable
+
+Research designs/questions may be:
+
+* Fixed: associated with quantitative data
+** Does interface A reduce task completion time compared to interface B?
+** Involve evaluation of specific criteria
+* Flexible: associated with qualitative data
+** How do users perceive the learnability of a new gesture based interface?
+* Identify unknowns
+
+Questions should directly address design goals and user needs
+
+=== Experimental Design
+
+3 Types:
+
+. True Experiment
+* multiple conditions
+* randomized participant assignment
+* Test precise cause-effect relationships
+** is DVORAK faster than QWERTY?
+
+. Quasi-Experiment
+* Multiple unrandomized conditions
+* Randomization is impractical or impossible
+** comparing experienced users against new users
+
+. Non-Experiment
+* Single condition without randomization
+* Exploratory/descriptive studies
+** observing user interactions with some new system
+
+Experimental design should match research question(s)
+
+* need balance between internal validity/control and external validity/generalizability
+
+=== Evaluation Types
+
+Many ways to skin this cat
+
+==== Evaluating Designs
+
+Early stage, full system not needed
+
+.Cognitive walkthrough
+
+* Evaluated on how well the system supports users in learning tasks
+** tasks are actions in a system
+** change theme
+** add new event
+** log out
+* Performed by cognitive psych experts
+* Experts walk through the design to identify problems using psych principles
+* Considers these things for each task:
+** What impact will interaction have on the user?
+** What cognitive processes are required?
+** What learning problems may occur?
+
+.Heuristic evaluation
+
+* Evaluates usability criteria (Nielsen's 10 criteria)
+* Design examined by experts for criteria violation
+
+.Review based or model based
+
+* Review based uses results from literature
+** Make sure results are applicable to new design
+* Model-based uses cognitive models to filter options
+** GOMS prediction of user performance
+
+==== Evaluating Implementation (working system tested with users)
+
+Experimental evaluation
+Usability testing
+Field studies
+
+== Data Collection
+
+=== Thinking Aloud
+
+Ask user to perform a task and describe their process and why
+
+* "I'm gonna right click here to open the context menu because I want a new folder..."
+* Very easy to do
+* Provides useful insights
+* Shows how system is actually used
+
+However
+
+* Subjective
+** no hard data collected
+** user A might try path A and user B might try path B
+* Selective
+* Talking while doing might affect performance
+* Users often stop talking if task is difficult and need to lock in
+
+=== Cooperative Evaluation
+
+User collaborates on evaluation
+
+Dialog between user and evaluator
+
+More natural interaction
+
+=== Post Task Walkthrough
+
+Same as thinking aloud but after
+
+Needs transcript/video/whatever
+
+Evaluator has time to think about questions
+
+User can just focus on doing task while task time

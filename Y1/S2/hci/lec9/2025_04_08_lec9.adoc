@@ -1,0 +1,138 @@
+= HCI for DH - Hypothesis Testing
+:toc:
+:toc-title: Contents
+:nofooter:
+:stem: latexmath
+
+== Overview
+
+=== Research question
+
+take Android keyboard or iPhone keyboard
+
+* *which keyboard is faster to type on?*
+
+This can be answered in whole
+
+* Android is faster
+
+Can be answered in part/under certain circumstances
+
+* Android is faster in low light
+
+Rejected as unanswerable
+
+* Depends entirely on user skill
+
+Only an apparent problem
+
+* who cares if Android/iPhone keyboard is faster
+
+RQs test one or more hypotheses
+
+=== Hypothesis vs Theory
+
+Hypotheses are testable proposed explanations for a phenomenon with a logical consequence
+
+Working hypotheses are temporarily accepted as a basis for further research
+
+Theory is a generalized thought about a phenomenon
+
+=== Hypothesis Types
+
+Usual suspects
+
+* null H0 = no difference
+* alternative H1 = there is some difference
+** can have more (H1, H2, H3, ...)
+** can be directional (H1a, H1b)
+
+== Operationalization of Concepts
+
+=== 5 whats
+
+Analogous to 5 whys
+
+. What is the RQ
+. What is the hypothesis
+. What is the correct hypothesis test
+. What are the independent variables?
+* Is the factor within/between participants?
+. What are the dependent variables?
+* What is being measured?
+* Objective/subjective measure?
+** performance, usability, fun, immersion, fitness, health, etc.
+
+=== Subjective measures need concepts
+
+Can't use overly general terms like health
+
+* split into more specific and measurable concepts
+** e.g. physical health, mental health, etc.
+
+Subterms need to be defined clearly
+
+For example:
+
+* H1: iPhone users type fast
+** bad
+** fast is meaningless
+* H1: iPhone users have higher typing performance than Android users
+** better
+** things are defined
+
+Typing performance needs to be operationalized:
+
+* measurement variables
+** WPM
+** backspace presses
+* derived variables
+** error rate
+** whatever bs
+
+=== Testing With Multiple Measures
+
+Sometimes not sure if measures are correlated or not
+
+* WPM and CPM are probably related so can expect correlations
+* need to separate them (for some reason??)
+
+== Error Types
+
+4 types:
+
+.Type I error
+
+False positive: we see an effect where there isn't one
+
+* rejecting H0 when it's true
+
+.Type II error
+
+False negative: we don't see an effect when there is one
+
+* not rejecting H0 when it's false
+
+.Type III error
+
+Wrong hypothesis but right answer
+
+* something wrong with hypothesis formulation
+
+.Type IV error
+
+Right hypothesis but wrong answer
+
+* used wrong test with correct hypothesis
+
+
+I and II are test errors
+
+III and IV are researcher errors
+
+Type I is generally worse but depends on the effect of the error and about a morbillion other factors
+
+=== Sub 3
+
+== Methods for increasing statistical power
+

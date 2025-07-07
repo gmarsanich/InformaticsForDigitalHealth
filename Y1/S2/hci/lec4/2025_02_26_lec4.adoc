@@ -1,0 +1,113 @@
+= HCI for DH
+:toc:
+:toc-title: Contents
+:nofooter:
+
+== Human Factors
+
+=== Present Situation
+
+People learn to use things that are inconvenient
+
+* QWERTY is unergonomic but we learned to use it
+
+== Goals of System Engineering
+
+* serve users
+* design effective systems
+* good interface design makes interface invisible
+* allow for maintenance
+* minimize
+** skill 
+** personnel requirement
+** training time
+
+=== Main issues in design
+
+* proper functionality
+** task analysis is central
+* reliability, availability security and data integrity
+** across commands
+* standardization, integration, consistency and portability
+** cross platform
+* schedules and budgets
+
+=== Cognitive and perceptual abilities
+
+Ergonomics abstract
+
+* Short term memory
+** humans have bad short term memory (generally)
+** we can recall 5-9 chunks of information (e.g. strings of 5-9 numbers)
+** long lists of menus are hard to memorize
+*** split into submenus
+* Long term memory is related to learning
+** can't assume the user will use their long term memory unless longitudinal studies
+* Attention
+** drive the user to pay attention to specific parts of the interface
+* Search and scanning
+** Make it easy to find things while scanning
+* Time perception
+** Theory of flow
+** Don't distract the user from their task (keep them in flow)
+
+=== Factors affecting perceptual and motor performance
+ 
+* Fatigue
+** fatigue is important *especially* in critical infrastructure 
+** keep minimal interface during critical moments
+
+rest doesnt matter i guess
+
+=== Personality differences
+
+People have different preferences:
+
+* interaction styles
+* pace of interaction
+* graphics vs text
+* desnse vs sparse interface
+* step by step vs all at once
+
+in critical moments you generally don't want step by step
+
+=== Cultural/international diversity
+
+Cultural/racial/ethnic/linguistic background
+
+UI design requires internationalization:
+
+* characters/numerals/special characters
+* text direction
+* date/time formats
+* numerical/currency formats
+* phone numbers
+* addresses
+* names and titles
+* identification
+* penis and cock and dick
+* sorting sequences
+* icons/buttons/colors
+* pluralization/grammar/spelling
+* etiquette/policies/vagina and labia and tits
+
+=== Users with disabilities
+
+most disabilities can be accomodated for
+
+* TTS
+* speech recognition
+* eye gaze control
+* special IO devices
+* head mounted optical mice
+* brain computer interface (lol)
+
+=== Elderly users
+
+Fat finger problem
+
+* fingers swell with age
+** small buttons are hard to press
+** make big button
+* bad vision
+** bright colors and easy shapes (?)

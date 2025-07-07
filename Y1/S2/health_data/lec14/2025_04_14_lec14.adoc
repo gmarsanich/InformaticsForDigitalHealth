@@ -1,0 +1,319 @@
+= Security Privacy and Availability of Health Data - Intrusion Detection
+:toc:
+:toc-title: Contents
+:nofooter:
+:stem: latexmath
+
+== Network vs Host vs Log
+
+3 ways to check intrusions
+
+. Host operations
+. Network traffic
+. Logs
+
+The first 2 are real time*
+
+Log analysis is periodic
+
+* always a posteriori
+* information is saved so they can do more sophisticated analysis
+
+== Signature Based Detection
+
+Known attacks are often *signed*
+
+* a specific sequence of actions define an attack signature
+* only if someone realizes that those actions are part of an attack
+* signature can be uploaded to databases or shared or whatever
+* if I see actions on my system that match a known attack signature there's a good chance that I'm under attack
+* can also be a hashed program
+
+Can't use for new attacks
+
+Default allow
+
+* anything not in the signature db is allowed
+* weak to 0-days because unknown
+
+3 types:
+
+* Dynamic
+** Run the program in sandbox and compare its actions to db
+* Static
+** check the code and match against signature
+** done by old antivirus software
+* Hybrid
+** does both
+
+=== Input Events for Signatures
+
+Endpoint events
+
+* OS invocation
+* Memory analysis
+* Downloaded files
+* Executed programs
+
+Network events
+
+* contents of transmitted packets
+* URL being called
+
+Signature based network intrusion detection requires network traffic monitoring
+
+* tools built around packet sniffers (WireShark?)
+* sniffers *cannot*:
+** route traffic
+** slow down traffic
+* this can be exploited by attackers
+** run DOS to slow down traffic
+** send malicious packets during DOS
+
+=== Worm signature
+
+//from slides
+
+if HTML file has this particular sequence of GET calls then it's a worm
+
+=== Use cases?
+
+. Known-Known
+* known variant of known malware
+* exact match
+. Known-Unknown
+* unknown variant of known malware
+* use regex for partial matches
+. Unknown-Unknown
+* good luck
+
+The number of false positives increases as we move through the use cases (it's already very high)
+
+Known-Known has low(ish) number of false positives but high false negatives
+
+=== Solutions to high cost
+
+. Aggregation
+* collect multiple warnings before sending alert
+. Correlation
+* Correlate events
+** anomalies X and Y happened within 10ms of each other
+** ip address I made 10,000 requests a second
+* assign priorities
+
+
+== Anomaly Based
+
+A posteriori way of finding attacks independently of how it happened
+
+Discover anomalies through statistics
+
+* define normal behavior through observation/learning
+** e.g. invoked services, login time and session duration, user requests, network bandwidth
+* build statistical model of system behavior
+* find abnormal behavior
+** have to avoid false positives
+** but also false negatives
+* have to update parameters regularly
+** user behavior changes often
+
+If you get attacked during learning period then it's basically useless
+
+3 ways of doing it:
+
+. Dynamic
+* running program and observing behavior
+. Static
+* static analysis of program behavior (like compilers do)
+. Hybrid
+* do a bit of both
+
+=== Specification-based
+
+Sometimes normalcy comes from application specs
+
+* app should behave a certain way
+* if app behaves differently then likely an anomaly
+* e.g. app reads from database but doesn't write to it
+* if app starts writing then anomaly
+
+=== NIDES
+
+Early anomaly/intrusion detection system (1989)
+
+Looked at UNIX terminal commands (grep, emacs, finger, gawk, etc.)
+
+Each command had a number of days required for learning user behavior
+
+* e.g. emacs had 84 days of learning time (lmao??)
+
+== Polymorphism and obfuscation
+
+Attackers worry about countermeasures so they try to counter the countermeasures
+
+Multiple versions of the same malware so that signature matching breaks
+
+How? *Obfuscation*
+
+Many types of obfuscation
+
+* Encryption based/polymorphism
+** encrypt malicious code
+* Lexical transformations
+** modify variable names
+* Control transofmations
+** change program flow and preserve semantics
+* Data transformations
+** modify data structures
+* Anti disassembly
+** can't easily decompile and analyze
+* Anti debugging
+** can't easily investigate flow using debugging tools
+
+=== Encryption based
+
+Encrypt malware with a different key each time
+Malware files have both malware code and decryptor code
+
+Matching the malware itself doesn't work but you can still match the decryptor signature
+
+* decryptor code doesn't change
+
+Attackers can encrypt the malware multiple times to encrypt the decryptor and the malware together
+
+* this process can be repeated as many times as the attacker wants
+
+// yo_dawg.png
+
+=== Abusing ZIP
+
+Concatenate multiple zip files into one
+
+One of these zip files has malware inside it
+
+The malware is now spread out throughout the file so gl with finding it
+
+=== EMOTET
+
+Was active for 10 years (!!) despite known signatures
+
+How does it work (generally)?
+
+. User receives spam emails with malicious links/files/whatever
+. User is given reason to open file/click link
+. For Word/Excel files the file executes VBA macros (Microsoft moment)
+. Downloads powershell and starts shell that downloads and runs malware payload
+* ransomware, trojan, bitcoin miner, whatever
+
+New EMOTET version (2022)
+
+* uses Microsoft HTML Application (mshta.exe) files
+* Uses signed Microsoft software to execute malicious code
+** this is a *confused deputy attack*
+* mshta is used to execute a malicious HTA file
+** these HTA files appear to be empty because they are obfuscated
+
+=== LOCKBIT 3.0
+
+Malware as a service provider that encrypts its executable wit the client's password
+
+* no password -> can't use malware
+
+It's region locked (lmao???)
+
+=== Zmist (old as shit)
+
+Extreme anti signature countermeasures
+
+Hid bits and pieces of virus code by spreading it out into host application
+
+.Zmist algorithm kinda
+[source,python]
+----
+
+legit_func_1()
+
+legit_func_2()
+
+malware_func_1()
+
+legit_func_3()
+
+----
+
+In reality this happens at assembly level but i cba writing that
+
+Starting point of malware code is set at random to be even more cancer inducing
+
+== Defeating sandboxes
+
+A sandbox is a protected environment to download and execute unknown code (VM, container? VM better)
+
+Isolated from the main system
+
+Monitor sandbox actions for anomalies
+
+Smart malware can figure out it's in a VM and hide its malicious behavior or even escape (only if particularly smart)
+
+VMM/Hypervisor:
+
+* allocates/multiplexes physical resources to VMs
+* Virtual Machine Monitor wants OS before hardware
+* Hypervisor is the OS
+
+=== VM implementation strategies
+
+. Trap and emulate
+* very old implementation (IBM 360)
+* execute guest OS in unprivileged state
+* host doesn't allow access to protected resources
+. Para virtualization
+* call VMM when guest can't do certain things without generating exception
+* requires guest OS modification
+* good performance
+. Interpretative Execution
+* Any time guest OS performs an action the host OS actually does it
+. Binary Translation
+* Take application code and translate to binary
+* Add calls to guest OS or VMM as needed
+* Dynamic translation layer takes care of the whole thing
+* VMware does this
+* Performance not so good
+
+=== Virtualizable CPU
+
+x86 is not virtualizable so implementing para virtualization and interpretation can't easily be used
+
+* x86 is CISC (*complex instruction set*)
+* RISC CPUs are easily virtualizable
+
+=== VM Detection
+
+VMs often have specific tools/software (clipboard integration, drag and drop file sharing, memory ballooning)
+
+* Detecting these is a dead giveaway that you're in a VM
+
+Shared memory is used to simplify VM/VMM communication
+
+* Can also be detected
+
+Clean VMs are very easy to detect
+
+* normal user PCs have a billion things running and 81427 things installed
+* if PC only has default apps running and nothing else then good indication that you're in a VM
+
+About a million other things malware designers can do to discover VMs
+
+=== WannaCry
+
+Worm ransomware that encrypted boot block (MBR encrypted=cant do shit)
+
+Tried to contact some non existent website
+
+* if fail: physical hardware -> bingo
+* if found: Sandbox -> die
+** sandbox says yes to find what else this funny software did
+
+Researchers created that website to trick malware into always killing itself
+
+Unfortunately malware designers wrote a different version that checked a different website

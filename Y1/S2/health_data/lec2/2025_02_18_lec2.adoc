@@ -1,0 +1,258 @@
+= Derived Security Properties
+:toc:
+:toc-title: Contents
+:nofooter:
+
+== Derived Security Properties
+
+* Traceability: who (module/user) invoked a given operation
+** Integrity is important -> logs cannot be tampered with
+* Accountability: those who invoke a resource/operation should pay
+** More detailed log file (e.g. query cost database etc.)
+* Auditability: whether the security policy is enforced
+* Forensics: prove that certain actions have occurred + prove who executed them (legal)
+** There are legal traps with using logs in trial -> you have to convince judges/lawyers that the actions described in the log actually happened and are real (idk)
+* Privacy (GDPR): who can read/write personal information
+
+Logs should ideally be copied to a second device
+
+== Externalities and free riding
+
+* Security does not only depend on you, but it also depends on other systems (e.g Hospital XYZ has to interact with external Lab ABC etc.)
+** If Hospital XYZ is secure but Lab ABC isn't then you have a risk
+** If Dr Benis uses their personal PC for work and they get infected with malware -> malware can travel to hospital system
+* Security is related to your ecosystem (!!)
+* Security is analogous to health:
+** large number of sick people -> infected nodes
+
+=== Externalities
+
+Externalities are the costs/benefits caused by a third party
+
+The larger a network is -> the more externalities there can be -> the greater the risk of infection/other security errors
+
+You can't really avoid not connecting systems to the Internet (unless you're a nuclear power plant)
+
+=== Free riding
+
+Free riding = fare i furbi (e.g. not getting vaccinated because everyone else is)
+
+3 typical cases where this can be dangerous:
+
+* Total effort: the sum of individual efforts
+* Weakest link: security depends on the minimum effort (there is one weakness in the system)
+** if the owner of the weakest link is shirking his duties and decides to stop -> the security of the whole system is immediately improved
+* Best shot: security depends on the maximum effort
+** One part of the system is highly secure but the rest is insecure
+
+==== Free riding results
+
+* In theory if you know where the weak spot is you can intervene
+* In practice this is very difficult because individuals usually don't know the security investments of other agents
+* It's hard to know if you are the weakest link -> **information asymmetry**
+* This is a problem for cyber insurance (lol)
+** they usually charge the maximum fee
+
+== Security policy
+
+=== Asset Analysis 1
+
+* Defining a security policy is hard
+
+* E.g. you are asked to secure a network
+
+* What do you do?
+
+. Build an inventory (often the hardest part)
+.. Discovering the fundamental business processes
+.. Critical IT infrastructure for such processes
+.. The impact on the organization if:
+... A business process is stopped
+... If information is lost or corrupted idk
+
+Logical and physical topology
+
+e.g. there are 50 nodes with such and such apps, node A is connected to node C etc.
+
+=== Asset Analysis 2
+
+Physical and logistical IT resources
+
+* Databases
+* Software
+* Computational power
+* Network bandwitdh
+
+=== Asset Analysis 3
+
+If part of our system controls critical infrastructure (patient monitoring etc.) we have to consider this equipmenet
+
+Asset analysis tells us which resources are used and where/when and what could happen if our resources don't function
+
+e.g. if someone has access to a pacemaker they can easily kill someone
+
+=== Asset Analysis 4
+
+Final goal is to compute the loss caused by an IT attack
+
+How much money do we invest to protect our database?
+
+Is it worth protecting at all?
+
+=== Asset Discovery
+
+Usually done through a network app installed on an administration device that pings nodes and asks for software/hardware changes to update the inventory
+
+This tool can also gather more details about hosts:
+
+* configuration
+* connection logs
+* maintenance schedules
+* software installations
+* general usage statistics
+
+Passive asset discovery tools simply read network traffic and they write it somewhere (like WireShark)
+
+Active AD takes like half a day to build the inventory, while passive AD takes a lot longer and a lot more info (and often fails)
+
+Active tools can be dangerous in industrial control systems and hospital systems
+
+* they increase network traffic which could cause problems
+** e.g. if EKG needs to send a message but the network is busy that could cause a problem
+
+Best practice is to use passive AD and minimize the usage of active AD
+
+=== Security Policies
+
+Security polcies define:
+
+* Who the users are
+* Which assets are important
+* Who and what can use these assets
+
+This implies the definition of:
+
+* System architecture
+* Users
+* Admins
+* Legal use of resources
+** Who is in control
+** what the sanctions are for violators (!!!)
+
+*Security policies must NOT under any circumstances violate privacy/GDPR laws*
+
+e.g. you are not allowed to monitor employee behavior (e.g. mashing keys/sleeping/mashing keys)
+
+Security policies are critical because they define:
+add later its in the slides
+
+== Subjects and objects
+
+* Subjects (aka principal): entities that can invoke operations on/of an object
+** users, applications, programs, threads, instructions
+* Objects: assets that define operations (e.g. assets are objects)
+** instance of abstract types, procedures/functions, variables, logical/physical resources
+* An object that both invokes operations on other objects is both subject and object
+** e.g. a word processor is both: 
+*** it invokes filesystem (object) operations
+*** the user (subject) invokes operations on it (types a document)
+** users can really only be subjects
+
+Security policies define which subject can use which objects and so on
+
+=== Access rights (rights)
+
+* A subject S is entitled to invoke an operation Op on object O
+** S has the right to invoke Op
+** this is defined as a *legal* operation
+
+* Availability -> if I'm entitled to access an operation the system *MUST* allow me to perform the operation
+
+* Access rights can be direct or indirect
+
+* Direct: S can read file F -> S has a read right to F
+* Indirect: since S can read F, then any program P that is executed by S is allowed to read a memory segment MS that stores a record of F -> P has a read right to MS
+
+=== Objects operations and types
+
+* By specifying an object you define a data type (e.g. Car car = new Car())
+* The stricter the type system -> the more secure the language is
+** C is insecure because no real datatypes -> only pointers (fast but not ideal)
+** Rust has a very strict type system -> annoying to write but more scure
+** The compiler can deal with a lot of stuff
+*** The compiler can also have bugs
+*** So can dependencies
+** e.g. compilers can't easily check if index X is actually in the array (e.g. array = [1, 2, 3], x[4] doesn't exist)
+*** Java does but C doesn't
+
+== Modular approaches to security policies
+
+=== Access Control Policies (ACP)
+You can read such and such file and can open app x
+
+=== Acceptable Use Policy (AUP)
+
+You can open the browser but you can't access certain websites
+
+=== Incident response policy
+
+What to do if under attack
+e.g. X goes to the police, Y talks to the press, Z informs the patients
+
+=== Remote Access Policy
+
+How/who/what can remotely connect to an organization's internal networks
+
+=== Disaster Recovery Policy (Availability)
+
+What to do if physical bad things happen 
+
+More related to safety than security but still important
+
+e.g. if your datacenter explodes or if there's an earthquake
+
+* keep backups in multiple locations
+
+=== Email/Comms Policy
+
+How employees can use email/chat services etc.
+
+=== Business Continuity Policy (Availability)
+
+How to keep providing your service
+
+== Information Security Policy
+
+Who/what can invoke certain operations that modify information
+
+2 fundamental parameters:
+
+. How to express the policy
+* Default allow: the policy defines forbidden operations 
+** you *CAN* do anything unless otherwise specified
+** e.g. you can't write to this file or you can't access this service)
+* Default deny: the policy defines allowed operations 
+** you *CANNOT* do anything unless otherwise specified
+** e.g. you can write to this file or you can access this service
+. Degrees of freedom of the system owner
+* Discretionary Access Control: someone decides who can perform which actions (carte blanche)
+* Mandatory Access Control: there are constraints that the system owner cannot violate
+** e.g. hospital patients can decide who can read their data and the hospital director cannot deny this
+
+
+There is a hierarchy of information that needs to be respected
+
+* Nuclear launch codes are higher on the hierarchy than a bathroom door code
+
+=== The Six Dumbest Ideas in Computer Security (M.Ranum, 1 sept 2005)
+
+. Default allow
+.. It takes a lot more effort to say what users can't do than what users can do
+. Enumerating badness
+.. Listing things you're not allowed to do => bad
+.. You have to continuously update the list
+. Penetrate and patch
+. Hacking is cool 
+. Educating users
+.. Users are idiots so there's no point (idk about that)
+. Action is better than inaction

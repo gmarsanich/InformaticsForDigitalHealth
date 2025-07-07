@@ -1,0 +1,67 @@
+= HCI for DH - Human Error SEE SLIDES
+:toc:
+:toc-title: Contents
+:nofooter:
+
+== Human error
+
+95% of industrial accidents are caused by human errors
+
+=== Why do we make mistakes?
+
+People are put in boring environments where they do nothing for hours and then have to react quickly
+
+They have to remember long and complicated procedures
+
+They fall into routines
+
+Catching the culprit does nothing if the system design doesn't change
+
+* someone else will make the same mistake later on
+
+=== Interruptions
+
+Interruptions are common causes of errors
+
+Breaking out of task flow can cause errors
+
+* getting back into task flow can take time
+
+=== Root cause analysis
+
+Errors rarely have a single cause
+
+Often a combination of factors
+
+==== 5 whys
+
+Developed by Toyota
+
+. Car won't start
+* Why?
+. Battery dead
+* Why?
+. Alternator isn't functioning
+* Why?
+. Alternator belt is broken
+* Why?
+. Alternator belt wasn't replaced in time
+* Why?
+. Car wasn't properly maintained
+
+Keep asking why until you find a root cause
+
+==== Challenger
+
+The cause of the disaster was the failure of the primary and secondary O-ring seals in a joint in the right Space Shuttle Solid Rocket Booster (SRB). The record-low temperatures on the morning of the launch had stiffened the rubber O-rings, reducing their ability to seal the joints. Shortly after liftoff, the seals were breached, and hot pressurized gas from within the SRB leaked through the joint and burned through the aft attachment strut connecting it to the external propellant tank (ET), then into the tank itself. The collapse of the ET's internal structures and the rotation of the SRB that followed propelled the shuttle stack, traveling at a speed of Mach 1.92, into a direction that allowed aerodynamic forces to tear the orbiter apart. Both SRBs detached from the now-destroyed ET and continued to fly uncontrollably until the range safety officer destroyed them.
+
+NASA managers also disregarded engineers' warnings about the dangers of launching in cold temperatures and did not report these technical concerns to their superiors. 
+
+. shuttle go boom
+.. why?
+. O ring failure
+.. not rated for that temperature (known failure points since 1977)
+. why were they not rated for that temperature?
+.. Florida isn't usually that cold?
+. why did they not take temperature into account?
+.. they didnt think it would be a problem/too optimistic

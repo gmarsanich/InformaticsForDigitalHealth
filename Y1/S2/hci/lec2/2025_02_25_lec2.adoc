@@ -1,0 +1,147 @@
+= HCI for DH
+:toc:
+:toc-title: Contents
+:nofooter:
+
+== https://unipiit.sharepoint.com/sites/a__td_65368/Class%20Materials/Forms/AllItems.aspx?id=%2Fsites%2Fa%5F%5Ftd%5F65368%2FClass%20Materials%2FLecture%202%2FUCD%2DAM%2Epdf&parent=%2Fsites%2Fa%5F%5Ftd%5F65368%2FClass%20Materials%2FLecture%202[Sketching and Prototyping]
+
+[cols="1,1"]  
+|=== 
+|*Sketches* | *Prototypes*
+|Basic brainstorming
+|Testing ideas 
+|invite
+|attend
+|suggest
+|describe
+|explore
+|refine
+|question
+|answer
+|provoke
+|test
+|resolve
+|===
+
+=== Sketches/low/medium/high fidelity prototypes
+
+In early design sketching == prototyping
+
+* Low fidelity prototypes have few details but they are useful to start with
+** post it notes, storyboards, cardboard cutouts
+** interface design
+*** Paper prototypes are quick and cheap
+** keeping them basic encourages users to focus on high level concepts
+* Medium fidelity are a bit more refined
+** digital prototypes that don't require large time/money investments
+** usability testing (idea debugging and refinement)
+** propose an interface
+** run heuristic evaluations
+** conduct usability testing
+* High fidelity prototypes
+** provide a working system
+** conduct limited field testing
+** alpha/beta testing
+
+== Sketches
+
+Sketches are:
+
+* Quick
+* Timely
+* Disposable
+* Plentiful
+** More is more
+* Clear vocabulary
+* Constrained resolution
+* Consistency with state
+* Suggest and explore rather than confirm
+
+You want to explore as many ideas as possible as quickly and as cheaply as possible
+
+=== Storyboarding
+
+A series of key frames as sketches (like in films)
+
+* snapshots of the interface at particular points in the interaction
+
+Even if basic and simple the user understands how the UI works
+
+If they see something they like/don't like they can tell you and you can change it easily
+
+Tutorials can be used as storyboards
+
+* A step by step storyboard walkthrough with detailed explanations
+
+== Medium fidelity prototypes
+
+Digital prototypes that simulate some (not all) features of the interface
+
+* engaging for the user
+
+[CAUTION]  
+.Dangers of mid-fi
+====
+* Users focus on details but not bigger picture
+* Users reluctant to challenge designer
+* Users reluctant to touch the design
+* Management may think its real
+====
+
+=== Limiting prototpye functionality
+
+Vertical prototypes:
+
+* very finalized mockups of some functionalities
+* only one/very few screens with all their subscreens and such
+
+Horizontal prototypes:
+
+* not very finalized mockups of all functionalities
+* all main screens but no subscreens
+
+Scenario:
+
+* scripted events for testing
+
+=== Scripted simulations
+
+Create storyboard with media tools
+
+* scene transition activated by simple 
+user inputs
+* a simple vertical prototype
+
+User given a very tight script/task to 
+follow
+
+* appears to behave as a real system
+* script deviations blow the simulation
+
+=== Interface builders
+
+Design tools for laying out common widgets
+
+Excellent for showing look and feel
+
+* a broader horizontal prototype
+* but constrained to widget library
+
+Vertical functionality added selectively
+
+* through programming
+
+
+=== Wizard of Oz
+
+A method for testing a system that doesn't exist
+
+There is an operator (the wizard) that interacts on the other end
+
+* the operator follows a script
+* useful for simulating vertical functionalities
+
+
+The user thinks that's the final system
+
+i.e. prototyping ChatGPT but instead of an LLM you have a human on the other end

@@ -1,0 +1,159 @@
+= HCI for DH - UX and Task Models
+:toc:
+:toc-title: Contents
+:nofooter:
+
+== What is user experience?
+
+=== Creating Interactive Systems
+
+Focus on experience
+
+UI is only part of the system 
+
+* Dont focus only on functionality
+* Focus on accessibility
+** Customization
+** Preferences
+** Use cases/use context
+
+== UX documentation
+
+=== Statement of Requirements
+
+* Written document
+* Defines project requirements (no shit)
+* Acts as a reference point during project
+* Helps set the project scope
+* Agreed to and signed off by all stakeholders _before_ the project begins
+* Identifies risk
+
+For instance:
+
+* Project name, date, VCS
+* Project owner, sponsors and stakeholders
+* Project scope and objectives
+* Completion requirements
+* Deliverables
+* Timelines/milestones
+* Cost estimate
+* Assumptions and risk assessment
+
+=== Personas
+
+Set of profiles (based on research) that provides a slice of the prospective userbase
+
+* Keep them general
+** 3-5 personas usually enough
+* interview prospective users
+* capture patterns of user attitudes
+* Focus on:
+** key goals
+*** userbase-wide
+*** more specific goals
+** user behaviors
+** attitudes
+
+=== Scenarios
+
+Identify keys/goals
+
+A scenario is a paragraph (100-200 words)
+
+Writing multiple scenarios can describe the product more clearly
+
+Key questions:
+
+// blud is yapping n saying nothing
+
+* Why?
+* How?
+* When?
+* Where?
+** consider where the product will be used
+
+==== Scenarios for prototyping
+
+Creating prototypes for specific scenarios
+
+Vertical slice of a horizontal prototype
+
+=== Task analysis
+
+Helps us address design guidelines:
+
+* speak the users language
+** dont confuse the user
+* be consistent
+** strike a balance between novelty and familiarity
+** fit the users' existing use case(s)
+* give appropriate feedback
+** penis and balls sack
+
+Form prototypical tasks/user attitudes
+
+Collapse how users perform a given task into our new experience (???)
+
+Analyzes people's jobs(???)
+
+* what they do
+* what they work with
+* what they need to know
+
+Focuses on the user
+
+Examines external actions instead of reading the user's state of mind
+
+
+
+==== Phases of task analysis
+
+Iterative process
+
+. Defining purpose and scope
+* what tasks are we analyzing? in what detail?
+* look at goals of personas (find common tasks and individual tasks)
+. Obtaining data
+* get prior data
+** interviews (how do you complete this task?)
+** documentation
+** ethnographic observation
+. Extracting activity lists
+* identify key tasks and actions
+. Organizing and describing task performance
+* parallelizing task processes
+* optimizing
+. Confirming
+* make sure your analyisis is accurate
+. Use the results in analysis/evaluation
+
+
+==== Task analysis in the design process
+
+If you know what task needs doing you can design a solution that solves that task (??????????)
+
+Use it to evaluate the solution during prototyping
+
+* does my solution solve the task?
+** yes/no/kinda
+
+==== Human-task-computer relationships
+
+The computer should help the user achieve a task
+
+Taking into account the *domain*/*context* where the interaction takes place
+
+=== Task Models
+
+=== User Journey
+
+=== Site Map
+
+=== Wireframes
+
+=== Design Visualizations
+
+== Evaluating the user experience
+
+=== Subsection 2 
+

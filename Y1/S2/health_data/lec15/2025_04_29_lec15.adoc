@@ -1,0 +1,199 @@
+= Security Privacy and Availability of Health Data - Detection Tools
+:toc:
+:toc-title: Contents
+:nofooter:
+:stem: latexmath
+:source-highlighter: highlightjs
+
+== Rule Based Signature Detection
+
+Make rules 
+
+Violators are sus
+
+=== Snort IDS
+
+* checks if network packets match some rule
+* if match Snort sends warning
+** can integrate warning with router/firewall
+
+=== Yara
+
+Match a set of rules instead of a single string/regex
+
+.Yara Rules
+
+* file based
+* write rules in a text file
+* check set of files/processes against those rules
+* find matches
+
+Rules consist of a set of strings and a boolean expression
+
+Rules can be compiled so running the same checks multiple times will be faster
+
+Yara has modules to simplify rules and speed up detection
+
+Looks for indicator of compromise
+
+.Yara rule example (but in Python because lol)
+[source,python]
+----
+
+rule_silent_banker = banker
+
+meta = {"description": "foo", "threat_level": 3, "in_the_wild": True}
+
+strings = {"sig1": "bar", "sig2": "bar", "sig3": re(/md5:[0-9a-fA-F]), "sig4": some_hex_string_or_array}
+
+condition = strings["sig1"] or strings["sig2"] or strings["sig3"]
+
+if condition:
+    logging.critical("you have been pwned!")
+else:
+    logging.info("all good :)")
+finally:
+    logging.info(f"yara check at {datetime.now()}")
+
+----
+
+Yara does nothing other than detect files that match rules
+
+What to do with the file depends on the administrator
+
+=== SNORT
+
+Packet sniffer and such
+
+3 modes:
+
+. Sniffer mode
+* Shows packets in transit (like Wireshark)
+. Logger
+* Shows and remembers packets
+. Network Intrusion Detection System (NIDS)
+* Sniffs packet and applies user defined rules (route/drop)
+
+==== SNORT Architecture
+
+Snort has a particular architecture:
+
+. Taps into network
+* Uses:
+** packet decode engine
+** libcap
+. Preprocessing and plugins
+* Plugins used for various tasks
+** vulnerability/port scanning detection
+*** if someone scans a single IP address ports then they are scanning a single node
+*** if someone scans a single port on multiple IPs they are scanning for a specific service on multiple nodes
+*** attackers can randomly check ports/IP addresses to make it harder to detect
+** RPC plugin
+. Detection engine
+* Checks packets against rules
+* Plugins available for detection as well
+. Output
+
+==== SNORT Rules
+
+. Header Rules
+* rule action (drop, pass, redirect, alert, whatever)
+* protocol (TCP, UDP, SMTP)
+* Source address
+* Source port
+* Destination Address
+* Destination port
+* Network mask
+. Option Rules
+* Alert messages
+* Information on packet sections to examine
+
+By default the rule order is:
+
+. Drop
+* Check if packet should be dropped
+. Pass
+* If packet doesn't match drop rules check if it can pass
+. Alert
+* Check if passed packet should generate alert (can put alert before drop)
+. Log
+* Or check if passed packet should generate log
+
+This is safe but computationally expensive
+
+Since most packets are not malicious you can put pass first:
+
+. Pass
+* Pass packet
+. Drop
+* Check if packet should be dropped if fails pass check
+. Alert
+* Check if passed packet should generate alert (can put alert before drop)
+. Log
+* Or check if passed packet should generate log
+
+More dangerous but computationally cheaper
+
+* if misconfigured pass rule then can be dangerous
+
+== Merging Signatures And Anomalies
+
+Few products exclusively use one or the other
+
+Most use a mix of both
+
+=== Endpoint Detection And Response
+
+Software that runs on network endpoints to check for intrusions and collect information
+
+Can have bits and pieces of Yara/SNORT
+
+Fuses data from multiple endpoints and does a thing:
+
+* send alert
+* block traffic
+* kill process
+* whatever
+
+.Pros
+
+* Can easily tailor EDR for each endpoint
+* Have more general overview of network
+* Very powerful system
+
+.Cons
+
+* Can disrupt network immensely because it's basically sysadmin in skynet form
+* Very expensive yearly licenses
+** Can still be cheaper than humans that do the same thing
+* Weak to living off the land attacks
+** if vulnerabilities allow attackers to infiltrate the EDR then they can do anything
+
+==== Virtual Machine Introspection
+
+Something that defines tools to monitor VM runtimes
+
+* used to detect internal/external chicanery
+
+VM memory can be examined from outside the VM (freezes/snapshots)
+
+* this can be done without interrupting the VM's work
+
+Mapping a VM's memory page onto another is annoying
+
+VMMs/hypervisors do this
+
+Have to certify that VMM/EDR agent hasn't been compromised otherwise what's the point
+
+Works if bare metal has TPM or similar
+
+== Moving Target Defense
+
+We want to increase attacker uncertainty when gathering information before attacking
+
+If we change the system between info collection and initial attack then they don't know shit and have to restart
+
+Many ways to do this for many different types of things
+
+* Address Space Layout Randomization
+** randomly assign memory segments to applications
