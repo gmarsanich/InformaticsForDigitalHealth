@@ -144,7 +144,6 @@ Many pretrained frameworks for various tasks
 
 .Biomedical domain models:
 * BioWordVec
-* dio stracane
 
 === Embedding spaces hit at a semantic organization
 
