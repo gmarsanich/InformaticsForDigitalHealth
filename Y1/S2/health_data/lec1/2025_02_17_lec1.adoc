@@ -104,13 +104,11 @@ This is a security risk:
 2 key terms:
 
 . Safety: the system functions despite random events
+* Faults and natural events (power outage/earthquake/flood) -> safety
 
 . Security: the system functions despite deliberate events
-
-* Faults and natural events (power outage/earthquake/flood) -> safety
 * intelligent adversary with a plan -> security
 * data leaks and data loss -> privacy
-
 * Robustness evaluates the system's ability to withstand attacks from an adversary (security)
 ** e.g. if you are attacked with a ransomware your system resists adversary encryption
 ** Robustness is expensive
