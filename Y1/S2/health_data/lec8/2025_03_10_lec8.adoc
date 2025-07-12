@@ -258,12 +258,14 @@ Patch scheduling:
 
 Australia/New Zealand made list of 8 things for security/resilience
 
-. Patch applications
-. Patch OS
-. MFA
-. Restrict admin privileges
-. Application control (?)
-. slide moment
+. patch applications
+. patch operating systems
+. multi-factor authentication
+. restrict administrative privileges
+. application control
+. restrict Microsoft Office macros
+. user application hardening
+. regular backups
 
 === Common Vulnerability Scoring System
 
