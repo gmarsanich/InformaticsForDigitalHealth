@@ -173,6 +173,7 @@ Many types of obfuscation
 === Encryption based
 
 Encrypt malware with a different key each time
+
 Malware files have both malware code and decryptor code
 
 Matching the malware itself doesn't work but you can still match the decryptor signature
