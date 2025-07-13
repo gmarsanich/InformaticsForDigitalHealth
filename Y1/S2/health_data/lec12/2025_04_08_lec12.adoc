@@ -78,15 +78,12 @@ This key is only used for authentication and *NOT* to encrypt communication
 
 a pair of group members want to speak privately
 
-stem:[g], stem:[n] are public numbers where stem:[g] is from stem:[G]
+stem:[g], stem:[n] are public numbers where stem:[g] is from stem:[G] and stem:[G] is a finite cyclic group
 
-Alice picks random number stem:[a] such that stem:[1 \lt a \lt n] and sends stem:[g^a \ \text{of} \ G] to Bob
-
-Bob picks random number stem:[b] such that stem:[1 \lt b \lt n] and sends stem:[g^b \ \text{of} \ G] to Alice
-
-Alice computes element stem:[(g^b)^a = g^{ba} \ \text{of} \ G]
-
-Bob computes element stem:[(g^a)^b = g^{ab} \ \text{of} \ G]
+. Alice picks random number stem:[a] such that stem:[1 \lt a \lt n] and sends stem:[g^a \ \text{of} \ G] to Bob
+. Bob picks random number stem:[b] such that stem:[1 \lt b \lt n] and sends stem:[g^b \ \text{of} \ G] to Alice
+. Alice computes element stem:[(g^b)^a = g^{ba} \ \text{of} \ G]
+. Bob computes element stem:[(g^a)^b = g^{ab} \ \text{of} \ G]
 
 Alice and Bob now the group element that they use as the secret key
 
