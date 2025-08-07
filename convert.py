@@ -6,7 +6,6 @@ import zipfile
 parser = argparse.ArgumentParser(
     prog="convert.py",
     description="converts lecture notes in adoc format into either HTML or PDF",
-    epilog="my name jeff",
 )
 
 parser.add_argument("-dirpath", "-d")
