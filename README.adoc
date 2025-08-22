@@ -13,4 +13,4 @@ Arguments:
 
 Example:
 
-`python3 convert.py -dirpath . -outname notes -filetype pdf`
+`python3 convert.py -d Y1/S2/hci -o notes -t pdf`
