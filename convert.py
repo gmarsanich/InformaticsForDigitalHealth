@@ -38,7 +38,7 @@ for lecture in lectures:
             case "html":
                 subprocess.run(["asciidoctor-pdf", adoc_path])
             case "pdf":
-                subprocess.run(["asciidoctor-pdf", adoc_path])
+                subprocess.run(["asciidoctor", adoc_path])
             case _:
                 raise ValueError(
                     f"filetype must be one of html, pdf but found {filetype}"
