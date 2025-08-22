@@ -1,0 +1,16 @@
+= Notes for the Master's degree in Informatics for Digital Health at UNIPI
+:toc:
+
+== convert.py
+
+This script converts .adoc files into .html or .pdf and writes them to a zip archive. Requires https://asciidoctor.org/[Asciidoctor] and https://docs.asciidoctor.org/pdf-converter/latest/install/[Asciidoctor-pdf]
+
+Arguments:
+
+* -dirpath (-d): path to directory containing .adoc files
+* -outname (-o): name of the archive
+* -filetype (-t): file type for converted files. Can be pdf or html
+
+Example:
+
+`python3 convert.py -dirpath . -outname notes -filetype pdf`
