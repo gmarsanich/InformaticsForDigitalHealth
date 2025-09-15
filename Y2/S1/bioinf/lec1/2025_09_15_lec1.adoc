@@ -1,0 +1,124 @@
+= Bioinformatics and Systems Biology
+:toc:
+:toc-title: Contents
+:nofooter:
+:stem: latexmath
+
+== Aim of the course
+
+Analyzing biological data
+
+Investigating complex biological systems
+
+== Prerequisites (kind of)
+
+* Basics of computational complexity
+* Basics of string processing (regex)
+* Graph representations and basic algorithms
+* Basics of probability theory and statistics
+* Python skills
+* Network theory notation
+
+== Structure
+
+=== Biological background
+
+* General principles of cell biochemistry
+* General principles of molecular biology
+
+=== Basics of computational drug discovery
+
+* Basics of computer aided drug design
+* Molecular dynamics simulations in drug design
+* Lab on graphical representations of proteins
+
+=== Bioinformatics
+
+* Sequence comparison
+* Phylogeny and pattern inference
+* Transcriptome analysis (wtf)
+
+=== Systems biology
+
+* Modeling and analysis of biochemical reactions
+* Modeling and analysis of gene regulatio networks
+* Protein-protein interaction networks
+
+== Exam
+
+Final grade = stem:[(\text{writtenTest} \cdot \frac{1}{3}) + (\text{Assignment} \cdot \frac{2}{3})]
+
+=== Written test
+
+. Small questions on biology background (10 points)
+. Questions on computational drug discovery and design (20 points)
+
+=== Assignment
+
+. Exercises on bioinformatics and systems biology
+. Oral discussion on exercises
+
+
+== Cell functioning basics
+
+* DNA is the source code of the cell
+** genes can be transcribed into RNA -> proteins
+* Genes activate/inhibit each other
+* RNA delivers DNA info through the cell
+* Proteins run the cell
+** many types
+** they participate in chemical reactions
+** a network of reactions related to a particular function is called a pathway
+
+These are all sequences: 
+
+* DNA is a sequence of nucleotides
+** `A T C G`
+** human DNA has 2 sequences that merge into helix
+** you can derive a sequence from its complement
+
+* RNA is also a sequence of nucleotides
+** `A U C G`
+** RNA is obtained by a DNA transcription
+
+* Proteins are sequences of amino acids
+** 20 amino acids (`alphabet[:20]`)
+. Primary structure
+. Secotdary structure
+. Tertiary structure
+. Quaternary structure
+** Proteins can be 100s of amino acids
+
+There are rules that determine how these sequences can be formed
+
+== Sequence level operations on biological structures
+
+* Parsing and storage
+* Sequence alignment
+* Assembly
+** DNA/molecule sequencing
+** building long sequences from short sequences
+* Motif/pattern finding
+* Variant calling
+** detecting mutations (insertions/deletions, SNPs)
+* Annotation
+** linking sequences to functions
+
+== 3D representations of molecules
+
+Using coordinates to place each atom of each amino acid in a 3D space
+
+== Biological networks
+
+. Gene regulatory networks
+* describe influence (inhibition/activation) between genes
+* `A` activates `B` which inhibits `C` and so on
+* we can simulate gene `D = off` and see how it affects the rest of the network 
+
+. Cell pathways
+* Describe chemical reactions in cells
+* More detailed descriptions than GRNs
+
+. Protein-protein Interaction networks (PPI)
+* Describe interaction between proteins
+* Undirected graph where nodes are proteins and arcs are interactions between them
