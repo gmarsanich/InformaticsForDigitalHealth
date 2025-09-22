@@ -1,0 +1,673 @@
+= Bioinformatics and Systems Biology - Molecular Biology & BioChemistry
+:toc:
+:toc-title: Contents
+:nofooter:
+:stem: latexmath
+
+== Definitions
+
+=== Systems biology
+
+Holistic approach to decipher complex biological systems
+
+Look at individual parts as well as whole system
+
+* convert biological complexity to informatic complexity
+* genome is too long to analyze biologically
+* can fragment it and look at those pieces
+* analyzing piece by piece and stringing back together is a computer science problem
+
+=== Omics
+
+Comes from latin "ome" = many
+
+* study lots of data
+** gen-omics
+** study entire set of DNA molecules in a given system
+*** study all of the genome
+** prote-omics
+*** study all of the proteins
+*** studying one protein does not proteomics make
+**** producing 1 protein takes ~1 week
+** transcript-omics
+*** study all DNA -> RNA transcriptions
+** more difficult at population level because of larger differences
+* Interactomics
+** study the entire set of interactions between things
+
+=== Primary Sequence
+
+Identify the exact specification of the atomic compositions -> string of monomeric units
+
+* DNA is a linear polymer so it's relatively easy
+* Sugars tend to be branched
+* More specialized proteins can be cross linked
+
+These are also called *folds* (like Folding@Home)
+
+Find:
+
+* number of polymers
+* type of monomers
+
+Contains all information required to form DNA
+
+== Monomers
+
+The things that make up polymer chains
+
+=== Nucleotides 
+
+4 nucleotides 
+
+2 possible linear polymers:
+
+DNA => 46 molecules (23 pairs) => chromosomes
+
+* stem:[3 \cdot 10^4] genes
+* very long chain (2 meters) in each cell
+
+RNA
+
+* stem:[10^6] RNA molecules
+* very short
+* many types of RNA that do very many different things
+** mRNA
+** rRNA
+** tRNA
+** snRNA
+** snoRNA
+** miRNAs
+** IncRNA
+
+=== Amino acids
+
+20 amino acids
+
+Used to build proteins
+
+== Biological Structures
+
+Biological systems are made of many building blocks:
+
+.Cells
+
+* Many cells 
+* ~stem:[3 \cdot 10^{13}] cells in humans
+
+.Tissues
+
+* 4 types in humans
+
+.Organs
+
+* 78 organs (also in humans)
+
+== DNA
+
+Stores genetic information
+
+Double helix shape (twisted ladder)
+
+* Double helix for redundancy
+* 2 molecules stapled together
+
+These molecules join the rails of the helix and form a complete DNA molecule
+
+The helix can be opened and replicated
+
+* any time a cell split it has to replicate its DNA
+
+DNA also contains genes
+
+* clusters of nucleotides that contain genetic informations
+* instructions to build proteins
+* also called *genetic code*
+
+DNA is compacted (because it's 2 meters long)
+
+* when DNA uncompacts itself (i.e. gene is expressed) a protein is produced
+* neurons and muscle cells are very different but they use the same DNA
+* cells determine what genes are expressed
+** different cells have different RNA
+
+== DNA/RNA building blocks
+
+DNA/RNA are made of monomers called nucleotides
+
+Each nucleotide is made up of:
+
+. a nitrogenous base
+* Nitrogenous bases contain nitrogen
+* nitrogen differentiates nucleotides other molecules
+. ribose/deoxyribose (5 carbon sugar)
+* DNA has deoxyribose
+* RNA has ribose
+. at least 1 phosphate group
+
+Nitrogenous bases are made up of 4 main components:
+
+.Pyrimidine bases
+* Cytosine => C
+* Thymine => T
+* Uracil => U
+
+.Purine bases
+* Adenine => A
+* Guanine => G
+
+When nucleotides are chemically bonded they polymerize
+
+* 2 NTs => dinucleotide
+* <50 NTs => oligonucleotide
+* >50 NTs => polynucleotide
+
+
+=== Secondary DNA structure
+
+DNA backbone is sugar based
+
+Rules for sequencing
+
+* A looks for T
+* C looks for G
+* `complementary = {"A": "T", "C": "G"}`
+** e.g. if `strand A = ATGCAGC` then `strand B = TAGTCG` 
+
+DNA backbone is held together by interaction between nitrogenous bases
+
+* *hydrogen bonds* hold the 2 strands together
+* ensures constant distance
+
+==== Antiparallel and complementary strands
+
+DNA strands can have one of 2 directions:
+
+.3' (3 prime)
+* DNA strand 2 is going down (phosphate group dangling)
+
+.5' (5 prime)
+* DNA strand 1 is going up (phosphate group pointing up)
+
+They are parallel but inverted => *antiparallel*
+
+Information is the same just opposite order
+
+* if Strand 1 has A then Strand 2 has T
+* can infer strand 2 from strand 1 given the matching rules 
+* this is called *complementarity* and *hybridization*
+
+This makes DNA very stable
+
+== Representing DNA sequences
+
+FASTA is a text based format for representing DNA sequences
+
+* https://www.ncbi.nlm.nih.gov/genbank/samplerecord/[FASTA example]
+
+Each letter is a nitrogenous base (ATG)
+
+Format:
+
+. header with information about genome
+. genome itself
+
+.FASTA header examples
+[source,python]
+----
+›Seq1 [organism=Streptomyces lavendulae] [strain=456A]
+
+›ABCD [organism=Plasmodium falciparum] [isolate=ABCD]
+
+›DNA.new [organism=Homo sapiens] [chromosome=17] [map=17q21] [moltype=mRNA]
+----
+
+Contains half of the DNA strand
+
+* can infer other half using complementary bases
+
+== DNA is replicated
+
+Why?
+
+* To preserve genetic information
+* allow cell division and growth
+** cell division -> human growth
+** zygote -> 4 gote -> 8 gote -> ... -> baby
+* ensure accurate trait inheritance
+
+3 main hypotheses for how DNA is duplicated:
+
+. distributive mechanism
+* random parts are duplicated
+. conservative mechanism
+* whole strand duplicates
+. semi conservative
+* DNA strand unwinds
+* used to build new strand
+
+Most likely replicated using a semi conservative mechanism
+
+* each strand is used as a template to synthesize a complementary strand
+
+Mother DNA strand is used as template to build complementary daughter sequence
+
+Done through an enzyme called *polymerase*
+
+=== DNA polymerase
+
+Protein/enzyme that looks like a right hand
+
+Given a strand it synthesizes the complementary sequence using its thumb structure
+
+https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fi.redd.it%2Fe3rdli290ud21.png&f=1&nofb=1&ipt=1f45123ed6302544623e8a2ebb40ffcf4c8a319b4239fc5aa8021af602416c41[How?]
+
+* Needs building blocks -> nucleotides -> sugar, nitrogenous base, phosphates
+* Needs pre existing hybridized bit of DNA strand
+** called *primer*
+
+Polymerase does proofreading before replicating
+
+* sometimes it makes a mistake (1 wrong dNTP every stem:[10^5] nucleotides)
+** proofreading reduced to 1 in stem:[10^7]
+** additional repair mechanisms decrease further to 1 in stem:[10^{10}]
+* mistakes cause *mutations* because the genetic code is changed
+** not necessarily bad if silent
+** can lead to tumors and rare diseases if not silent
+
+Proofreading steps:
+
+. When the wrong nucleotide is incorporated the rate of synthesis decreases
+* due to incorrect position of 3'- *OH*
+. When there is a mismatched 3' end the last 3-4 nucleotides become single stranded
+* the mismatched NT binds to the exonuclease active site
+** *exonuclease* are enzymes that excise nucleotides from the end of a chain
+* the mismatched NT is then cut off
+. The polymerase forms a new primer-template junction
+. Synthesis resumes
+
+=== Mutations
+
+Polymerase inserts a mismatching nucleotide in the new strand and fails to correct it
+
+Mutations are permanent changes in a DNA sequence
+
+* can affect single nucleotides or large genomic regions
+
+Each human generation has ~60-100 mutations
+
+Mutations in some genes don't really do anything unless there's a lot of them
+
+If a single nucleotide in another gene changes you can get sickle cell disease or cystic fibrosis
+
+Many types of mutations:
+
+* point mutations
+* insertions
+** Down's syndrome
+* deletions
+* chromosomal rearrangements
+
+Mutations can happen after DNA is synthesized correctly
+
+* ionizing radiation
+* UV damage
+* aggressive chemicals
+
+CAUTION: mutations != polymorphism
+
+* Mutations are very rare (<1%)
+* Polymorphism are less rare (>1%)
+** some genes are highly polymorphic (i.e. they can be expressed in multiple ways)
+** mostly neutral or benign
+
+=== DNA replication logistics
+
+Mother/factory DNA is unwinded
+
+Each strand is then replicated using polymerase and primers
+
+This process requires energy
+
+* proteins take care of this in cells
+* in a lab you need a lot of heat (>90C)
+** *denatures* the proteins -> strands are separated
+** denaturation is reversible becaues hydrogen bonds are not covalent
+
+When the helix is open:
+
+* Single strand DNA -> ssDNA
+
+When it's closed:
+
+* Double strand DNA -> dsDNA
+
+== Polymerase Chain Reaction (PCR)
+
+Used to identify sequences in DNA samples
+
+PCR was discovered/invented by Kary Mullis 
+
+He found that you could copy a bit of DNA using a thermocycler
+
+* put DNA and reagent in hole
+* cycle temp between 94 -> 72 -> 60 degrees
+
+Repeat 20/30 times:
+
+. Denaturation: heat DNA to 94C
+* this opens helix
+. Annealing/hybridization: lower temp to 60
+* helix is still open
+* primer attaches to DNA
+** this polymerizes the strands
+. Extension: lower temp to 72
+* add polymerase and nucleotides
+* synthesizes new DNA
+
+Pseudocode:
+
+[source,python]
+----
+dna = DNA.read()
+new_dna = DNA.new()
+
+polymerase, nucleotides = reagent.split()
+primer = dna.get_primer()
+
+for _ in range(30):
+    new_dna = new_dna.temp(94) # denaturation opens helix
+    new_dna = new_dna.temp(60) # lower temp before hybridization
+    new_dna = new_dna.attach(primer) # hybridize with primer
+    new_dna = new_dna.temp(72) # heat DNA back up
+    new_dna = new_dna.extend(polymerase, nucleotides) # attach new components
+----
+
+This process can cause mutations
+
+PCR can be used to identify pathogen DNA in samples of other DNA
+
+* Used to test for covid during the pandemic
+
+== PCR and DNA sequencing
+
+Sanger sequencing:
+
+. Determine DNA sequence
+. Use template+primer
+. DNA polymerase makes new strand
+. ddNTPs end synthesis at specific bases -> *terminators*
+* special building block
+** one OH is replaced with H which stops chain elongation
+* can be used to identify original sequence
+. Fragment sizes are used to infer the rest of the sequence
+
+If new sequence has `T` then real sequence has `A` at the same spot
+
+Sanger sequences are very efficient
+
+* they go through chromosomes like nothing
+
+Sanger throughput was increased by color tagging each ddNTP
+
+* like a lamp stapled to the end of a nucleotide (what)
+* each terminator has its own color
+* measure the intensity of each lamp and create plot
+
+When the polymerase in the PCR makes a mistake we call it a sequencing error (not a mutation)
+
+* fragment will have the wrong terminator
+
+By increasing the number of cycles we can more easily find the odd strands
+
+The outputs will be similar but not identical
+
+* sequence assembly becomes a problem because fragments are not identical
+
+=== Challenges in Read Alignment
+
+A single DNA molecule can have identical repeated sequences
+
+During assembly you might assume that they are different sequences and overlap them
+
+* this causes the output fragment to be incorrect
+
+== New/Second Generation Sequencing (NGS)
+
+Developed ~2010
+
+* 3/4 methods were developed
+* most popular today called Lumina
+
+Sequence an array of shorter DNA sequences for less money than Sanger sequences
+
+* up to stem:[10^6] or stem:[10^9] sequences of length ~stem:[10^2]
+
+Can do multiple molecules at the same time in the same reaction
+
+3 steps:
+
+. Fragmentation
+* Fragment size depends on the sequencing method
+. Immobilization
+* put them somewhere flat and safe to physically separate them from each other
+. Amplification
+* use PCR to duplicate fragment into cluster
+. Sequence the clusters
+
+=== Fragmentation
+
+Many ways
+
+Cheapest is sonication
+
+* use ultrasounds to break the bonds of each fragments
+* random bonds are broken
+
+=== Immobilization
+
+Silica surface (typically in Lumina) used to immobilize fragments
+
+* fractionalized with single strands of DNA oligonucleotides (adapters)
+** -otides protruding from surface
+* flux the fragments onto the surface
+* fragments will attach to their complementary sequence
+** need to design primers specific to the adapters
+
+There is now an extra sequence because of the oligonucleotides
+
+* we know what the sequence is so it's easy to remove it/account for it
+
+=== (Library) Amplification
+
+After immobilization there are a lot of sequenced fragments
+
+=== Illumina Sequencing
+
+Uses reversible terminator nucleotides
+
+* uses removable blocking group
+** can insert it when needed to block elongation and remove to allow it
+* using color tagging we can choose to recognize the nucleotide and remove/attach the blocking group
+* this allows us to identify a sequence
+
+== Third Generation Sequencing
+
+Cheaper than SGN
+
+Take single strand of DNA/RNA and sequence it as it is without immobilization and such
+
+But how?
+
+=== Oxford Nanopore Technology
+
+Uses nanopores
+
+* nano-scale hole
+
+You have a layer of something that acts as insulator
+
+Make nano hole
+
+Molecules are forced to go through hole
+
+Applying different voltages to the surface/layer causes current to flow through the hole
+
+Every time a molecule passes through a different voltage is output
+
+You can use this to reconstruct the whole thing
+
+Much more efficient than Lumina
+
+* Output is much longer
+* don't need assembly because you already have the whole thing
+
+Very expensive
+
+== RNA
+
+Cousin of DNA
+
+Very similar polymers
+
+* RNA has OH group at position 2 of the RIBOSE sugar
+* this prevents formation of double helix
+* has uracil instead of thymine
+** still hydrogen bonds with Adenine
+* still uses hybridization
+** called *stretched duplex*
+
+RNA is unstable relative to DNA
+
+* because of OH group
+* the structure is less predictable
+* this makes RNA able to do more things
+** sometimes RNA acts as an enzyme (what)
+
+// Table generated by LLM
+
+[cols="1,1,1", options="header"]
+|===
+| RNA type | Typical size (nt) | Approx. relative abundance*
+
+| Ribosomal RNA (rRNA) – 28S, 18S, 5.8S, 5S
+| 120 – 5 000 nt (28S ≈ 5 kb, 18S ≈ 1.9 kb, 5.8S ≈ 160 nt, 5S ≈ 120 nt)
+| ≈ 80 % of total RNA mass
+
+| Transfer RNA (tRNA)
+| ~73–95 nt (most ~76 nt)
+| ≈ 15 % of total RNA mass
+
+| Messenger RNA (mRNA)
+| ~500 – 10 000 nt (median ≈ 2 kb)
+| ≈ 2–5 % of total RNA mass
+
+| Small nuclear RNA (snRNA) – U1, U2, U4, U5, U6, …
+| 100 – 300 nt
+| < 0.5 %
+
+| Small nucleolar RNA (snoRNA)
+| 60 – 300 nt
+| < 0.5 %
+
+| MicroRNA (miRNA)
+| ~21–23 nt (processed from ~70‑nt precursors)
+| < 0.5 % (≈ 0.01 % of total RNA mass in tissues)
+
+| Piwi‑interacting RNA (piRNA)
+| 24–31 nt
+| < 0.5 %
+
+| Long non‑coding RNA (lncRNA)
+| > 200 nt (often several kb)
+| < 1 %
+
+| Circular RNA (circRNA)
+| 200 – 2 000 nt (variable)
+| < 0.5 %
+
+| Other small RNAs (e.g., siRNA, Y‑RNA, 7SL RNA)
+| 20 – 400 nt
+| trace amounts
+|===
+
+*Relative abundance figures refer to **mass proportion** of total cellular RNA.  When expressed as molecule counts, tRNAs and certain small RNAs can outnumber rRNA molecules, but each contributes far less mass.
+
+Sources:
+
+* https://www.researchgate.net/figure/Estimate-of-RNA-levels-in-a-typical-mammalian-cell-Proportion-of-the-various-classes-of_fig1_272188718
+* https://www.qiagen.com/us/resources/faq?id=06a192c2-e72d-42e8-9b40-3171e1eb4cb8&lang=en
+* https://www.sciencedirect.com/science/article/pii/S1672022914000278
+* https://www.nature.com/articles/s41598-021-04209-4
+* https://en.wikipedia.org/wiki/Piwi-interacting_RNA
+
+
+=== DNA transcription
+
+RNA is *always* transcribed from DNA
+
+* DNA is translated into RNA by RNA polymerase
+* one DNA strand is used as template for RNA synthesis
+* RNA polymerase does not require a primer
+** only elongates NTPs
+
+RNA can act as a messanger to encode proteins
+
+* Messenger RNA (mRNA) carries the same genetic info as DNA (triplets)
+* takes genetic info from DNA to protein
+* determines whether gene is expressed or not
+** e.g. mRNA does not deliver synapse information to muscle cells
+* no mRNA -> no expression
+* low mRNA -> low expression
+* high mRNA -> high expression
+
+Most DNA does not code for proteins so it was called junk DNA
+
+However this is not true
+
+DNA is divided into multiple categories
+
+All categories are useful in some way to maintain genome stability
+
+* they regulate gene expression
+* they contribute to the structural organization of the genome
+* they are involved in evolution and genetic variability
+* they protect genes from mutations
+
+=== mRNA translation
+
+Ribosomes and tRNA convert mRNA into proteins
+
+* ribosomes and tRNA are both made by RNA
+* they grab mRNA and slide on it to read genetic code
+* tRNA is a specific RNA substructure that can hybridize to a specific section of the mRNA sequence (bro what) 
+
+=== mRNA splicing
+
+Human genes contain pieces of useless DNA
+
+* information not necessary to build protein
+
+Pre-mRNA is spliced to remove *introns* (useless genetic info)
+
+// look at slides because wtf
+
+=== RNA Primary Sequence
+
+String of nucleotides
+
+in BioInf this becomes a string of DNA 
+
+* RNA -> DNA -> sequenced
+* this is due to technological issues
+** 1st generation sequencing has to be linear
+
+How do you get DNA from RNA?
+
+* *retrotranscription* using an enzyme
+** *reverse RNAse*
+** takes RNA sequence and spits out DNA sequence
+** first discovered in HIV
+* cut out leftover RNA
+* get single DNA strand
+* synthesize other strand using complementary
