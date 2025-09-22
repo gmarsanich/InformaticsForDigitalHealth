@@ -376,7 +376,7 @@ polymerase, nucleotides = reagent.split()
 primer = dna.get_primer()
 
 for _ in range(30):
-    new_dna = new_dna.temp(94) # denaturation opens helix
+    new_dna = dna.temp(94) # denaturation opens helix
     new_dna = new_dna.temp(60) # lower temp before hybridization
     new_dna = new_dna.attach(primer) # hybridize with primer
     new_dna = new_dna.temp(72) # heat DNA back up
