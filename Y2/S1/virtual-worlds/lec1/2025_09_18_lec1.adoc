@@ -1,0 +1,179 @@
+= Virtual Worlds - Digital Twins
+:toc:
+:toc-title: Contents
+:nofooter:
+:stem: latexmath
+
+== Define Digital Twins
+
+Digital copy of imaginary/real object
+
+Extrapolate features and represent digitally
+
+== DT maturity levels
+
+. Static digital model
+. Dynamic digital shadow
+* automatic data flow
+* real time state updates
+. True digital twin
+* bidirectional flow control
+. Autonomous
+* doesn't require intervention
+
+== Types of digital twins
+
+Product digital twins
+
+* physical items
+
+Process digital twins
+
+* workflows and procedures
+
+Systems digital twins
+
+* Penis and balls
+
+=== Digital Twin Examples
+
+. Pacemaker (DToP)
+
+* Track sensors inside pacemaker
+* Given scanning of patient we can know how the pacemaker parameters will change
+* Predictive optimization
+** improve performance given predicted data
+* Maintenance alerts
+
+. Surgical procedure
+
+* Pre-op planning
+** model specific workslofs and decision points
+* Resource optimization
+** tracks resourece usage in different procedures
+* Smart scheduling
+// ** idk
+* Continuous Improvement
+** Identifies improvements over time
+
+. Hospital System
+* ER
+** Intake
+** Triage
+** Stabilization
+* Surgery
+** OR scheduling
+** resource allocation
+
+All these need to be within 16ms to be considered REAL TIME
+
+=== Digital Twins vs Traditional Models
+
+* Realtime/continuous vs static/historical
+* Automatic sync vs manual updates
+* Dynamic prediction vs limited forecasting
+* Bidirectional interaction vs unidirectional interaction
+
+=== Digital Twins vs Metaverse 
+
+// add later
+
+== Architecture Framework
+
+. Application layer
+* Direct communication with end user
+* insights/control/visualization
+. Digital model
+* simulations and state representations
+. Data processing
+* Ingestion
+** Stream processing
+** Batch processing
+** Real time data
+* cleaning
+* aggregation
+* Storage
+** Timeseries DBs
+** Data lakes
+** structured storage
+. Physical entity layer
+* Physical objects
+** equipment
+** biological systems
+** processes
+* Sensors
+** temperature
+** pressure
+** motion
+** imaging
+* Actuators
+** motors
+** valve
+** displays
+** treatment devices
+* Communication
+** BLE
+** WiFi
+** USB
+. Connectivity layer
+* Data transmission protocols
+** MQTT
+** HTTP
+** WebSocket
+** Custom
+* Edge computing
+
+=== Digital Model Layer Components
+
+. Representation
+* CAD model
+** e.g. scanning heart of patient
+* String
+* Integer
+* point clouds
+
+. Behavioral models
+* Physics simulations
+* Mathematical models
+* AI/ML algorithms
+
+=== Application Layer Services
+
+Gather emergent behavior from defined behaviors
+
+* humans can do this
+* AI agents can also do this
+
+Use/do these things:
+
+* Analytics and insights
+* Predictive maintenance
+* Control and optimization
+* Descision support
+
+== 3D Digitalization techniques
+
+So many ways with differnt costs, invasiveness, accuracy and speed
+
+=== Laser Scanning
+
+3 main types
+
+. Time of flight
+* like radar but light
+
+. Phase shift
+* Checks difference between phases of out light and in light
+
+. Point cloud generation
+* Millions of points measure the distance from observer
+* Can also use gen AI to reconstruct unseen objects
+** Signed Distance Fields
+
+Scanning operating rooms and such
+
+=== Structured Light
+
+Like Kinect
+
+* Tooth prosthetics
