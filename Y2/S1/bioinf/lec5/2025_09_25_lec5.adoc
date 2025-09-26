@@ -1,0 +1,133 @@
+= Bioinformatics and Systems Biology - Molecular Modeling and Computer Aided Drug Design
+:toc:
+:toc-title: Contents
+:nofooter:
+:stem: latexmath
+
+== Introduction and Graphical Representation
+
+Computational chemistry exploits computer science to solve chemical problems
+
+* predict chemical behaviors
+* estimate structures and behaviors of molecules
+* predict catalyitic reactions
+
+Focus on ligand design rather than drug design
+
+.Ligands
+*ligands* are small molecules that can somehow interact with some receptor somewhere
+
+.Drugs
+*drugs* are commercial molecules that can contain ligands
+
+* they need to be optimized
+* they need to pass clinical trials
+* they also need to go through ethics committees
+
+.Receptor
+biological structure to which specific signaling molecules can bind to 
+
+these molecules can be:
+
+* peptides
+* neurotransmitters
+* hormones
+* pharmaceutical drugs
+* toxins
+* and many more
+
+=== Induced Fit Model
+
+Ligands and receptors are not rigid
+
+They can adapt somewhat to fit each other
+
+* the receptor can only really modify the binding site
+
+== Molecular Modeling
+
+In the 70s they were represented as 2D topological structures
+
+* still used in organic chemistry
+* halogens aren't drawn because they are implied
+* carbon is also usually not drawn
+
+Real molecules exist in 3D space 
+
+* deducing 3D structures from 2D representations is very difficult
+* you need to know the reciprocal space between the atoms
+* need to know the spatial disposition
+
+Specific colors are used in 3D models to denote different atoms and bonds
+
+* *CPK* color scheme
+* Oxygen = red
+* Hydrogen = white
+* Carbon = gray usually
+* Nitrogen = blue
+
+=== 3D representation
+
+4 main ways
+
+.Line/Wireframe
+* Use lines to draw the molecule
+* bonds and atoms are mostly indistinguishable 
+
+.Stick
+* Atom-atom bonds are like tubes (thicker lines)
+* most used representation
+
+.Ball and stick
+* Use ball to represent the nucleus of the atoms
+* Bonds are represented as tubes
+
+.CPK
+* space filling representation
+* each atom is given the van der Wallis radius of the real atoms
+* the bigger then radius -> the bigger the atom
+
+=== Amino acids to proteins
+
+Amino group + carboxylic acid group -> amino acid
+
+Amino acids bond from N-term to C-term
+
+This is a *peptide bond*
+
+* which is an ammide group
+** carbon+oxygen+nitrogen
+* peptide bonds release water
+** OH and H are lost -> forms H2O
+* peptide bonds behave like a double bond
+** no free rotation around the peptide bond
+** they can move if they have a good reason
+** they tend to be parallel -> bd , or reverse -> dp
+* generally the bulky groups are oriented in opposite directions (dp)
+
+The *alpha* carbon is the carbon atom that connects the amino group and the carboxylic group
+
+They are used to represent each amino acid
+
+* we can draw a connection between 2 alpha carbons to represent the whole protein
+
+The angles between amino acids are called *phi* and *psi*
+
+* the most common angles are 100 to 180 and ~ -60 +/- 10 degrees
+* beta strands mostly 100-180
+* right helix mostly ~-60
+* left helix very rare but mostly medium positive angles
+
+== X ray resolution
+
+3D picture of a macromolecule
+
+Resolution is the sharpness of the image
+
+* lower is better
+** if res=15cm you can discriminate objects of size ~15cm
+** if res=2cm you can discriminate objects in the range of ~2cm
+
+You don't need extreme resolutions
+
+* use enough resolution for the task
