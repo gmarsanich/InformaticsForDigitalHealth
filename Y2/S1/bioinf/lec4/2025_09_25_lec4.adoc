@@ -1,0 +1,347 @@
+= Bioinformatics and Systems Biology - Intro to Biochemistry 2
+:toc:
+:toc-title: Contents
+:nofooter:
+:stem: latexmath
+
+== Protein representation
+
+Many ways to represent proteins
+
+AlphaFold can represent tertiary structures
+
+* a single polypeptide chains
+
+AlphaFold struggles with quaternary structures
+
+* multi-polypeptide chains
+
+All proteins can be one of these 2 shapes in their secondary structure:
+
+.Beta Sheets
+Indicator of stability
+
+The more beta sheets there are in a tertiary structure the more stable a protein is
+
+.Alpha Helixes
+Less stable
+
+Moves more freely
+
+* like a spring
+
+=== Space filling model
+
+Each atom is given a color and is represented by a sphere
+
+=== Stick model
+
+Semi-linear shapes 
+
+Square-ish shapes
+
+Shapes are color coded
+
+They represent beta sheets and alpha helix (see later)
+
+=== Ribbon model
+
+Alpha helixes are drawn as helixes
+
+Beta sheets are flat
+
+=== Common bonds
+
+Important becaues of acid/base compounds
+
+Acid compounds have a lot of H+
+
+* compete with existing hydrogen bonds and can mess with structures
+
+Basic compounds have a lot of OH-
+
+* similar thing happens
+
+If a cell's pH changes it can seriously mess up the organism
+
+
+.Hydrogen bond
+Forms bonds with negatively charged ions (atoms?)
+
+Holds DNA together
+
+Not very strong but very common
+
+.Hydrophobic interactions
+Weak bonds between groups that ignore water
+
+they are stable regardless of pH
+
+Hydrophobic interactions
+
+.Sulfide bridges
+Stronger than hydrogen bond
+also stable regardless of pH
+
+* Cystine has a sulfide bridge
+
+.Ionic bonds
+Slightly stronger than hydrogen bonds
+
+Simple electrostatic charge bonds
+
+== Hydrophobic and hydrophilic molecules 
+
+The type of bond depends on the environment proteins are found in
+
+* watery environment -> kick out charged R groups
+* lipid environment -> kick out hydrophobic groups
+* amphipathic -> can be in either
+** lysine has a long chain so it can deal with either environment
+
+You could engineer a polypeptide chain that has both hydrophobic and hydrophilic peptides it can rotate accordingly
+
+* hydrophilic part inside water
+* hydrophobic outside
+
+Cholesterol does this
+
+* LDL and HDL have different properties
+* ratio of one wrp to the other depends on blood state
+
+The active site of the hand enzyme is inside a hydrophobic pocket
+
+Albumin changes irreversibly when exposed to heat
+
+* bonds are broken
+* completely changes structure of the protein 
+
+This is called *denaturation*
+
+Denaturation can be reversed if sulfide bonds are unbroken
+
+== Working with proteins
+
+Give proteins a tertiary structure
+
+* how do they crystallyze?
+* what do they become?
+
+Find biochemical functions
+
+* what do these proteins do?
+
+Find regulation/modulation activities
+
+* how do they affect other reactions?
+
+=== 3D visualization
+
+==== Cryo-electron microscopy
+
+Flash freezing dried molecule samples with non crystalline ice
+
+* needs to be extremely fast or use anti freeze type solvents
+* water *cannot* be allowed to crystallize
+** icicles can break the protein itself and destroy it
+
+==== X-ray diffraction
+
+measures the amount of electrons around certain atoms
+
+knowing the number of electrons in bonds gives us information about the type of bonds
+
+this works if you know what youre putting in the machine
+
+* it only shows you the 3D structure
+
+==== Nuclear Magnetic Resonance
+
+Measures the resonance of the atoms
+
+Computes the distance between them
+
+Reconstructs 3D structure
+
+=== Function identification
+
+==== Column Chromatography
+
+Chemical method for finding the function of a protein
+
+Given a matrix of inert material
+
+Put protein on top of matrix
+
+* + protein needs - matrix
+
+As protein moves down bonds will form and break
+
+Protein will separate from the rest
+
+Put solvent in surviving protein
+
+Split protein from matrix
+
+==== Electrophoresis
+
+Visualizes and characterizes purified proteins
+
+Use electricity to move proteins
+
+Uses a gel with - electrode at top and + electrode at bottom
+
+Charged proteins will go towards the pole with opposite charge (we don't want this)
+
+SDS detergent is used to set all protein charges to -
+
+* all proteins will go down
+
+Gel pores regulate the sizes of proteins that can go to either pole
+
+* smaller proteins will get to the bottom first
+
+Since we know the voltage and time we can estimate/measure the charge to mass ratio
+
+Antibodies are used to identify proteins in the output
+
+* attach bioluminescent compound to antibody
+
+==== 2D electrophoresis
+
+Done typically on blood and tissue samples
+
+* too many proteins
+* output gets crowded
+
+Proteins are separated vertically and horizontally
+
+* smaller go down first and go lower
+* different shapes spread horizontally
+
+==== Mass spectrometry
+
+Works with non-protein molecules as well (like fatty acids)
+
+In proteins it breaks the amino acid sequence in specific places
+
+* accurately returns the amino acids in the chain
+
+Steps:
+
+. Ionization breaks the protein down and charges it
+* uses charged laser pulse (+/-)
+* can also force the protein to evaporate (nebulization)
+. introduce these molecules to electric/magnetic field
+. molecules are distributed across different parts of the field
+* *mass to charge ratio* stem:[\frac{m}{z}]
+. Use software to estimate the mass
+
+==== Liquid Chromatography-tandem MS
+
+Combines chromatography to isolate protein
+
+Protein is put into mass spectrometer to reconstruct sequence
+
+Can be used to discover unknown proteins
+
+==== Fluorescence
+
+Really focuses on function
+
+Color coded antibodies bind to specific molecules
+
+if colors merge it means that the 2 molecules interact
+
+=== Regulation of protein function
+
+Going from an existing but non functional form to a functional form requires some kind of chemical change
+
+* charge
+* hydrophobia
+* lipophilia
+
+==== Activation Mechanisms
+
+.Conformational Chnages
+binding of another molecule activates the protein
+
+.(De)Phosphorylation
+addition/removal of phosphate group changes activation based on the protein
+
+this can be used to generate a protein that's always active as long as it has phosphate bound to a specific R group
+
+* substitute amino acids that cant take phosphate to permanently enable proteins that only work if phosphate is unbound
+
+*Phosphomimetic* molecules:
+
+* Tyr
+* Ser
+* Thr
+* His
+
+.Nucleotide exchange
+Humans work on ATP
+
+G proteins are inactive when bound with GDP and are active using GTP
+
+changind the D to a T activates a protein
+
+.Cleavage
+Cutting off parts of proteins
+
+== Signal Transduction
+
+.Specificity
+
+A ligand fits with its specific receptor
+
+.Sensitivity
+
+a single receptor has a specific sensitivity for its ligand
+
+.Amplification
+When enzymes activate other enzymes there is an activation cascade called *enzyme cascade*
+
+* the number of affected molecules increases geometrically
+
+.Modularity
+
+Binding modules can be attached/detatched depending on the environment
+
+.Desensitization/Adaptation
+
+When a receptor is activated a feedback circuit shuts it off or removes it from the cell surface
+
+.Divergence
+
+When a receptor is active it opens multiple pathways with different effects
+
+.Integration
+
+When 2 signals on 2 receptors have opposite effects on a metabolic characteristic the outcome of the regulation is given by combining the input of both receptors
+
+.Localized response
+
+When the enzyme that destroys and intracellular message is clustered with the message producer it is degreded before the message spreads
+
+* there are enzymes that destroy messages
+* when that enzyme is near the receptor that sends the message it intercepts the message and degrades it
+
+Cross talk is very common and very complex
+
+* eye sees food and stomach rumbles
+
+== Bioinformatics
+
+Computationally identify functional segments in new proteins
+
+Compute the degree of homology between 2 different molecules
+
+* how many proteins are the same in 2 different molecules
+
+*SWISS-MODEL*
+
+Uses FASTA-like syntax
+
+Use structures of known proteins to compute the 3D structure of a new target unknown folded protein
