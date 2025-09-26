@@ -1,0 +1,292 @@
+= Bioinformatics and Systems Biology - Intro to Biochemistry 1
+:toc:
+:toc-title: Contents
+:nofooter:
+:stem: latexmath
+
+== Omics
+
+More omics
+
+.Epigenomics
+
+Studies the expression of genes in specific environments
+
+* the environment changes our genetics
+
+Suppressed genes become expressed
+
+* caterpillar -> butterfly
+
+.Metbabolomics
+
+Study of body outputs
+
+* e.g. blood tests
+** coagulation cascade
+** white/red blood cell counts
+** cholesterol
+
+.Phenomics
+
+Data from multiple sources
+
+"Phenomics, the study of phenome that is a set of measurable properties of physical, chemical and biological phenotypes of individuals and populations other than the genome" - Springer
+
+== Gene Ontology (GO)
+
+Framework for the description of protein/RNA functions of all organisms
+
+=== GO Annotation
+
+Statement that links a gene product (protein/RNA) to a GO code
+
+* 7 digit code
+** e.g. 0044281 -> aspartate
+
+3 categories based on protein function
+
+. Phenotypic (skin color, hair color)
+* effects of a protein on the whole organism
+. Cellular
+* network of cell interaction
+. Molecular function
+* Describes biochemical activity
+
+There are also macro categories
+
+. Molecular Function
+. Biological process
+* e.g. genesis of lipids
+. Cellular Component
+
+GO has *Information Content* (IC)
+
+* measures specificity of information about a given protein
+* higher => better understanding of protein
+* lower => more generic information
+
+== General Principles of Cellular Biochemistry
+
+Biochemistry describes the structures, mechanisms and chemical processes shared by all living organisms
+
+=== Cell Compartmentalization
+
+Cells are compartmentalized
+
+Each section is responsible for a different function
+
+Compartmentalization allows for:
+
+* specialization
+* increased efficiency
+* controlled environments for specific biochemical processes
+* e.g. the mithocondria runs the energy extraction reactions
+
+Compartmentalization is done through membranes
+
+* organelles (eukaryotes)
+** nucleus
+** mithocondria
+* protein based structures (prokaryotes)
+
+Membranes allow for messages to be passed through a cell
+
+* done by proteins
+
+Proteins are also floating around in *cytosol*
+
+* cell fluid
+
+=== Amino acids
+
+Molecules made up of 4 substituents (parts that can be substituted in/out)
+
+. Carboxyl group (COO-), acid
+. Amino group stem:[H_3N+], amino
+. Hydrogen atom
+. stem:[R] group
+* the stem:[R] group is a side chain unique to each amino acid
+** Alanine has a different stem:[R] group than Methionine etc
+* 5 known stem:[R] groups
+
+Amino acid structure:
+
+* tetrahedral bonds typically
+* centered on stem:[\alpha] Carbon atom
+** called the *chiral center*
+
+=== Proteins
+
+Long polymers of amino acids
+
+Aromatic = very active, cyclical structures
+
+Polar uncharged R groups = not strong enough to create charge but potentially could, attracts electrons but does not bind
+
+Positively charged
+
+Negatively charged
+
+* aspartate
+* glutamate
+
+Charges are basis for binding
+
+* + binds to - and vice versa
+
+All proteins start with amino and end with carboxic acid
+
+* N-ter -> C-ter
+
+Peptide bonds are formed between carboxic and amino groups
+
+* also require tRNA, rRNA, ribosomes etc.
+* called condensation (molecule of water is released)
+* dipeptide = 2 amino acids, 1 bond
+* tripeptide = 3 amino acids, 2 bonds
+* oligopeptide = fery amino acids (~10)
+* polypeptide = many amino acids
+* proteins = thousands of amino acids
+
+Peptide bonds are broken through hydrolisis
+
+https://uniprot.org[UniProt] is a freely accessible protein sequence and functional information database
+
+If certain enzymes/proteins aren't where they're supposed to be it could be a sign of a pathology
+
+* e.g. if Aspartate Aminotransferase (AST) is found in blood it means that the liver is damaged
+** AST catalyzes aspartate+otherfunnymolecule => glutamate + anotherfunnymolecule
+
+==== Receptors
+
+Mediate signal transduction (i.e. cell activiy in response to input)
+
+==== Enzymes
+
+CAUTION: Not all enzymes are proteins
+
+* biological reaction catalysts
+* increase reaction rates without affeciting reaction equilibrium
+* lower activation barriers 
+
+stem:[\Delta G] is the content of energy in a molecule
+
+* energy used to run some reaction
+* enzymes reduce the amount of energy => stem:[\Delta G] is lowered
+
+Very specific 
+
+* 1 enzyme per reaction typically
+* reactions happen in specific *active sites*
+** converts a substrate through a molecule
+
+Very important for metabolic pathways
+
+* glycolisis -> transforms glucose into energy
+* cascade of 10 reactions
+** glucose -> pyruvate
+** each reaction has its own enzyme
+* 3 regulatory enzymes throughout reaction
+** if *hexokinase* (the first enzyme in the cascade) fails the reaction stops
+* gluconeogenesis
+* reaction that generates glucose from other sources
+* uses the same molecules as glycolisis 
+
+==== Channels
+
+Allow certain chemicals/minerals to cross membranes
+
+==== Transporters
+
+Moves components in and out of cells to maintain homeostasis
+
+=== Atoms
+
+Carbon forms 3 types of bonds:
+
+* single
+* double
+* triple
+
+These obonds are typically tetrahedral
+
+* very energy efficient
+
+Other important atoms:
+
+* Oxygen
+* nitrogen
+* hydrogen 
+* sulfur
+
+*Phosphates* are used to activate proteins
+
+=== Biomolecules
+
+==== Central metabolites
+
+Building blocks
+
+* Common amino acids
+** proteins
+* Nucleotides
+** nucleic acids
+* Sugars and derivatives
+** *polysaccharides* -> sugar polymers
+** carbohydrates
+* trycarboxylic acids
+** *lipids* -> cholesterols, OMEGA 3, OMEGA 6
+** water insoluble hydrocarbon derivatives
+
+==== Secondary metabolites
+
+Same building blocks but specified to a specific organism
+
+=== Metabolome
+
+Whole metabolic component of our organisms
+
+Produced by a chemical reaction
+
+Using the laws of thermodynamics:
+
+. In any physical or chemical change the amount of energy in the universe remains constant although the form of the energy may change
+. Randomness in the universe is constantly increasing
+* entropy (S) = randomness of a system
+* enthalpy (H) = heat content
+* free Gibbs energy (G) = H - TS
+** where T is temperature
+* Free energy change (stem:[\Delta G = \Delta H - T \Delta S])
+** where stem:[\Delta H < 0] if reaction releases heat
+** where stem:[\Delta S > 0] if reaction increases randomness
+* spontaneous reactions occur when stem:[\Delta G < 0]
+
+Lower Gibbs energy = more stable system
+
+* minimize Gibbs energy to maximize system stability
+
+*Exorgonics* need heat outside the reaction
+
+*Endorgonic* need heat for reaction
+
+Metabolism is regulated for balance
+
+* creating compounds is expensive
+* only create necessary compounds
+
+.Direct inhibition
+
+Inhibitor slots into enzyme slot instead of the substrate
+
+The enzyme is inhibited and the substrate cannot bind to the active site
+
+.Feedback inhibition
+
+Used for longer signal cascades
+
+The last compound of a cascade can inhibit the first
+
+* setting variable to 0 in a counter that runs if counter > 0
+
+Used in hormonal control
