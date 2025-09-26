@@ -1,0 +1,50 @@
+= Bioinformatics and Systems Biology - Molecular Energy
+:toc:
+:toc-title: Contents
+:nofooter:
+:stem: latexmath
+
+== Internal energy of a molecule
+
+We (humans) assume different dispositions in space over time (we sit, stand, walk, run, lie down, whatever)
+
+So do molecules
+
+* they exist in space
+* have a 3D structure
+** their structure sometimes changes
+** they are more or less flexible
+** they can take on more conformations
+** the same molecule can take on multiple conformations
+
+We can assume that each conformation is related to energy and vice versa
+
+Different conformations have higher *strain* energy
+
+Molecules typically pick the lowest energy conformation available
+
+Going from a low/high energy conformation to a higher/lower energy conformation state isn't instant
+
+* there is a transition state between the 2 conformations
+* transition states are energetically expensive
+
+If there isn't enough energy to cross the transition state and cross the *energy barrier* then the conformation cannot change
+
+* energy barrier is lower when going high -> low
+* energy barrier is higher when going low -> high
+
+This applies to all kinds of molecules
+
+If you know the difference in energy between 2 states you can predict the distribution of energy across conformations of a molecule
+
+Temperature affects energy usage too
+
+* higher temperature makes conformation changes easier
+** more heat = more energy
+
+=== Subsection 1
+
+== Section 2
+
+=== Subsection 2 
+
