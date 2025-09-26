@@ -8,7 +8,76 @@
 
 Digital copy of imaginary/real object
 
+* Mirrors real world behavior
+** continuous data synchronization
+** sensor integration
+* Updates in real time
+** based on sensor data and other physical observations
+* Supports predictive analysis
+** can simulate scenarios
+
 Extrapolate features and represent digitally
+
+[cols="3*", options="header"]
+.Digital Twins vs Traditional Models
+|===
+|Aspect |Traditional Model |Digital Twin
+|Data Connection
+|Static, historical
+|Real time, continuous
+|Update Frequency
+|Manual updates
+|Automatic sync
+|Predictive Capability
+|Limited forecasting
+|Dynamic prediction
+|Interaction
+|Unidirectional
+|Bidirectional
+|Lifecycle
+|Point in time
+|Evolves continuously
+|===
+
+== The Metaverse
+
+The Metaverse is a shared virtual space that combines physical and digital realities with persistent virtual environments
+
+Key characteristics:
+
+* Immersive experiences
+* User generated content
+* Social interaction
+* Digital economy
+
+Can be used in healthcare:
+
+* virtual hospitals
+* digital twins for patients
+* medical device twins
+** pacemaker
+* hospital system twins
+
+[cols="3*", options="header"]
+.Digital Twins vs Metaverse
+|===
+|Aspect |General Metaverse |Digital Twins
+|Purpose
+|Entertainment, social interaction
+|Decision support, optimization
+|Data Source
+|User generated, imaginative
+|Real world sensors, 3D scanning
+|Accuracy
+|Creative freedom
+|High fidelity to physical reality
+|Updates
+|Manual, event driven
+|Real time, automatic synchronization
+|Validation
+|User acceptance
+|Regulatory compliance
+|===
 
 == DT maturity levels
 
@@ -33,7 +102,6 @@ Process digital twins
 
 Systems digital twins
 
-* Penis and balls
 
 === Digital Twin Examples
 
@@ -50,9 +118,8 @@ Systems digital twins
 * Pre-op planning
 ** model specific workslofs and decision points
 * Resource optimization
-** tracks resourece usage in different procedures
+** tracks resource usage in different procedures
 * Smart scheduling
-// ** idk
 * Continuous Improvement
 ** Identifies improvements over time
 
@@ -66,17 +133,6 @@ Systems digital twins
 ** resource allocation
 
 All these need to be within 16ms to be considered REAL TIME
-
-=== Digital Twins vs Traditional Models
-
-* Realtime/continuous vs static/historical
-* Automatic sync vs manual updates
-* Dynamic prediction vs limited forecasting
-* Bidirectional interaction vs unidirectional interaction
-
-=== Digital Twins vs Metaverse 
-
-// add later
 
 == Architecture Framework
 
@@ -117,9 +173,9 @@ All these need to be within 16ms to be considered REAL TIME
 ** USB
 . Connectivity layer
 * Data transmission protocols
-** MQTT
-** HTTP
-** WebSocket
+** MQTT (IoT messaging protocol)
+** HTTP/REST (standard web communication)
+** WebSocket (realtime bidirectional communiation)
 ** Custom
 * Edge computing
 
@@ -147,13 +203,55 @@ Gather emergent behavior from defined behaviors
 Use/do these things:
 
 * Analytics and insights
+** pattern recognition
+** performance optimization
 * Predictive maintenance
+** failure prediction (this EEG will break in ~2 weeks)
+** maintenance scheduling (schedule replacement for 7am next Tuesday)
 * Control and optimization
-* Descision support
+** automated responses
+** parameter tuning for treatment protocols
+* Decision support
+** Scenario analysis
+** Risk assessment
 
-== 3D Digitalization techniques
+== Creating physical to digital bridges
 
-So many ways with differnt costs, invasiveness, accuracy and speed
+[cols="5*", options="header"]
+.3D digitalizations methods overview
+|===
+|Technique |Accuracy |Speed |Cost |Healthcare Application
+|Laser Scanning
+|Very high (±0.1mm)
+|Medium
+|High
+|OR equipment, facility mapping
+|Structured Light
+|High (±0.2mm)
+|Fast
+|Medium
+|Prosthetics, dental work
+|Photogrammetry
+|Medium (±1mm)
+|Slow
+|Low
+|Patient positioning, wound assessment
+|MRI
+|Very high (±0.5mm)
+|Slow
+|Very high
+|Internal anatomy, soft tissue
+|CT Scanning
+|High (±0.6mm)
+|Fast
+|High
+|Bone structure, dense tissue
+|Ultrasound
+|Medium (±2mm)
+|Real time
+|Medium
+|Real time organ imaging
+|===
 
 === Laser Scanning
 
@@ -170,10 +268,68 @@ So many ways with differnt costs, invasiveness, accuracy and speed
 * Can also use gen AI to reconstruct unseen objects
 ** Signed Distance Fields
 
-Scanning operating rooms and such
+.Healthcare applications
+
+* Operating room mapping
+** 3D recreation of operating theater
+** digital twin creation
+** workflow optimization
+* Medical Device Digitalization
+** high precision scanning of medical equipment
+** for maintenance and training
+* Patient Environment Analysis
+** room layout optimization for patient mobility and accessibility assessment
 
 === Structured Light
 
 Like Kinect
 
-* Tooth prosthetics
+They project known patterns onto objects (e.g. a 3D 3x3x3 voxel grid)
+
+. Project known structured patterns onto target
+. Camera records pattern deformation
+. Triangulate points
+* compute 3D coordinates
+. Design prosthetic
+
+.Healthcare applications
+
+* Prosthetics
+* Orthodotics
+** other kinds of dental health
+* Wound assessment
+** volume measurement
+** documenting healing process
+
+=== Photogrammetry
+
+Using images from a camera to extract useful data
+
+* Feature detection
+** extract keypoints (SIFT, ORB) from multiple photographs
+* Feature matching
+** match features across multiple images
+* Camera pose estimation
+** use bundle adjustment to estimate where the camera is and how it's oriented
+* 3D reconstruction
+** generating dense point clouds
+** applying texture mapping
+
+=== Magnetic Resonance Imaging (MRI)
+
+.Signal generation
+
+. Strong magnetic field aligns the hydrogen nuceli in soft tissues
+. Radio frequency pulses tips nuclei out of alignment
+. Nuclei emit signals as they return to equilibrium
+. Signal strength varies by tissue type and properties
+. FFT converts encoded signals to spatial (3D) images
+
+.Spatial encoding methods
+
+* Slice selection gradient
+** selects imaging plane (`X, Y, Z`)
+* Phase encoding gradient
+** encodes position in one direction
+* Frequency coding gradient
+** encodes perpendicular position
