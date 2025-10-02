@@ -42,9 +42,329 @@ Temperature affects energy usage too
 * higher temperature makes conformation changes easier
 ** more heat = more energy
 
-=== Subsection 1
+=== Boltzmann Equation
 
-== Section 2
+The lower an energy state is the more molecules will be at that state in the equilibrium
 
-=== Subsection 2 
+* stem:[]
 
+==== Example: cyclohexane
+
+Cyclohexane is a non aromatic cyclomatic molecule
+
+It has 2 low energy conformations:
+
+* Chair conformation
+** looks somewhat like a chair
+* Twist boat conformation
+** like chair but twisted
+
+The chair is 22.5 kJ/mol cheaper than the twisted boat
+
+* 99.9% of all cyclohexane assume the chair conformation
+
+==== Example: methylcyclohexane
+
+Methylcyclohexane can assume 2 chair positions depending on where the methyl points
+
+* Equatorial CH_3 (flat)
+** 95.5%
+* Axial CH_3 (pointed up)
+** 4.5%
+
+This is because the methyl clashes with some of the hydrogen atoms
+
+It can also assume 3 boat positions but they are so expensive that they're very rare
+
+== Molecular mechanics
+
+To represent a molecule we need to know:
+
+* the possible conformations
+* the energy associated with each conformation
+
+=== Ball and stick representation
+
+Simplified model
+
+* Atoms are approximated as spheres
+* Bonds are sticky spring like bonds
+
+Approximate energy levels using force field equation(s) on the basis of the structure
+
+* consider the cost of all components that contribute to the overall internal energy cost
+** this bond costs 0.1 kJ/mol
+** this one costs 1 kJ/mol
+
+== Force Fields
+
+Energy calculations are done using *Force field* equations
+
+Depending on the computational model different components are treated differently
+
+Component values are generally positive 
+
+* they represent strain
+** high strain = high energy
+
+If they are negative they reduce strain
+
+* energy and stress are released
+
+=== FF components: atom type
+
+Different atoms have different properties
+
+The same atom can have different characteristics depending on the molecule they are in
+
+* it can be polarized in a certain compound
+* can be unpolarized in another
+* can have a covalent bond in another compound
+
+=== FF components: bond stretching
+
+Bonds arent rigid
+
+They can stretch and compress
+
+There is an ideal length that requires the least energy
+
+This length can be computed using *spring law*
+
+stem:[\text{E}_L = \sum k_L (L - L_0)^2]
+
+* it's a sum because there are multiple bonds in a molecule
+** each bond has a different constant (Hydrogen bond is weaker than double phosphor bond)
+
+=== FF components: angle bending
+
+The angles between 3 different atoms have an ideal value
+
+* can compress
+* can stretch
+* there is ideal angle
+** lowest energy state
+
+stem:[E_\theta = ]
+
+* stem:[\theta_0] is equilibrium
+* stem:[\theta] is the current angle
+* stem:[k] is a constant
+** changes depending on the angle of interest
+
+=== FF components: torsional contributions
+
+Sum of Fourier series
+
+Associated to rotation of molecules
+
+* depends on rotatable bonds
+** a bond that can be rotated about some axis
+
+If electron clouds clash the conformation is more expensive
+
+Rotate until electron clouds no longer clash
+
+Planar molecules are generally not subject to torsion
+
+stem:[E_\theta]
+
+* consider all rotatable bonds in a molecule
+
+Number of torsions = double the number of angles
+
+* 14 angles * 2 = 28 torsions
+
+=== FF components: van der Waals interactions
+
+Interactions between non bonded atoms
+
+Basis of hydrophobic interaction
+
+Small delocalization of electron clouds of 2 unbound atoms
+
+* highest effect when electron clouds *barely* collide
+* low effect when far
+* bad interaction when really close
+* very small variations lead to very high peaks
+
+For generic unbonded interactions:
+
+* take all possible interaction pairs of all atoms that are not sigma bonded
+
+.Lennard-Jones potential
+stem:[]
+
+=== FF components: electrostatic dipolar contributions
+
+Calculated with Coulomb potential
+
+The higher the partial charge of 2 oppositely charged atoms the stronger the attraction
+
+* reversed for same charge (stronger repulsion)
+
+Same generic unbounded interaction as van der Waals applies here
+
+=== FF components: Hydrogen bond energy contribution
+
+// this equation sucks
+
+Needs polarized hydrogen 
+
+* Donor
+* Acceptor (free bond of another atom)
+
+=== Amber ff94 force field
+
+One of many force fields
+
+4 main portions
+
+* bond energy
+* angle energy
+* rotation/torsion energy
+* unbonded interaction
+** Lennard-Jones + coulomb (electrostatic interaction)
+
+Hydrogen bonds are not considered
+
+* other techniques are used
+* very strict unbonded interaction calculation rules
+** using very specific atom types to avoid generic calculations
+
+== Conformational search
+
+Molecules can assume different conformations in space
+
+* each costs some energy
+
+Find the disposition with the lowest energy cost
+
+=== Conformational potential surface
+
+Molecules generally change conformation by rotating around (a) rotatable bond(s)
+
+* this changes the energy
+
+Rotational changes account for ~90% of the energy cost of a conformation
+
+If there are multiple rotational bonds the energy is represented as a function of the torsion angles
+
+* represent as function of energy (y) and a funny parameter stem:[p] (x)
+** 2D representation of a multidimensional function
+
+== Energy Minimization
+
+Optimize the geometry of a molecule based on the energy
+
+Find conformation associated with local minimum
+
+* conformation should be real
+
+Use force fields to iteratively compute total energy
+
+* blind geometry optimization
+
+=== Minimization algorithms
+
+.Steepest Descent
+
+Big modifications first
+
+.Conjugate gradients
+
+Similar to ML gradient descent
+
+Less coarse than SD
+
+.Newton-Raphson
+
+Even more precise
+
+Used to minimize very specific pre minimized molecules
+
+Very inefficient for big molecules
+
+=== When do you stop?
+
+How do we know when a molecule is actually minimized?
+
+* set number of epochs might not be enough to converge
+** can also run for longer than necessary
+
+.Energy Gradient Tolerance
+Stop when the gradient is lower than a set threshold
+
+.Energy Comparison
+Compare the change in energy between this step and the previous. Stop if it's below a threshold
+
+== Conformational Analysis Principles
+
+=== Systematic Scanning
+
+Testing energy usage for every reasonable conformation of a molecule
+
+For a molecule with 1 rotatable bond this is relatively easy
+
+* assuming 10 degree steps => 36 steps
+* 1 bond -> 36^1 -> 36 combinations
+
+For a molecule with 7 rotatabble bonds this is not that easy
+
+* assuming 10 degree steps => 36 steps
+* 7 bonds -> 36^7 * 4-> > 300,000,000 combinations
+
+This assumes that every conformation has a unique energy
+
+* this is inefficient
+
+It would be cheaper to categorize energy peaks and valleys as *conformation families*
+
+* we don't have to bother computing every possible conformation
+
+We can use *stochastic methods* 
+
+* randomly jump around the conformation space 
+* eventually we find a set of conformation families
+
+=== Conformational Search Algorithms
+
+==== Monte-Carlo Algorithm
+
+Specifically Metropolis-Hastings MC
+
+. Start from some conformation (initial conformation)
+. Calculate energy using FF
+. Randomly change the conformation (random kick)
+. Calculate trial conformation
+. Compare initial energy and new energy
+. If new is lower then apply another random kick to new conformation
+. If new is higher don't dismiss the initial conformation
+. Apply Boltzmann test
+* compute Boltzmann ratio for new 
+** pick random number
+** if random number is bigger than the ratio the new conformation is accepted
+
+This retains high energy conformations because it's used to find conformations and *not* to find low energy conformations
+
+It's possible to use minimization algorithms in parallel if we want to find low energy conformations of the same molecule
+
+It's also possible to use exhaustive algorithms in parallel
+
+* less strict than systematic
+* using steps of a few hunded degrees is more manageable
+* reduces 36^7 * 4 to 36^3 * 4
+
+=== Bioactive Conformations
+
+Not all possible conformations can appear in reality
+
+Bioactive conformations are necessary to bond with biological structures
+
+* certain conformations are required for biological activities
+** e.g. sitting properly in a car isn't the lowest energy conformation possible but it's required to operate the car
+
+There are generally less than 25/30 kJ/mol difference between the global minimum and the bioactive conformation(s)
+
+* molecules will take the global minimum conformation as often as possible
+* they have no reason to stay in the bioactive conformation when not needed
