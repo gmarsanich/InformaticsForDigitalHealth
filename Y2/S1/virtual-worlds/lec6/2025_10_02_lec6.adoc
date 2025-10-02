@@ -1,0 +1,121 @@
+= Virtual Worlds - WebGL
+:toc:
+:toc-title: Contents
+:nofooter:
+:stem: latexmath
+
+== What is WebGL?
+
+Web based implementation of OpenGL
+
+* JavaScript 3D graphics API
+* Open standard (unlike DirectX)
+
+Invented in ~2010
+
+Runs in browsers
+
+Cross platform and no installation required
+
+== WebGL architecture fundamentals
+
+Some store data, others are pixel level
+
+=== Color Buffer
+
+Stores RGB(A) values
+
+* alpha required for transparency
+* also required for blending colors
+* allows for addition, multiplication, of colors
+
+Certain games (e.g. GTA) use the color buffer to store non color things like:
+
+* lighting information
+
+=== Depth Buffer
+
+Stores depth values for 3D visibility
+
+=== Stencil Buffer
+
+Stores pixel masking for shadows and reflections
+
+* basically all integers
+
+== Data Buffer Operations and Management
+
+Overview:
+
+. Create buffer
+* allocate memory
+. Upload data
+* write data to allocated memory
+. Bind the buffer
+* connect buffers to shader program
+. Render the frame
+* execute the draw calls
+
+=== Buffer memory management
+
+How do you manage buffers?
+
+. Buffer creation
+
+==== Example vertex attribute buffer configuration
+
+. Position
+* X, Y, Z components
+** locations in 3D space
+** WebGL automatically adds 1 to the 4th component
+. Normal attributes
+* ZX, NY, NZ components
+* surface orientation for lighting
+* the direction of the vector perpendicular to the surface at a given point
+. UV attributes
+* 2 components
+
+=== Shader Program Management
+
+. Create shader vertex
+. Create fragment shader
+. Link the program
+. Handle errors
+
+=== 3D camera system architecture
+
+. Position
+* where is the camera?
+* camera is matrix
+* point it where you want
+* invert it
+* ???
+* profit
+. Target
+* what is camera looking at?
+. Up vector
+* camera orientation
+* where is the camera oriented relative to the observer?
+. Field of view
+
+== Performance Optimization: LOD system
+
+=== Frustum calling
+
+If the object is outside the frustum it shouldn't render it
+
+* saves up a bunch of resources and time
+
+=== Batch rendering
+
+Combine similar object if they are within another object's bounding box
+
+== Interactive 3D Visualizations
+
+A complete virtual world application has 5 ish components
+
+. Scene management
+. Material system
+. User Interaction
+. Performance optimization
+. 
