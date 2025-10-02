@@ -1,0 +1,226 @@
+= Virtual Worlds - Computer Graphics Fundamentals
+:toc:
+:toc-title: Contents
+:nofooter:
+:stem: latexmath
+
+== From Structure to Visual Reality
+
+Match visual appearance of key objects is key in certain applications (healthcare)
+
+== Material Properties
+
+Define how surfaces interact with light
+
+3 main components:
+
+. Albedo (base color)
+* color before lighting effect
+* the light color can affect the color of the surface
+. Metallic (or non metallic)
+* metallic = more reflective
+* non metallic = less reflective
+. Roughness
+* surface micro geometry affects how light is scattered
+** smooth = specular reflections (mirror like)
+** rough = diffused reflections
+
+=== Medical Material Categories
+
+Each has different albedo/metallic/roughness values
+
+. Biological tissues
+* skin low roughness, some subsurface scattering
+* heart muscles are bright red, low subsurface scattering
+
+. Medical Devices
+
+. Specialized structures
+
+==== PBR
+
+*PBR* is good for medical applications because it increases model accuracy (more realistic lighting and materials)
+
+3 components:
+
+. Energy conservation
+* reflected light can never be stronger than origin light
+. Fresnel reflectance
+* Viewing angle affects reflection
+** looking at a mirror while parallel shows you what the sky looks like
+. Microsurface modeling
+* basically roughness
+
+==== BRDF
+
+A function called *BRDF* calculates what reflections look like
+
+needs:
+
+. observer location
+. light location
+. light angle
+. material properties
+
+Taking into consideration the light only is ok for some applications
+
+3 main BRDF models:
+
+.Lambert BRDF
+
+.Phong/Blinn-Phong
+
+.Cook-Torrance
+
+=== Optical Properties of Tissues
+
+2 key properties 
+
+==== Absorption coefficients
+
+How much light is absorbed
+
+==== Subsurface Scattering
+
+When light shines through a material it can light up the surface
+
+The color can change in some way
+
+* certain wavelengths are absorbed
+* others are amplified
+
+The light then exits the material at some point
+
+* the output light is scattered
+
+== Texturing Techniques for medical applications
+
+Texture mapping splats a 2D image onto a 3D object
+
+* coordintes between texture and objects are parametric (0, 1)
+** 0 is first thing
+** 1 is last thing
+** texture changes don't affect parametric
+* interpolates between 2 pixels of a texture
+* pre splatted textures are called atlases
+
+Need to be extremely precise in medical applications
+
+* 1/10th of a millimeter is not enough for some applications 
+
+Few techniques to generate atlases
+
+* *unwrapping* a model generates distortion
+** like the mercator projection (globe -> flat map)
+* Need to minimize distortion in key regions
+** generally faces but changes with application
+
+.Cylindrical Mapping
+
+.Spherical Mapping
+
+.Planar Mapping
+
+=== Procedural texturing
+
+When you zoom in a lot you can cause pixelation
+
+Using procedural generation you can generate the texture information as you zoom in
+
+Different organs have different texture requirements
+
+* Hearts and livers have different surfaces
+* need textures to be accurate
+
+=== Texture Resolution and Quality Management
+
+Parts of interest should use higher resolutions
+
+* 4k textures for high fidelity important objects
+* 256px for unimportant textures
+
+Textures can be compressed with various algorithms depending on the requirements
+
+Image compression is generally lossy
+
+* image will degrade
+* will look bad but may also cause issues 
+
+WARNING: do NOT use compression methods that could affect accuracy
+
+Can use texture streaming but it's very difficult to implement
+
+== UV mapping and texture coordinates 
+
+=== Anatomical UV mapping
+
+== Lighting models
+
+PBR is the most complex lighting model
+
+* most complex
+* photorealistic
+* works with basically all materials
+
+=== Shadows
+
+Lack of light
+
+2 types:
+
+* hard shadows
+** defined edge between lit and unlit areas
+* light shadows
+** gradual transition between lit and unlit
+
+Expensive with ray tracing but good quality
+
+Doable with raster but hard
+
+=== Light Sources
+
+.Point light
+
+Only exists in computer graphics
+
+Infinitesimally small light source
+
+Emits uniformly in all direction
+
+Light is attenuated with distance according to this formula:
+
+stem:[math here]
+
+.Directional Light
+
+Infinitely distant light sources with no attenuation
+
+Intensity depends on:
+
+* light color
+* angle with the surface normal
+** maxed when light and normal are parallel
+** 0 when perpendicular
+
+.Spotlight
+
+Cone shape dillumination
+
+Attenuated by fall off component
+
+Changes with cone axis angle and maximum aperture of cone
+
+Also attenuated by distance
+
+.Area light
+
+area that emits light
+
+In real life everything is area light
+
+Not a single point
+
+* the sun can be considered a light emitting circle
+
+Need to calculate multiple things
+
