@@ -1,0 +1,134 @@
+= Bioinformatics and Systems Biology - Receptor Based Drug Design
+:toc:
+:toc-title: Contents
+:nofooter:
+:stem: latexmath
+
+== What is Receptor Based Drug Design?
+
+Create/identify new molecules that bind to specific receptors
+
+Molecules are created/found based on the receptor's 3D structure and their complementary features
+
+* e.g. receptor has 3 holes 3nm apart -> molecule will need 3 prongs 3nm apart
+
+=== 3D receptor Data
+
+Receptor structure is determined in a few ways
+
+* x-ray crystallography
+* NMR
+* we saw it in earlier lectures
+
+== Docking
+
+Docking is an energy/geometry driven computational procedure that aims to identify the potential bioactive conformations of a molecule
+
+2 types of docking
+
+. Manual docking
+* rarely done
+* need binding hypothesis
+* applicable to a few bonds
+
+. Automatic docking
+* The ligand is positioned automatically in the receptor
+** pick the most energetically favorable conformation (lowest binding energy)
+
+=== Automated Docking Algorithms
+
+Needs 2 parts
+
+. conformational modeling algorithm
+* generates the conformations
+* places conformation into receptor
+. scoring function
+* simplified force field equations
+* assigns scores to each conformation
+* lower score = best
+
+When you have a combination of best fit and lowest energy then you win
+
+* most energy efficient conformation
+* should be bioactive conformation
+
+==== Exhaustive algorithms
+
+Exhaustive search algorithms
+
+* most complete
+* very time consuming
+
+.F.R.E.D
+
+* protein ligand docking program
+* calculates binding energy of each possible ligand/receptor positions
+
+==== Stochastic algorithms
+
+Less exhaustive
+
+* faster
+
+=== Scoring Functions
+
+Simplified force fields generally
+
+* some are based on force fields
+
+Equations used to calculate the binding energies of ligands and proteins
+
+Takes into account multiple energetic components
+
+* hydrophobic interactions
+* hydrogen bonds
+* electrostatic forces
+** important for ligand/protein recognition
+** H bonds are directional -> works if H bond donor is directed in a certain way towards the acceptor
+
+=== Docking sofware
+
+*DOCK* is a very common docking software
+
+2 main parts
+
+.Sphere gen
+
+Describes the receptor shape as a bunch of spheres
+
+Centers of spheres are considered potential locations for ligand atoms
+
+.Grid
+
+Evaluates the conformation
+
+Given a molecule:
+
+. define layers
+. find center (anchor)
+* looks for nice rigid structures (cycles, etc.)
+* anchor is generally easy so it tries it first
+. places anchor in receptor
+. scores orientations
+* tries some number of orientations
+* takes top 100 orientations associated to best energy
+. adds the rest of the molecule layer by layer
+. repeats until the whole molecule is tested
+
+Eventually it finds the best conformation linked to the best (lowest) interaction energy
+
+* ideally it's the bioactive conformation
+
+==== Genetic algorithms
+
+Consider the whole conformation
+
+. Initialization
+* randomly generate a population of solutions
+. Selection
+* keep the top 10 solution
+. Reproduction
+* build new solutions based on top 10 solutions
+. New and old populations are merged
+* basically mimics evolution kinda
+. Repeat
