@@ -132,3 +132,47 @@ Consider the whole conformation
 . New and old populations are merged
 * basically mimics evolution kinda
 . Repeat
+
+== Docking Reliability Studies
+
+How do I know if my docking software is reliable?
+
+=== Self docking analysis
+
+Dock each ligand into its own receptor
+
+. Take ligand-protein structure
+. Remove ligand
+. Perform conformational search
+. Generate a different low energy conformation different from the bioactive conformation
+. Dock the new molecule in the receptor
+. Check similarity
+* use RMSD
+* how similar are the experimental conformation and the generated conformation?
+* if RMSD < 2A -> good
+* if 2A < RMSD < 3A -> ok
+* if RMSD > 3A -> bad
+
+Not the best way
+
+* ligands binding to their own receptor is always easy
+
+=== Cross docking analysis
+
+Have multiple ligands and multiple conformations of each protein
+
+Dock each ligand into each receptor
+
+Receptors and ligands adapt a bit to fit each other
+
+* They will most likely fit to some degree
+
+For 3 ligands and 3 molecules 
+
+* 9 values instead of 3
+
+Check similarity
+
+* if RMSD ~3 -> good
+
+More reliable than self docking

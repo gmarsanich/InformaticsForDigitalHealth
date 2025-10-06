@@ -223,4 +223,3 @@ Not a single point
 * the sun can be considered a light emitting circle
 
 Need to calculate multiple things
-

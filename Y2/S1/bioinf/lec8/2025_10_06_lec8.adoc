@@ -1,0 +1,218 @@
+= Bioinformatics and Systems Biology - Molecular Dynamics
+:toc:
+:toc-title: Contents
+:nofooter:
+:stem: latexmath
+
+== What is it?
+
+The dynamic motions of molecular systems
+
+* flexibility of micro/macro molecules
+
+Extension of molecular mechanics
+
+=== Definition
+
+Atoms are particles that respond to Newton's motion equation
+
+* atom A feels a force in some direction -> it will move in that direction
+* the direction changes -> A is pulled/pushed somewhere else
+
+Doing it continuously is very hard
+
+Can discretize it to get close enough
+
+If we can calculate the acceleration felt by A in delta T we can estimate the force felt by A
+
+* how do we calculate the acceleration?
+* use *force fields*
+* update position at each frame
+
+==== Example
+
+Consider carbon dioxide (CO2)
+
+* very simple molecule (O-C-O)
+
+It can change in a lot of ways
+
+* stretching
+** symmetric -> both bonds stretch equally
+** asymmetric -> one bond stretches differently than the other
+* bending -> bonds can bend up and down
+* rotational motion
+** atoms can rotate
+* translational motion
+** it can move in space
+
+== Molecular Dynamics Simulations
+
+Useful for simulating experiments that are impractical in the real world
+
+The required equations are very complex
+
+* no analytical solutions
+* different algorithms are required
+* need to pick the right algorithm for the job
+
+The motion is divided into time steps (delta T)
+
+* this applies to *all* algorithms
+
+=== Problems
+
+==== Time
+
+But how short can delta T be?
+
+* needs to be short enough to compute precise force and velocity vectors for each atom
+* this implies that the time step needs to be so short that no movement occurs
+* delta T cannot be lower than the most common atomic motion time
+* delta T cannot be higher than the fastest atomic motion (sigma bonds with hydrogen atoms)
+* delta T = 1 femtosecond
+** 1 microsecond of simulation is a billion samples
+** like filming Oppenheimer at 300 fps
+** can use delta T = 2 femtosecond if you constrain hydrogen bonds to a fixed distance
+* simulation times are kept very short (10s-100s of nanoseconds)
+* good computers can generate nanoseconds per day (lol?)
+
+==== Solvents
+
+What do we do with the solvents?
+
+Simulating RNA and DNA requires taking water into account
+
+* cells are mostly water
+
+Solvents can be considered:
+
+.Implicit
+
+Ignore it
+
+. Pick a constant depending on solvent
+* Consider that based on reciprocal distances atoms feel different polarizability
+. Use a continuum model
+* molecules are immersed in continuous fluid
+** ignore molecules
+** Generalized Born/Poisson-Boltzmann models
+
+These methods are used when considering individual molecules is impractical
+
+.Explicit
+
+Take water individual water molecules into account
+
+But:
+
+* how much solvent is there?
+* What is beyond the solvent?
+** is there a wall for solute molecules to bounce into/away from?
+
+Use *periodic boundary conditions*
+
+* do like Pac-Man
+** if cross border -> return from opposite side
+
+. Replicate the simulation area in all directions infinitely
+. Molecule movements are mapped
+. Molecule from simulation exits right -> molecule from left replica enters left
+
+=== MD simulation steps
+
+. Initial coordinates
+* where is the initial position of the object?
+. Create the system
+* solvents, atoms
+. Add energy to the system
+* heat up the system
+* constant volume until physiological temp (~300 Kelvin)
+. Equilibration dynamics
+* system received a lot of energy so things are moving around
+* need movements to converge to some non erratic value
+* needs constant pressure
+. Production dynamics
+* physiological-like environment
+. Trajectory analysis
+* calculate values at each frame -> final trajectory
+* MD movie
+
+==== Trajectory Analysis
+
+Can compute RMSD (ligand position in frame i initial conformation) in each frame
+
+* RMSD oscillates so take the mean
+
+Can also compute for other elements of system
+
+* e.g. alpha carbons
+
+Can also evaluate stability of certain bonds
+
+* e.g Hydrogen bonds
+* compute distance between hydrogen and other atom(s) for each frame
+* if bond exists for 90% of frames then the bond is stable
+
+Can compute RMSF (root mean square fluctuation)
+
+* compute RMSD for alpha carbons for each amino acid in protein
+* each point represents mean RMSD alpha carbons in each amino acids
+* lower RMSF -> more stable w.r.p to initial conformation
+
+=== MD for conformational search
+
+Classic minimization algorithms cannot overcome energy barriers between local minima
+
+* MD can dynamically overcome energy barriers
+
+Can simulate energy source (i.e. heat)
+
+* molecules can now overcome barrier
+* new local minima can be found
+
+Higher temp -> higher kinetic energy
+
+* if temp is high enough it can sample the entire surface
+* not possible in practice because it would take too long
+
+== MD algorithms
+
+Use these algorithms to increase conformational space of the protein I want to assemble:
+
+* simulated annealing
+* steered MD
+* coarse grained
+
+=== Simulated Annealing
+
+Conformational analysis of large systems
+
+Increase the temperature of a system to ~2000/3000 Kelving
+
+* without denaturating
+* gives enough energy to overcome energy barriers
+
+Slowly reduce the temperature (like in PCR)
+
+* system is trapped in low energy conformation
+
+If you repeat this you can trap the system in a different energy well
+
+=== Steered MD
+
+Used to force some rare events
+
+* e.g. dissociation of ligand from receptor binding pocket
+* this would require hundreds of microseconds
+** impractical because it would take months of computing time
+
+Apply a specific force in a specific point steer the event
+
+* e.g. apply a small constant force a molecule to go through a certain passage
+* give it barely enough energy to move
+
+This is generally performed multiple times
+
+* use different energy each time
+* pick the lowest energy required
