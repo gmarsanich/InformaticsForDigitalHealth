@@ -423,7 +423,3 @@ use GPU and specialized programs to write lighting
 
 .Vertex shading
 processes individual vertices
-
-.dio stronzo ladro
-
-bau
