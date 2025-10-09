@@ -17,6 +17,22 @@ Runs in browsers
 
 Cross platform and no installation required
 
+Runs as a state machine
+
+* state is set when API is called
+* state changes with subsequent calls
+
+[source,javascript]
+----
+const gl = canvas.getContext('webgl');
+
+// Set clear color (R, G, B, A)
+gl.clearColor(0.2, 0.3, 0.5, 1.0);
+
+// Clear the canvas
+gl.clear(gl.COLOR_BUFFER_BIT);
+----
+
 == WebGL architecture fundamentals
 
 Some store data, others are pixel level
