@@ -1,0 +1,430 @@
+= Virtual Worlds - Extended Reality (XR) Fundamentals
+:toc:
+:toc-title: Contents
+:nofooter:
+:stem: latexmath
+
+== Extended Reality Taxonomy
+
+What is XR?
+
+Extending physical reality with virtual elements
+
+All types of fake realities
+
+.Virtual Reality
+Pure virtual world
+Only interact with virtual objects (controllers aside)
+
+.Augmented Reality
+Primarily real world
+Interact with digital overlay
+
+.Augmented Virtuality
+Mostly virtual world
+Introduce some physical elements
+
+== Virtual Reality (VR)
+
+Virtual representation of some world
+
+Entirely synthetic
+
+* entirely computer generated
+
+User is isolated from real world
+
+Existed since ~1960s
+
+* using Head Mounted Displays (HMDs)
+
+Consumer attempts in 1990s
+
+* pretty bad
+
+More prevalent since ~2016
+
+* consumer VR era
+
+=== VR hardware
+
+. HMDs
+* display panels (LCD, mLED, OLED)
+* lenses for focus and field of view
+** content is projected onto lens
+** gives perspective
+* Tracking sensors to keep track of where the user is
+** IMU for acceleration
+** cameras for checking location in real world
+** also used instead of lens but doesn't quite work
+* Audio systems
+** speakers
+
+. Tracking system
+* enables input from HMD devices and tracks the input in the virtual world
+** if you turn your head 45 degrees left IRL it should turn in VR
+* 6 DOF
+** move in 6 directions
+
+. Input devices
+* typically hand controllers
+* camera based tracking
+* haptic feedback
+* full body tracking systems
+
+=== VR Display tech
+
+Need high resolution to increase pixel density
+
+* not too high
+** 4K is too much
+** 2K is better
+
+Need high refresh rate
+
+* higher refresh rate means smoother motion
+* reduces motion sicknesss
+** 60hz might lag movement -> you feel movement but don't see it -> sick
+
+Horizontal FOV
+
+* needs to be high ~110 degrees
+* not as high as real human FOV but ok
+
+=== VR optics and lenses
+
+2 types of lenses
+
+.Fresnel lenses
+* Light
+* Thin concentric ridged structure
+* Most common in consumer VR
+* Can cause god rays and glare
+
+.Pancake lenses
+* very thin
+* stacked
+* folded light path
+* allows for slimmer HMDs
+
+.Varifocal displays
+* upcoming tech
+* solves some perception problems related to classic lenses
+
+=== FOV in VR
+
+Human HFOV is ~220 degrees (both eyes)
+
+* good sense of motion
+
+Human VFOV is ~135 degrees
+
+=== VR tracking tech
+
+.Inside out tracking
+* using cameras on HMD
+* you can track what the user's movement is
+
+.Outside in tracking
+* need external source
+* non portable
+
+.IMU
+* track acceleration
+* track gyroscope
+* track magnetometer
+** orientation using magnetic field
+
+Needs very high sample rates to be good (~1000Hz)
+
+=== VR rendering challenges
+
+.Need to render twice 
+* one for each eye
+* need slightly different camera positions (eye offset)
+
+Use foveated rendering to optimize performance
+
+* render elements inside fovea circle at high res
+* everything else at lower res
+
+.Need high FPS
+* more comfortable
+* reduces motion sickness
+
+.Lens distortion correction
+Pre warp rendered image depending on lens used
+
+Rendering system should be aware of which lens it's going to be projected onto
+
+=== VR locomotion techniques
+
+.Physical walking
+Realistic but obstacles exist
+
+.Teleportation
+* Less immersive 
+* Reduces motion sickness
+
+.Smooth locomotion
+* Move using controller
+* Increases risk of motion sickness
+
+.Redirected walking
+* Walking in circles IRL -> walking in a straight line in VR
+* Research tech only for now
+
+=== VR interaction paradigms
+
+.Ray casting/pointing
+* point metaphorical laser pointer at object to interact with it
+
+.Direct manipulation
+* grab objects with hand
+* obstacles exist
+
+=== Motion sickness in VR
+
+Big problem in VR
+
+.Causes
+* Sensory conflict
+* Visual motion doesn't match with vestibular motion
+* Caused by:
+** frame drops
+** changes in acceleration
+
+.Symptoms
+* Nausea
+* Dizziness
+* Sweating
+* Varies with individuals
+
+.Mitigation strategies
+* High FPS
+* Minimize acceleration
+* Keep horizon stable
+* Use vignetting
+
+== Augmented Reality (AR)
+
+Digital overlay on real world
+
+Overlayed information needs to be accurate (or relevant) to respective anchor
+
+=== AR display tech
+
+.Handheld AR
+* use smartphones/tablet
+* look through camera
+* software overlays info on objects
+* need to hold device
+
+.Optical See Through (OST)
+* Transparent displays
+* See world directly
+* Digital content is placed
+
+.Video See Through (VST)
+* Camera captures real world and shows real feed+digital content
+* Some VR headsets can do this
+
+=== AR FOV challenges
+
+Fish eye effects can be distracting when perceiving virtual elements
+
+* not so bad with text
+
+=== AR Tracking and Registration
+
+AR has connection with the user
+
+* no real connection with real world
+
+Can use local information to keep virtual elements where they're supposed to be
+
+.Visual SLAM
+* *Simultaneous localizatio and mapping*
+** simulate camera pose when image was taken (like photogrammetry)
+* needs to be very fast (real time)
+* use first tracked frame as basis for rest (arbitrary coordinate system)
+
+=== AR spatial mapping
+
+SLAM is used for sparse mapping
+
+* SLAM produces points where it identifies features
+** corners
+** color boundaries
+
+Can use other optical techniques for more dense mapping
+
+=== AR content registration
+
+.Marker based AR
+* Use markers to align coordinates
+** assumes that AR world will be bound by markers
+
+.Markerless AR
+* Use the environment as a bounding box
+* use natural features
+* uses SLAM based approaches
+
+.Image targets
+* Use specific images as targets
+* Point phone at image A and AR content is displayed
+
+=== AR depth and occlusion
+
+Virtual objects need to be occluded behind real physical objects when required
+
+Can use active sensing tech
+
+* time of flight sensor
+
+Can use passive tech
+
+* neural networks
+* other image based tech
+
+=== AR hand tracking
+
+Hands are usually tracked with 21 points
+
+Can track in 2D but some estimation will be required
+
+When using AR hands feedback is good to have
+
+* lack of feedback can be offputting
+
+
+== Mixed Reality
+
+Bidirectional interaction between real world and virtual world
+
+Virtual objects respond to input from real environment
+
+Virtual objects interact with real objects
+
+* virtual ball bounces off real table
+
+=== MR spatial understanding
+
+.Environment comprehension
+* Identify and isolate objects
+* Understand spatial relationships
+* Vase is on table
+
+.Spatial anchors
+* persistent coordinate frames
+* anchor virtual session in real world
+
+.Room meshing
+* Real time 3D reconstruction of environment
+** triangle mesh
+** update world as it changes
+
+=== MR interaction models
+
+.Direct manipulation in physical space
+* virtual objects can be placed on physical objects
+* comopute physics based interactions
+
+.Hybrid input methods
+* Gaze
+* Voice
+* Hand gestures
+* eye tracking
+* controllers
+
+Multimodal paradigms also work 
+
+.Spatial audio
+* Produce virtual sounds from physical sources
+* Occlusion and reflection based on environment geometry
+* Use HRTF for realistic audio
+
+=== Passthrough AR from VR headsets
+
+Some VR headsets allow MR using their cameras
+
+* they overlay digital elements on real world
+
+Not so good
+
+* high latency
+* looks bads
+
+== XR latency: Motion to Photon
+
+There is latency everywhere
+
+* physical latency
+* software latency
+
+Need to reduce it as much as possible for smooth experience
+
+.Asynchronous Time Warp (ATW)
+* Like dead reckoning
+
+.Foveated rendering
+* see earlier
+* tracking eye position is useful to apply foveated rendering
+** when eye moves the fovea position changes
+** need to apply rendering to current fovea position
+
+=== Vergence-Accommodation Conflict
+
+Real eyes focus and converge at the same distance
+
+Virtual eyes converge at virtual object depth but focus at a fixed distance
+
+This causes eye strain, fatigue
+
+=== Haptic Feedback in XR
+
+Some activities benefit from haptic feedback
+
+.Vibrotactile
+* Vibration motors in controllers
+
+.Force feedback
+* lift up virtual object
+* apply counter force to real wrist
+* feels more immersive
+* special hardware required (gloves, exoskeletons)
+
+.Thermal feedback
+* feeling the temperature of a patient can be useful in OR digital twins
+
+== XR in healthcare
+
+XR has many uses in healthcare
+
+.Surgical Simulation
+Simulate:
+
+* surgical tools
+* operating room
+* patient
+* patient status
+
+.Anatomy studies
+Simulate:
+
+* skinless bodies
+* muscle groups
+* bone structures
+* organs
+
+.Pain treatment
+Apply distraction based analgesias
+
+* distract patient while they're getting blood samples taken
+
+.Exposure therapy
+Expose patients to psychological stressors safely
+
+.Motor skills rehabilitation
+Simulate/show patients how to perform tasks
+Immerse them in treatment sessions
