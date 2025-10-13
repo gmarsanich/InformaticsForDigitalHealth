@@ -1,0 +1,91 @@
+= Bioinformatics and Systems Biology - Pharmacophore Based Drug Design
+:toc:
+:toc-title: Contents
+:nofooter:
+:stem: latexmath
+
+== What is it?
+
+Creating a model of new molecules with certain biological features
+
+3D space arrangement of chemical features required for the molecule to interact with biological compound
+
+* specific pharmacophore features
+* represented by spheres
+
+=== How?
+
+. Collect data
+* Gather information from multiple sources about molecules of interest
+* paper P found that molecule X is active against our target
+* different paper found molecule H that is also active against our target with other properties
+. Analyze data
+* Create a framework that integrates the collected data
+. Design new molecules
+* Create new molecules with the properties we identified during analysis
+* Modify molecule X -> molecule Y
+* Modify molecule H -> Molecule Y2
+** X and H may be patented so beware
+
+=== Simple example
+
+Consider *Molecule A* and *Molecule B*
+
+* structurally dissimilar
+* both active against some target *T*
+* we know their bioactive conformation
+** we know how they interact with *T*'s binding site
+
+.Steps
+
+3D x-ray structure is required
+
+. Superimpose A and B
+* A binds to the receptor in conformation CA
+* B binds to the receptor in conformation CB
+** this shows common conformational features
+** e.g. both have 3 aromatic rings and all 3 rings are in the same arrangement in both molecules
+. Take common features
+* in our case these would be the 3 aromatic rings
+. Find molecules with similar features
+* molecules with 3 aromatic rings with the same arrangement as A and B
+
+.New Steps
+
+What if you don't have the 3D x-ray structure?
+
+* pairwise alignment of each conformation of both molecules
+* find the superposition with the best alignment of certain parts of the molecules
+* there can be multiple solutions that need to be tested later
+
+=== Case Study - MbtI
+
+Kill enzyme that helps tuberculosis bacteria consume iron ions
+
+Kill enzyme -> no iron ions -> bacterium dies
+
+Filter 1.5m complexes -> 2k complexes with the required features
+
+* need to use HTS for this
+* far too many molecules/complexes to do manually
+* make the robot do it
+* HTS is stupid expensive
+** 100k compounds ~> 500k euro
+
+HTS outputs are noisy
+
+* many false positives
+* many false negatives
+* true positives don't tell you how the interaction happens
+
+* Use docking
+
+Many docking softwares
+
+* which do you use?
+
+Use multiple docking softwares and compare the results
+
+* if 9/10 docking softwares predict the same ligand pose then that pose is more likely to be real
+
+This is *consensus docking*
