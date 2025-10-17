@@ -1,0 +1,159 @@
+= Virtual Worlds - Spatial Mapping
+:toc:
+:toc-title: Contents
+:nofooter:
+:stem: latexmath
+
+== Structure From Motion
+
+Correlating 2D images into 3D structure
+
+* panorama images
+* insta360
+* Google Earth
+
+No specialized equipment needed
+
+* Simple cameras are fine for this
+
+Simple but expensive computations
+
+The main problem is to match features across images 
+
+We also have to minimize reprojection error acoss all views
+
+=== SFM assumptions
+
+. Scene is static
+* don't need to deal with moving objects
+. Sufficient overlap
+* consecutive images must have some common features
+. Lambertian surfaces
+* cos(normal vector, light vector)
+* surfaces where the appearance is the same regardless of viewpoint (?)
+** we don't want specularity
+. Known/estimatable camera parameters
+* lens distortion
+** fisheye factor
+** pinch/barrel
+* focal length
+* aperture
+. Textured surfaces
+* features to match across views
+** perfectly blank images are impossible to stitch together correctly
+
+== Camera Model Review
+
+Microscopic hole in a box
+
+Everything is projected in with no distortion
+
+Need to know:
+
+. Intrinsic parameters
+* focal length
+* principal point
+** where everything converges
+* distortion coefficients
+. Extrinsic parameters
+* Rotation
+** camera orientation
+* Translation
+** camera position
+
+Combine these into projection matrix:
+
+* [4 4] matrix
+** represents multiplication of camera matrix and projection matrix (?)
+
+=== Feature Detection
+
+Need to find places to stitch images together
+
+Different methods have different trade offs in speed/accuracy
+
+. Classic methods
+* corner detection
+* FAST
+
+. More modern methods
+* SIFT
+* SURF
+
+. Deep Learning methods
+* SuperPoint
+* R2D2
+
+==== SIFT
+
+*Scale Invariant Feature Transform*
+
+SIFT is light/scale/rotation invariant
+
+128D vector around each keypoint
+
+=== Feature Matching
+
+Match features between views
+
+Find closest description match
+
+Test and reject the least robust matches
+
+Reject outliers
+
+=== Two view geometry
+
+Estimate essential matrix
+
+Decompose the essential matrix
+
+* relative rotation
+* relative translation
+
+Triangulate points with matching rotation and translation
+
+==== Epipolar Geometry
+
+Given point X and 2 observers O1, O2
+
+Light R from X lies on epipolar line (???)
+
+==== Triangulation
+
+Given 2 camera poses and 2 matched features:
+
+* find the 3D point that appears in both views
+
+== SLAM
+
+Typically you need a pose to map the environment and you need an environment to estimate a pose
+
+SLAM solves the localization/mapping problem by solving pose and map at the same time
+
+* 1 thread handles tracking
+** 30/60hz
+* 1 thread handles mapping
+** lags slightly
+
+Removes GPS requirement from navigation
+
+Smaller scope than SfM
+
+Can be used in real time
+
+Accurate enough for tracking
+
+Multiple types of SLAM depending on technology/purpose
+
+* Visual SLAM
+* normal camera images
+* LiDAR SLAM
+** use laser rangefinders
+* RGB-D SLAM
+** color+depth cameras (Kinect)
+* Intertial SLAM
+** use acceleration/orientation of device to track it
+* Multi sensor fusion
+
+Can also use graphs to compute SLAM
