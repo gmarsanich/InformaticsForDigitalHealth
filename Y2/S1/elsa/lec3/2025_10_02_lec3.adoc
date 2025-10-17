@@ -162,3 +162,197 @@ Big overlap
 Not all wearables are medical devices
 
 == Software
+
+.MDR definition
+A set of instructions that processes input data and creates output
+
+Different types of softwares
+
+. Accessory software
+* no independent medical function
+* supports primary medical device
+* hardware can also be accessory to software
+
+. Software in a Medical Device (SiMD)
+* integral part of medical device
+** insulin pump regulator
+** pacemaker firmware
+
+. Software as a Medical Device (SaMD)
+* no hardware required
+* software is the medical device
+** melanoma recognition app
+
+=== Software Qualification
+
+. Does this software help diagnosis, treatment, etc.?
+* no -> not a medical device
+. Is the software accessory to a medical device?
+* yes -> software is a medical device
+. Does the software operate on data beyond storage/retrieval?
+* no -> not a medical device
+. Does the software benefit patients?
+* no -> not a medical device
+
+Some examples of healthcare software
+
+* hospital information system
+* decision support software
+* electronic health records
+* telemedicine
+* web systems for monitoring
+
+=== Risk Classification for SaMD
+
+If software works as a decision support system:
+
+* class IIa
+
+If decisions may cause:
+
+* death -> class III
+* health deterioration -> class IIb
+
+If software monitors physiological processes:
+
+* class IIa
+
+If changes in physiological processes/parameters can bring harm to the patient:
+
+* class IIb
+
+Else:
+
+* class I
+
+If MDSW is part of MDHW:
+
+* MDSW risk class == MDHW risk class
+
+If MDSW is standalone:
+
+* risk class is independent of other hardware
+
+=== Apps on online platforms
+
+All medical apps must comply with rgulations regardless of app cost or source
+
+* publishing app on platform -> placing on market
+* availability for download -> making available on market
+
+CAUTION: manufacturer is *always* responsible for compliance
+
+App platform providers have 2 roles:
+
+. Intermediary
+* connect users and developers
+* handle user reports
+* ensure transparency
+
+. Distributor/importer
+* ensure safety
+
+=== AI as SaMD
+
+MDR and AI Act apply simultaneously when AI is used in SaMD
+
+MDCG is being created
+
+* defines guidelines for interplay between MDR and AI Act
+** basically FAQ
+* talks about MDAI
+* split into chapters
+
+WARNING: still being developed as of 2025-10-16
+
+== Cybersecurity
+
+Medical devices can be vulnerable to cyber attacks
+
+* supply chain attack on pacemaker firmware can cause malfunctions and lead to death
+
+Manufacturers must ensure safety/security by design and maintain post market surveillance
+
+Need to ensure protection against data theft and data leaks
+
+== Ethics Committees
+
+Ethics committees are independent bodies that ensure the protection of rights, safety and well being of human subjects in clinical activities. 
+
+Ethics committees must be independent to lower the chances of biased judgement
+
+* no subordination to clinical structure where the committee works
+
+There are 43 ethics committees in Italy
+
+* 40 regional committees -> CET
+** drug trials
+** clinical investigations of MDs
+** observational pharmacological studies
+* 3 national committees -> CEN
+** advanced therapies
+** medical product trials
+
+National committees aren't always composed of the same members
+
+* sometimes they split
+
+Ethics committees must wholly approve the study for the study to be approved
+
+Ministry must also approve the study but minitry approval requires ethics committee approval
+
+Can send proposal to both in parallel to save a bit of time
+
+=== Choosing an ethics committee
+
+The chosen committee needs to be valid for the given study
+
+* pediatric studies need an EC that deals with pediatrics
+
+Study sponsors/promoters are responsible for finding correct EC
+
+* pharma companies that ask clinical centers to run a study
+* clinical centers themselves
+
+=== Informed Consent
+
+All studies requiring people need an informed consent form/document
+
+* attests that participants are taking part willingly and they can leave at any time
+
+MDR rules and ISO standards for informed consent
+
+WARNING: no informed consent = no study
+
+Informed consent forms must be in plain language
+
+* no legalese
+* no tricks
+* no loopholes
+
+Other requirements:
+
+* No coercion
+* no reward
+** if you participate we'll give you 100 euro
+
+Vulnerable subjects can obtain consent from legal representative or caregivers
+
+* subject assent if possible
+
+== Clinical Studies
+
+=== Clinical investigation
+
+A systematic investigation of at least one human subjects to assess the performance/safety of a device
+
+* demonstrates safety and clinical performance of device
+* obtain/maintain CE marking
+* generate real world data to improve the device
+
+Clinical investigations of medicinal products follow different rules:
+
+* CTR
+* safety and efficacy of product
+* randomized double blind
+* different ISO standard
