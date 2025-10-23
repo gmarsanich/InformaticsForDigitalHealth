@@ -1,0 +1,58 @@
+= Virtual Worlds - Agentic Systems
+:toc:
+:toc-title: Contents
+:nofooter:
+:stem: latexmath
+
+== What is an agentic system?
+
+AI systems that operate without human intervention
+
+Reactive to specific events
+
+* they know what actions to take
+
+Goal directed systems
+
+. Rule based agents
+* if `x` do `y`
+. RL agents
+* learn action `a` independently through experimentation
+. LLM based agents
+* use transformers and other modern tech to learn and execute actions 
+
+== Agent Architecture Components
+
+=== Perception
+
+Taking in information about their environment
+
+* text
+* images
+* other APIs
+
+=== Control flow
+
+Managing perception reasoning action loops
+
+* what to do in each situation
+
+=== Learning
+
+
+
+=== Memory
+
+=== Reasoning
+
+=== Action
+
+== LLM Based Agents
+
+Learned on natural language
+
+* generate code and other new information based on natural language
+
+== Agent Planning Strategies
+
+slides
