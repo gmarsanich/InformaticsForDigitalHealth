@@ -1,0 +1,40 @@
+= ELSA - Decision Support Systems
+:toc:
+:toc-title: Contents
+:nofooter:
+:stem: latexmath
+
+== What is a DSS?
+
+Digital system that makes/suggests decisions according to some data
+
+* if heartbeat > 150 => go hospital
+* if blood sugar < 0.01 => go hospital
+
+Device that collects data needs to be certified (MDR)
+
+Algorithm in DSS also needs to be certified
+
+All functions need to be certified/validated
+
+* applies to EHR as well
+** EHR can be at worst class IIB because doctors make decisions
+* how do you decide that a patient is more complex than another?
+
+=== Design overview
+
+Using microservices and modularity makes it easier
+
+* segregating components increases safety
+** changes to accounting service has no impact on clinical services
+
+Choose (a)synchronous functions when appropriate
+
+* if a function takes a day to return a value then use asynchronous
+* if a function needs to return a result immediately then use synchronous
+** depends on efficiency as well as priority 
+
+== Section 2
+
+=== Subsection 2 
+
