@@ -14,11 +14,7 @@ parser.add_argument("-filetype", "-t")
 
 args = parser.parse_args()
 
-dirpath, outname, filetype = (args.dirpath, args.outname, args.filetype)
-
-
-# Get current working directory
-target = dirpath
+target, outname, filetype = (args.dirpath, args.outname, args.filetype)
 
 # Filter for lecture directories
 lectures = filter(lambda d: d.startswith("lec"), os.listdir(target))
