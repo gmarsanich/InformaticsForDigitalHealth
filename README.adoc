@@ -1,15 +1,23 @@
 = Notes for the Master's degree in Informatics for Digital Health at UNIPI
 :toc:
 
+== READ ME FIRST
+
+These are simple lecture notes, not study guides or course summaries.
+Feel free to use them for your study sessions but be aware that they might be *incomplete*, *unclear*, and will definitely contain *mistakes*.
+If you use information contained within these notes and you get a bad grade that is on you.
+
+Please don't redistribute them directly and please don't claim that you wrote them. If I find out I'm going to tell your parents and they'll be sad.
+
 == convert.py
 
 This script converts .adoc files into .html or .pdf and writes them to a zip archive. Requires https://asciidoctor.org/[Asciidoctor] and https://docs.asciidoctor.org/pdf-converter/latest/install/[Asciidoctor-pdf]
 
 Arguments:
 
-* -dirpath (-d): path to directory containing .adoc files
-* -outname (-o): name of the archive
-* -filetype (-t): file type for converted files. Can be pdf or html
+* `--dirpath (-d)`: path to directory containing .adoc files
+* `--outname (-o)`: name of the archive
+* `--filetype (-t)`: file type for converted files. Can be pdf or html
 
 Example:
 
