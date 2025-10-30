@@ -32,9 +32,4 @@ Choose (a)synchronous functions when appropriate
 
 * if a function takes a day to return a value then use asynchronous
 * if a function needs to return a result immediately then use synchronous
-** depends on efficiency as well as priority 
-
-== Section 2
-
-=== Subsection 2 
-
+** depends on efficiency as well as priority

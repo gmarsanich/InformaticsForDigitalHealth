@@ -1,0 +1,146 @@
+= BSB - Databases
+:toc:
+:toc-title: Contents
+:nofooter:
+:stem: latexmath
+
+== Where do we find information?
+
+There are a whole bunch of interlinked databases
+
+. Nucleotide sequences:
+* ENA
+* GenBank
+* INDSC
+. Genes
+* NCBI Gene
+** proteins and the genes that produce them have the same name (lol???) but different IDs
+** different research groups can name the same protein/gene/whatever differently
+*** databases list synonyms as well
+* GeneCards
+** less about data
+** more about generic information
+. Genomes/proteome/transcriptome
+* GenBank
+. Genome Browsers
+* ensembl
+** shows gene location in genome
+** shows gene isoforms
+** autologs: same gene different life form
+** paralogs: something else idk
+** shows phenotypes: expression of genes (eye color, hair color, pea color, pea texture, etc.)
+
+Most of these have APIs to make automatic interaction easier
+
+== How is this information written?
+
+=== FASTA
+
+Seen before
+
+Used for known sequences
+
+ATAGCAC and such
+
+=== Transcript Annotation Files
+
+Used to encode transcripts
+
+. https://github.com/The-Sequence-Ontology/Specifications/blob/master/gff3.md[GFF]
+* GFF2 represented 2 levels of feature hierarchy
+* GFF3 can represent any number of features in a hierarchy
+. GTF
+* identical to GFF2
+
+GFF files:
+
+* Plain text 
+* 9 columns
+** code
+** gene part
+** start point
+** end point
+** other stuff
+* tab delimited
+
+=== UTR
+
+Regions on RNA extremes remain untranslated
+
+They are required for translation but they themselves are not translated
+
+* key regulatory regions
+
+One at 3'
+
+* determines lifetime of RNA
+
+One at 5'
+
+* located before the start codon (AUG)
+
+== Sequence Analysis
+
+How do we analyze these sequences?
+
+=== Pattern Matching
+
+Similar patterns can indicate similar functions
+
+Can be used to reconstruct genome/gene/protein evolution
+
+2 main ways:
+
+* exact pattern matching
+** find ATAGC in human genome
+* inexact pattern matching
+** A*AGC in human genome
+** nightmare in bioinf
+
+Need the right algorithm for the job
+
+.Knuth-Morris-Pratt (KMP) algorithm
+. preprocess steps
+* construct Longest Proper Prefix that is also a Suffix
+i dont understand lol
+
+.Regular Expressions
+* Useful in genomes because fixed sequences
+* Letters outside ATGCU signify other things
+** nucleotide IUPAC
+* Amino acids only use IUPAC
+** no weirdness
+
+=== Codons to amino acids
+
+3 codons make an amino acid
+
+Wheel that maps starting codon to amino acids
+
+* U -> U -> U or C => phenyline
+
+WARNING: this wheel does not apply to all living beings. Some bacteria and human mithocondria have exceptions
+
+== Homework
+
+=== HW1: TP53
+
+==== Humans
+* https://www.ncbi.nlm.nih.gov/nuccore/NM_000546.6?report=fasta[Genomic sequence]
+* https://www.ncbi.nlm.nih.gov/datasets/gene/7157/#transcripts-and-proteins[Derived protein sequences]
+* https://www.ensembl.org/Homo_sapiens/Transcript/Summary?db=core;g=ENSG00000141510;r=17:7661779-7687546;t=ENST00000714409[Longest transcript]
+** 39 splice variants
+** 34 protein coding
+** https://www.ensembl.org/Homo_sapiens/Transcript/Sequence_cDNA?db=core;g=ENSG00000141510;r=17:7661779-7687546;t=ENST00000714409[Coding sequence]
+* https://sep2025.archive.ensembl.org/Homo_sapiens/Gene/Compara_Tree?db=core;g=ENSG00000141510;r=17:7661779-7687546[Evolutionary tree]
+
+==== Mice
+* https://www.ncbi.nlm.nih.gov/nuccore/NM_011640.4?report=fasta[Genomic sequence]
+* https://www.ncbi.nlm.nih.gov/datasets/gene/22059/#transcripts-and-proteins[Derived protein sequences]
+
+==== Chimps
+* https://www.ensembl.org/Pan_troglodytes/Gene/Sequence?g=ENSPTRG00000008703;r=17:7936163-7951161[Genomic sequence]
+* https://www.ncbi.nlm.nih.gov/datasets/gene/455214/#transcripts-and-proteins[Derived protein sequences]
+
+
+=== HW2: Code
