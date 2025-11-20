@@ -1,0 +1,153 @@
+= BSB - Transcriptomics
+:toc:
+:toc-title: Contents
+:nofooter:
+:stem: latexmath
+
+== Sequencing RNA
+
+How?
+
+A billion things to do
+
+. Get code
+. Trim section
+. Do stuff
+* there's a ton of tools
+
+=== Main goals
+
+. Gene expression
+* how is this gene expressed?
+. Finding new transcripts
+* how is this bit of DNA translated?
+. Fusion transcript detection
+* common when sequencing tumors
+* genes fuse together and are moved
+** the chromosome can be rearranged in some tumors
+
+== DEG Analysis
+
+*Differential expression analysis*
+
+The pipeline you select affects the output
+
+* sometimes a bit
+* sometimes a lot
+
+You need to pick the right tool for the job
+
+Highly duplicated regions will tend to have low quality annotations
+
+* so many things to annotate that few people do it
+
+More data = better
+
+=== DEG Analysis process
+
+3 main ways to split DEG methods
+
+. Parametric approaches
+. Non parametric approaches
+. Hybrid approaches
+
+=== 1. Quality assessment & sequence trimming
+
+FASTQ files contain quality information
+
+* Phred score for each base
+* low quality sequences are dropped if score < some threshold
+
+Trimming removes sequences from adapters
+
+* we don't want to sequence adapters typically
+* use similarity search to find and remove
+* *FASTQC* generates RNA sequence quality reports
+
+=== 2. Removing batch effects
+
+There is a feature in the dataset that changes across groups
+
+* identify causes outside of experimental design (i.e. extraneous effects)
+** machine type
+** technician
+** weather
+
+2 known tools for this:
+
+* svaseq
+* combat-seq
+
+
+WARNING: batch removal is tricky. All batches need to have the same conditions (group balance, number of variables, etc.)
+
+=== 3. Alignment
+
+Identifies how many reads align with the genome region
+
+2 main challenges
+
+* processing time
+* computational complexity
+
+Sometimes a transcript can fit in multiple locations within the genome
+
+* there are algorithms/tools that can deal with this
+** *tophat2*
+
+Sometimes you don't have a genome to alignt to
+
+* run *pseudoalignment*
+** *Salmon* (returns a probability) + *Kallisto* (also returns a probability)
+** others exist
+
+Alignment outputs can be of 2 types:
+
+* SAM
+** tab delimited
+** sequence reads aligned to genome
+*** contains sequence and metadata
+*** contains CIGAR string that describes the alignment (insertion here, deletion here, etc.)
+** very large
+* BAM
+** compressed binary file
+** contains results of alignment sequences
+** machine readable version of SAM
+
+==== Burrows-Wheeler transform
+
+Reversible rearrangement of a string
+
+* groups similar characters together
+* simplifies compression
+
+Makes processing faster/more efficient
+
+=== 4. Counting methods
+
+Different counting methods
+
+* consider mappings with Phred > threshold
+* consider reads with unique mappings
+
+Many types of operations need to be accounted for
+
+* full alignment
+* partial alignment
+* junction alignment
+* exon alignment
+* double partial alignment
+* double alignment
+
+Counting methods include:
+
+* HTSeq-count
+* BEDTools
+* featureCounts
+
+Pick the method based on the data
+
+* right tool for the right job
+* when in doubt try a few
+** benchmark most and least restrictive modes
+** decide based on that

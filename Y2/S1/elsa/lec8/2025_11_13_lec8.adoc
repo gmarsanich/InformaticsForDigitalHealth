@@ -1,0 +1,88 @@
+= ELSA - Social-Health Services
+:toc:
+:toc-title: Contents
+:nofooter:
+:stem: latexmath
+
+== Context Elements
+
+Managing healthcare systems is a mess of multiple elements
+
+* bureaucracy
+* politics
+* environment
+* demographics
+* epidemiologic status
+* economics/funding
+* demand
+* AI
+
+Political figures dictate(ish) how social/health services are managed
+
+* mayors
+* regional authorities
+
+Complex systems require complex solutions
+
+== Analysis of needs
+
+=== SWOT
+
+SWOT is a key part of initial planning
+
+* *Strengths*
+* *Weaknesses*
+
+* *Opportunities*
+** PNNR
+** AI
+** Digital Health
+* *Threats*
+** improper use
+** inequalities
+** demographics
+
+=== Health as a dependent variable
+
+Health is composed of biological factors
+
+* genetics
+* living environment
+* habits
+** eating
+** physical activity
+* sex
+* demographics
+
+and external factors
+
+* epidemiological transition
+** previously deadly conditions are now chronic
+* climate change and its effects
+** desertification
+** extreme weather events
+* economic status
+** more money = better health
+** higher education = better health
+* technology
+** automated screenings
+** decision support systems
+* geopolitics
+** wars
+** human trafficking
+
+=== Working model
+
+Needs, demands and supply don't fully overlap
+
+* needs aren't always expressed
+* not all demands are met
+
+=== Technology
+
+Technology innovates faster:
+
+* than we can adapt to it
+* than systems can adapt to it
+
+How do we harness it?

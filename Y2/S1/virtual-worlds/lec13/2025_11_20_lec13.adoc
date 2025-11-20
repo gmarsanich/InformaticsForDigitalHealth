@@ -1,0 +1,107 @@
+= Virtual Worlds - Human Pose Estimation
+:toc:
+:toc-title: Contents
+:nofooter:
+:stem: latexmath
+
+== Taxonomy
+
+2D HPE -> estimate x, y coordinates of each keypoint
+
+3D HPE -> estimate x, y, z coordinates of each keypoint
+
+Single person/multi person
+
+Most modern methods are multi person
+
+Early models used regression on images
+
+* DeepPose (2014) worked but it wasn't especially accurate
+** lots of pooling
+** lots of operations that disrupted feature locality
+
+== Heatmap based 2D HPE
+
+Instead of predicting the exact x, y coordinate (very hard)
+
+* need continuous x, y balanced dataset
+
+Given a keypoint -> decide, for each pixel, if that pixel belongs to that keypoint
+
+* returns probability values
+* add gaussian filter to convolution
+** generates a heatmap over the point -> high prob near middle -> low prob near edges
+
+Can use pure convolution
+
+* no pooling required -> no loss of locality
+
+High quality feature maps required
+
+== HPE Metrics
+
+=== PCK/PDJ
+
+Percentage of correct keypoints
+
+Keypoint i is correctly detected if the distance between the predicted pos and real pos < threshold
+
+* distance can be in
+** pixels (arbitrary, need to pick a threshold relative to the scale of the real pose)
+** absolute units
+
+=== OKS
+
+Object Keypoint Similarity
+
+Like IoU
+
+Overlap between the ground truth box and the predicted box
+
+* quantifies closeness between GT and P
+* in range stem:[(0, 1)]
+** enables computation of average precision (AP) and average recall (AR)
+
+For keypoint stem:[i]
+
+* exponent of the difference between true and predicted divided by the object scale (squared) per some constant stem:[k]
+** dataset curator(s) suggest values of stem:[k] so it doesn't come from training
+*** stem:[k] is higher for parts that are more difficult to segment
+
+== Multi person 2D HPE
+
+Predict keypoint positions for each person in an image
+
+* identify which keypoint belongs to which person
+
+Challenges:
+
+* unknown number of persons
+* scale/orientation
+* occlusion
+** partial visibility
+** crowds
+
+Methodologies:
+
+* top down: find persons, then keypoints per person
+** slower but more accurate
+* bottom up: find keypoints then keypoint owners
+** faster but less accurate
+* one stage: gets both keypoints and people in one shot
+** based on bottom up
+
+== Single person 3D HPE
+
+Given an RGB image you can get 2 things:
+
+* skeleton based -> 3D keypoints
+* model based -> 3D mesh/model
+** can infer keypoints from surface
+
+Use volumetric heatmaps instead of 2D heatmaps
+
+Uses *Geodesic Point Similarity* instead of OKS
+
+* similar to OKS
+* works on 3D data

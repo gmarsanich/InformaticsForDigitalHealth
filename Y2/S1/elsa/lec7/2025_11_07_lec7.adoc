@@ -1,0 +1,170 @@
+= ELSA - Organization, LEA and digitalization
+:toc:
+:toc-title: Contents
+:nofooter:
+:stem: latexmath
+
+== Hierarchy
+
+The SSN follows a hierarchical system
+
+. The state
+* provides funding
+* defines minimum assistance levels
+. Regions
+* plan and organize services
+* distribute funding
+. Clinics (ASL) and Hospitals (AO)
+.. ASLs provide base medicine, mental health care, basic services
+.. AOs are more complex systems
+** they provide care for more complex needs
+
+== Internal Organizational Levels
+
+3 levels of responsibility:
+
+. Strategic level
+* defines objectives/targets
+* defines overall mission
+. Management level
+* translates strategy into operational plans
+. Operational level
+* provides services based on operational plans
+
+=== Business Management (Strategic Level)
+
+Business Management branches are composed of multiple leaves
+
+* General Director
+* Healthcare Director
+* Administrative Director
+
+=== Operational Level
+
+Multiple layers in this level too
+
+==== Health Districts
+
+Health districts coordinate assistance within their territory
+
+* primary care
+* home care
+* consulting services
+* mental health centers
+
+They play a key role in the integration of health services with municipal social services
+
+== Horizontal coordination and service integration
+
+Sometimes different entities have to cooperate
+
+Health Districts are responsible for this
+
+* coordinate community centers with local hospitals
+
+This isn't always easy
+
+* different standards
+* different expectations
+
+=== Integrated Clinical Networks
+
+A system used to define shared guidelines/protocols and data to guarantee treatment quality everywhere
+
+.Cardiology network
+* the cardiology network in Tuscany sends patients to the most appropriate center for their needs
+* based on data/availability/treatment requirements
+
+=== Integration tools
+
+. Assistive diagnosis/therapy paths
+* define care standards for various pathologies
+* coordinate hospitals and regional services
+
+. Continuative Care Units and Community Nursing (?)
+* guarantee care during transitional periods
+* monitor post-discharge health
+
+. Remote coordination platforms
+* remote management of patients and their data
+* remote coordination between care providers
+
+== LEA
+
+LEA are Minimum Levels of Assistance/Care
+
+3 main levels
+
+. Collective prevention and public health
+. District care
+. something else
+
+Designed to ensure all regions provide a minimum set of key services
+
+This doesn't always work
+
+=== Territorial Inequalities
+
+Not all regions are able to provide the same quality of care
+
+Southern regions cannot generally cope with healthcare demands
+
+* high waiting times
+* lower vaccination coverage
+* lacking home care services
+* lacking mental health care services
+* old technologies
+
+=== LEA monitoring
+
+There are indicators that monitor LEA processes and results
+
+* e.g. the process required to get a vaccine and the outcome
+* e.g. cesarian births (c-sections)
+** why were they required?
+** what was the outcome?
+
+These indicators are upated every year
+
+== Digitalization of healthcare
+
+Using modern technology to improve both managerial and care processes
+
+Mainly electronic health records
+
+* they allow patient data to be accessible by all management/care departments of all hospitals that use them
+
+=== FSE 2.0
+
+Digitally collects and stores the clinical history of all users
+
+* reports
+* prescriptions
+* vaccines
+* hospital stays
+* diagnoses
+
+=== Intelligent Care Providers
+
+These would use:
+
+* telemedicine
+* remoter monitoring
+* Internet of Medical Things (IoMT) devices
+** for remote data collection
+* AI and machine learning for data analysis
+** diagnosis (DAS)
+** customized therapies
+* healthcare blockchains
+** decentralized secure data storage and transmission
+* apps and web portals to manage data
+
+=== Process reorganization and digital skills
+
+Processes need to be adapted to the use of technology
+
+Staff needs to learn to use the new digital tools for them to be effective
+
+* data usage and protection
+* cybersecurity
+* software usage

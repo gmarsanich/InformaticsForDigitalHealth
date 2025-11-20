@@ -1,0 +1,70 @@
+= BSB - Non Mass-Action Kinetics
+:toc:
+:toc-title: Contents
+:nofooter:
+:stem: latexmath
+
+== What are non-mass action models?
+
+Models with more complex functions than number of reactant * reactant
+
+* stem:[kx] no longer applies
+
+== Michaelis-Menten kinetics
+
+Describes irreversible enzyme catalyzed reactions
+
+makes 2 assumptions:
+
+* the whole reaction is irreversible
+* the left side of the reactions are faster than the right
+** enzyme concentrations are assumed to be at equilibrium
+
+Generally it groups constants together and rewrites the reaction in terms of P that depends on Vmax (maximum rate of production)
+
+* stem:[V_{max}] => enzyme concentration * enzyme reaction rate (stem:[k_2])
+
+stem:[V_{max}] is also easy to compute/estimate in the lab
+
+* measure the concentration of stem:[S] after stem:[n] seconds and plot
+* the asymptote is == stem:[V_{max}] because we hit the maximum number of enzymes
+* stem:[\frac{V_{max}} {2} = K_m] (the substrate concentration)
+
+== Hill Kinetics
+
+Generalization of MM kinetics
+
+* additional term stem:[h] used as an exponent (Hill coefficient)
+** represents *binding cooperativity*
+*** *binding cooperativity* is a value that represents how much faster subsequent bindings happen
+*** affects reaction rate over time
+** stem:[h \gt 1] => more cooperative => accelerates
+** stem:[h \lt 1] => less cooperative => decelerates
+** stem:[h = 1] => no effect => does nothing
+** reaction curve still has asymptote at stem:[V_{max}]
+** shape of the curve changes
+
+== Logistic Function
+
+Comes from ecology
+
+* environment with a population
+* environment provides resources for stem:[k] individuals
+** if pop < stem:[k] => pop grows
+** if pop > stem:[k] => pop shrinks
+** pop will eventually stabilize around stem:[k]
+
+== SBLM
+
+Markup language for systems biology
+
+Subset of XML
+
+* model tag -> names model
+* supports multiple reactions
+** lists them in a block
+* supports multiple species
+** lists them in a block
+* multiple products
+* multiple reactants
+* specific kinetic law(s)

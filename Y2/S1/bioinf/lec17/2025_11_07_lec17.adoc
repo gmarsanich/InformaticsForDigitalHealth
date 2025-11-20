@@ -1,0 +1,128 @@
+= BSB - Chemical Reaction Networks
+:toc:
+:toc-title: Contents
+:nofooter:
+:stem: latexmath
+
+== Biological Networks
+
+3 relatively abstract ways of representing networks
+
+. Gene regulatory networks
+* nodes are genes
+* edges are influences
+
+. Cell pathways
+* interactions between molecules
+* the chemical reactions involved
+
+. Protein-protein interaction networks (PPI)
+* nodes are proteins
+* edge between interacting proteins
+
+== What is a pathway?
+
+Pathways are collections of chemical reactions
+
+* sequence of reactions
+
+Each reaction transforms *reactants* into *products*
+
+* reaction within a pathway often share something
+** reactant(s)
+** product(s)
+
+Interactions create a network structure
+
+== Cell Pathways
+
+Cell pathways are *Chemical Reaction Networks* (CRN) describing specific processes happening inside cells
+
+=== Glycolisis
+
+Transformation of 1 glucose into 2 pyruvate
+
+Metabolic pathway
+
+* first step in cellular respiration
+
+Glycolis is mostly linear
+
+* sequence of transformations
+
+=== EGF Signaling Pathways
+
+EGF =  epidermial growth factor
+
+Signaling pathways use receptors that capture signals
+
+* when protein binds to its receptor it stimulates something
+* in this case the growth of something
+
+Dysregulation in this pathway can often result in *cancer*
+
+== Modeling CRNs
+
+Using mathematical models of these reactions we can implement algorithms to simulate them
+
+.Definitions
+* chemical reactions *transform* molecules
+** reactants are transformed into products
+* Molecules are represented with symbols
+* Assume molecules float in some fluid
+** water
+** cytoplasm
+** some other fluid(s)
+* quantity is expresed in concentration/density
+** not 317236871 A molecules
+** 15 mols per liter (stem:[\frac{\text{mols}}{\text{l}}]) of A molecules
+** stem:[[A\]] denotes the concentration
+* there can be multiple instances of each molecule in a given reaction
+** denoted with coefficient stem:[l] or stem:[l']
+** called *stoichiometric coefficients*
+* the *kinetic constant* stem:[k] is a parameter used to compute the frequency of reaction
+** how many times the reaction takes place in the solution
+** stem:[k \simeq \text{rate of reaction}]
+** stem:[k_{-1}] represents the kinetic constant of the reverse of the reaction
+* the rate of reaction stem:[r = k \cdot \text{concentration of the reactant(s)}]
+
+=== Types of chemical reactions
+
+WARNING: slides
+
+=== Mass action kinetics
+
+Assuming the solution is well mixed
+
+* molecules aren't localized in any particular spot
+* they can move freely
+** can meet more freely
+
+Meeting molecules *may or may not* react
+
+* the more reactants there are -> the more often the reaction takes place
+** rate of reaction increases with reactant presence
+** k * product of concentration
+
+The unit of measurement of the rate of reaction depends on the number of reactants
+
+=== Dynamic Equilibrium
+
+A reversible reaction is in dynamic equilibrium when both directions have the same rate
+
+Reactions at equilibrium look static
+
+* in reality reactions are happening constantly
+* reactions in opposite directions compensate each other
+
+=== Reactions -> Ordinary Differential Equations
+
+ODEs are just equations with derivatives
+
+* e.g. reactions over time -> rate of reaction
+** positive derivative -> var is increasing
+** negative derivative -> var is decreasing
+
+Each individual sub reaction in a larger reaction produces its own ODE
+
+Numerically integrating the ODEs returns the reaction dynamics

@@ -1,0 +1,220 @@
+= Virtual Worlds - 3D perception I
+:toc:
+:toc-title: Contents
+:nofooter:
+:stem: latexmath
+
+== What is 3D perception?
+
+Turning raw 3D data into structured data
+
+* from raw depth and position:
+** geometry
+** semantics
+
+Can use deep learning to learn 3D features
+
+* don't need to rely entirely on hand crafted descriptors
+* many large 3D datasets
+** ModelNet
+** ShapeNet
+** S3DIS
+
+=== Why do we care about 3D perception?
+
+Enables spatial understanding beyond 2D images
+
+Essential for robots and other autonomous agents
+
+Nice for digital twins
+
+== 3D data representation
+
+High dimensional data
+
+* lots of points
+* lots of triangles
+* lots of meshes
+
+Very computationally expensive
+
+Different representations have different applications
+
+* point clouds
+* meshes
+* volumetric
+* projected view
+
+One might be better than another for a particular task
+
+No absolute best representation
+
+=== Point Clouds
+
+An unordered set of points in a 3D space
+
+* where a point = stem:[{x y z}]
+
+Most 3D sensors return point clouds
+
+* each scanned pixel has a depth
+
+.Pros
+* Easy to produce
+* Intrinsic features
+** know the shape
+* Extrinsic features
+** know the position and rotation
+
+.Cons
+* Unordered sets can confuse some algorithms
+* Irregular distribution of points
+** lots of points near the source
+** few points farther from the source
+
+=== Volumetric - Voxels
+
+A regular grid of voxels
+
+* voxel -> 3D parallel of pixel
+
+Multiple uses:
+
+* Occupancy
+** empty voxels => 0
+** occupied voxels => 1
+* Distance to nearest surface
+
+Sources:
+
+* Volumetric acquisition
+** stacked 2D images create a volume
+* Fusion pipelines
+** KinectFusion
+
+.Pros
+* You have volume rather than just a surface
+** full geometry
+
+.Cons
+* Very computationally expensive
+** 256x256x256 volume => 16M voxels
+** empty regions waste space
+
+==== Octree
+
+Compressed representation of volume
+
+Optimizes empty space representation
+
+=== Projection
+
+Used to visualize a 3D shape in 2D
+
+Like a panorama/photosphere image
+
+* stitching 2D images together
+
+You lose the 3D model
+
+=== Meshes
+
+Made of 3 components
+
+* Points
+* Edges
+** join 2 points
+* Faces
+** join edges
+
+Comes from modeling
+
+* surface reconstruction
+* 3D moeling
+
+.Pros
+* efficient rendering
+* pipeline friendly
+
+.Cons
+* hard to deal with in DL
+** sparse
+** irregular
+** non uniform
+
+== Working with Volumetric Representations
+
+Used in healthcare
+
+* x-ray slices
+* MRI scans
+* CT scans
+
+Which voxels are tumors?
+
+=== VoxNet (2015)
+
+3D implementation of AlexNet
+
+* scale a volume into fixed size
+* determine which voxels are occupied
+* perform convolution
+
+Single channel 3D convolution requires 4 dimensions
+
+Pooling works the same
+
+* pool a cube instead of a square
+
+VoxNet is not rotationally invariant
+
+* image `A` is different than image `A` rotated 90 degrees
+** it will produce different results
+** the same rotated object is used in tranining to build
+*** rotated freely in space because 3D
+
+Filters pick up changes in different axes
+
+The main problem is voxel representation
+
+* empty space takes up a lot of memory
+* memory usage grows exponentially(ish)
+** not scalable
+
+=== OctNet (2017)
+
+Uses octrees to partition space
+
+* octree = 3D quad tree
+
+Overview:
+
+* If `all(octet) == 0` => don't subdivide
+* else divide in another octet
+
+Every node will have 8 children
+
+Only leaf nodes contain the octant value
+
+Empty spaces are stored using a single value
+
+How do you do convolution on irregularly sized volumes?
+
+* ReLU it will set empty regions to 0 and ignore them
+* inefficient
+
+How do we optimize this?
+
+. Make a coarse uniform grid first
+. Set a fixed depth for the octree
+* these can be represented with *bitstrings*
+** each bit represents a node
+** counted breadth first
+** `0` means no children (leaves)
+** `1` means > 0 children (called a *split node*)
+** the data in the leaf nodes is stored linearly in an array
+** the data in the array is retrieved using indices
+
+Pointwise operations are applied directly on the data array
+
+* e.g. `map(relu, data_array)`

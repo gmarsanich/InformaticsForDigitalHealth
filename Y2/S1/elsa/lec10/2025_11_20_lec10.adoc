@@ -1,0 +1,176 @@
+= ELSA - GDPR and Digital Health
+:toc:
+:toc-title: Contents
+:nofooter:
+:stem: latexmath
+
+== General Data Protection Framework
+
+=== Historical Evolution
+
+Privacy has been a topic of discussions for a while (long before digital world)
+
+We went from a directive to a regulation
+
+* directive -> general rule
+** member states apply them according to their preference (terms and conditions apply)
+** formalistic approach
+*** bureaucratic
+*** required noticing the local privacy entity that personal data was being processed
+* regulation -> strict rule
+** member states must apply it exactly as written (?)
+** accountability approach
+*** data consumers are held accountable for the data they handle
+
+Data users/consumers need to use the least data possible
+
+* like the principle of least privilege
+* they must include privacy in the application/database design
+* privacy must be by default
+
+CAUTION: data belongs to the owner, not the company that uses them
+
+.What is Personal Data?
+
+Personal data is *any* information that can be used to identify a person
+
+Such as but not limited to:
+
+* name
+* last name
+* date of birth
+* username
+* location
+
+.What is Data Processing?
+
+It is the:
+
+* storage
+* transmission
+* recording
+* consultation
+* use
+* dissemination
+
+of personal data
+
+CAUTION: the person physically processing the data may not be responsible for them. It may be the organization they are employed by
+
+WARNING: data is allowed to be processed by a single entity. If a different entity/process needs access they need to obtain explicit consent
+
+== Principles of Data Processing
+
+GDPR has 7 main principles
+
+. Lawfulness, fairness and transparency
+* processing personal data requires a legal base (GDPR art. 6.1.<x>)
+** consent
+** contractual necessity
+** legal obligation
+* Users/data owners must know what their data is being used for and by whom
+** simple
+** easy to understand
+
+. Purpose limitation
+* Data must be used for a specific purpose
+** the owner of the data must be notified of said purpose
+** they must consent to use for that purpose
+
+. Data minimization
+* Use the smallest amount of data possible to satisfy a specific purpose
+** predicting cancer does not require patient name/last name/home address
+
+. Accuracy
+* Data must be accurate
+** inaccurate data may compromise the health/other aspects of the data owner's life
+
+. Storage limitation
+* Data cannot be stored indefinitely
+* When its purpose is fulfilled it needs to either:
+** be anonymized and archived
+** destroyed
+
+. Integrity and confidentiality
+* Data must be protected from unauthorized access
+
+. Accountability
+* The data processor is accountable for what happens to the data
+
+== Data Subject Rights
+
+Owners of data (*data subjects*) have rights
+
+. Information
+* the right to know what's being done to their data
+
+. Access
+* the right to know whether their data is being/has been processed
+* the right to obtain a copy of their data
+** who/what accessed their data
+
+. Rectification
+* the right to correct/update information
+** related to the principle of accuracy
+
+. Erasure
+* the right for data to be deleted forever from the universe
+
+. Restriction of processing
+* the right to restrict the processing of personal data
+** if data is inaccurate
+** if processing is illegal
+
+. Data portability
+* the right to transfer the same data to a different entity
+** transferring phone numbers from provider A to provider B
+** transferring blood test from clinic C to hospital H
+
+. Right to object
+* the right to not give consent
+** "I don't consent to my personal information to be used for personalized advertising"
+
+. Automated decision making (GDPR art.22)
+* the right to oppose decisions based on automated processing if this processing can have adverse effects
+** i.e. the right to choose whether a human processes their data
+* also part of the AI Act
+
+== Health Data
+
+Health data is data related to the physical/mental health of a person
+
+Includes:
+
+* clinical tests
+* diagnoses
+* prescription
+* biometric data
+
+but also:
+
+* data from wellness/fitness apps
+** sleep trackers
+** heart rate trackers
+* health appointment reminders
+* dietary habits
+* other connected medical devices
+
+Health data is especially sensitive
+
+* GDPR *prohibits* the treatment of health data *UNLESS* certain conditions apply
+** explicit consent
+*** patient P allows the hospital to use their results to train a model to recognize tumors
+** healthcare provision
+*** doctor D can access health information for unconscious patient P to save their life
+** public health
+*** public health emergencies (pandemics and such) override personal consent for the good of the community
+** research/statistics/archival
+
+Health data must not be (easily) retraced back to the data subject
+
+* anonymization (name -> UUID64)
+* pseudoanonymization (fiscal code)
+
+Special considerations have to be used if data needs to leave the EU
+
+* adequacy treaties

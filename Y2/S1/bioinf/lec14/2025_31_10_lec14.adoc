@@ -1,0 +1,140 @@
+= BSB
+:toc:
+:toc-title: Contents
+:nofooter:
+:stem: latexmath
+
+== Dynamic Programming
+
+Dynamic programming makes string matching and searching more simple
+
+Several algorithms exist for these applications
+
+=== Needleman-Wunsch algorithm
+
+Used for *global alignment*
+
+Maps 2 strings onto a matrix
+
+* one along x axis
+* other along y axis
+
+Computes scores according to this formula:
+
+The exact scores change depending on the substitution matrix used
+
+The final score is in the bottom right corner
+
+* we need the route as well
+* need to trace back through the matrix and find what brought us to the final score
+
+Use a trace matrix of identical size using 3 symbols
+
+* up
+* diagonal
+* right/left
+
+=== Smith-Waterman algorithm
+
+Used for *local alignment*
+
+* partial alignments are ok
+
+Can obtain negative scores
+
+* if negative restart alignment with score = 0
+
+Matrix is similar to Needleman-Wunsch
+
+* squares nearest to strings are filled with 0
+
+The final score is equal to the highest number
+
+* this can be anywhere in the matrix because the alignment is local
+* there can be multiple final scores
+** one may be a substring of either of the input strings
+** we don't necessarily want that
+
+Traceback matrix still required
+
+=== Heuristic Alignment algorithm
+
+The previous algorithms are nice and fast but they can become quite complex because complexity grows linearly with the size of the input
+
+* `O(n*m)`
+
+*Heuristic algorihtms* return partial alignment much faster than exhaustive algorithms
+
+* up to 100x speedup
+* do not guarantee the best possible solution
+
+== BLAST
+
+String processing tool
+
+*Basic Local Alignment Search Tool*
+
+Uses short perfectly matching substrings to increase the size of the local alignment
+
+Uses the following parameters:
+
+
+
+Returns a lot of possible matches
+
+* need to pick which match we like best
+* what criteria do we use?
+
+Also available online at the NCBI website
+
+Not all results are significant:
+
+* *e* value represents the expected number of hits with the observed score or higher than would have been seen by chance
+** like the p value
+** lower is better
+
+More specific and optimized versions exist
+
+=== BLASTN
+
+Specifically for nucleotides
+
+Optimized for highly similar sequences
+
+=== BLASTP
+
+Optimized for proteins
+
+* prefers highly different sequences
+
+=== BLASTX
+
+Given a DNA query it searches over proteins
+
+Translates the DNA seq with all 6 RF
+
+Finds potential protein products encoded by the query
+
+=== TBLASTN
+
+Inverse of BLASTX
+
+* given a protein it finds DNA that likely encodes
+** translate DNA with all possible starting points
+** perform match with against translated DNASubsection 2
+
+Used to find gene codings for input proteins
+
+=== TBLASTX
+
+All at the same time
+
+Given a DNA query:
+
+* search over another DNA sequence
+* translate query into protein
+* match translation against translation of other DNA sequence
+
+Again using all 6 RF
+
+* results in 36 comparisons

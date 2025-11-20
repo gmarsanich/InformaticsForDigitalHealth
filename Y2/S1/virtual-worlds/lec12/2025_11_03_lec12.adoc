@@ -1,0 +1,162 @@
+= Virtual Worlds - Deep Learning with Point Clouds
+:toc:
+:toc-title: Contents
+:nofooter:
+:stem: latexmath
+
+== What is a point cloud?
+
+Point clouds are unordered sets of points that are then arranged in a space to virtually replicate a physical space
+
+=== Challenges
+
+Each point is represented with xyz coordinates
+
+* can also have other features
+** color (RGB)
+** normals (direction of ray that returns to the sensor, Nxyz)
+
+Ideally the ordering of the points shouldn't matter
+
+* different permutations return same results -> *permutation invariance*
+* different orientations return same results -> *geometric invariance*
+
+== PointNet (2017)
+
+Uses pure point clouds
+
+* does not use other techniques
+** no voxelization (volume)
+** no rendering (generating images)
+
+.Generic architecture
+
+. Same MLP `h` for each point in the input layer
+. Aggregator
+* `mean`, `sum`, `max`, typically max
+. MLP `i`
+
+Addresses the main challenges of handling point clouds
+
+PointNet is robust to missing points
+
+* VoxNet suffers when voxels are removed
+** accuracy decreases linearly(ish)
+* PointNet is more resistant to missing point
+** due to max pooling
+
+Uses *critical points*
+
+* Critical points are the most important points used to discriminate objects
+* We can remove all non critical points (i.e. points that don't survive the max pooling) and the accuracy shouldn't change
+
+CAUTION: works with highly uniform point clouds
+
+=== Permutation invariance
+
+Implementing the model as a symmetric function achieves permutation invariance
+
+* using aggregators also help
+** `mean`
+** `sum`
+** `max`
+
+=== Geometric invariance
+
+Learn to realign points from data
+
+* how to orient point cloud correctly?
+* assuming this can be learned from data
+* not ideal but typically works
+** works as data augmentation
+
+A 3D transformation is applied to the point cloud
+
+* transformation parameters are estimated from the input
+
+=== Architecture
+
+. Raw input
+. Input transformer
+. Transformed input
+. Shared MLP
+. Feature transform
+. Shared MLP
+* OR shared global feature for information about single points
+. Max pooling
+* returns global feature
+. Output layer
+* softmax(?) for classification
+
+== PointNet++ (2017)
+
+PointNet++ fixes 2 PointNet issues
+
+. Point cloud uniformity -> work with less uniform point clouds
+. Fix scale issues
+
+Uses *hierarchical point grouping*
+
+* PN uses the same hierarchy for all points
+
+How?
+
+Use *centroids*
+
+. Use *farthest point sampling* to sample points
+. Find centroid neighbors
+* take `k` nearest points
+* can also take points under/over some distance threshold
+** each centroid will have `k` neighbors either way
+. Aggregate these using PointNet
+* once the neighborhood is chosen take the centroid as the origin
+* translate all points relative to the centroid
+
+== DGCNN (2018)
+
+Designed to capture local geometric features better than PN/PN++
+
+Using normal CNNs on point clouds is pretty much impossible
+
+* no structure
+* no topology
+** where to put filter? idk
+* no permutation invariance
+
+DCGNN uses graphs
+
+* *EdgeConv* specifically
+* near points are connected by edges
+* uses dynamic graphs
+** usual GCNNs use static graphs
+
+Instead of focusing on single point features DGCNN performs convolutions on graph edges
+
+. Input
+* point cloud
+** unordered feature set
+. Build graph on input
+* use knn to build graph (the graph is *learned* by looking at the data)
+** distance between nodes changes throughout the layers
+*** starts with distance between points
+. Take the edge between 2 points and pass it to MLP
+* various edge functions can be used
+* returns a feature for that edge
+. Compute node features by aggregating the edges that go into a node
+* this returns a new point feature
+
+== Point Transformer (2021)
+
+Transforers work on sets/sequences of data so they are bound to work well on point clouds
+
+* self attention is a set operator
+* permutation invariance for free
+* cardinal invariance also for free
+* works on point clouds of all sizes
+
+Points are basically tokens
+
+Converts self attention to vector self attention
+
+* same as normal self attention but softmax output is a matrix
+* more expressive/generic than normal self attention

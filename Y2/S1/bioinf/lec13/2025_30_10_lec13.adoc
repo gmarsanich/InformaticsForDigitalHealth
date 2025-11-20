@@ -1,0 +1,112 @@
+= BSB
+:toc:
+:toc-title: Contents
+:nofooter:
+:stem: latexmath
+
+== Protein Motifs
+
+2 proteins with similar sequences then they likely have similar functions
+
+Transcription factor proteins bind DNA before gene in regulatory region
+decide whether transcription happens
+
+* zinc fingers are a family of transcription factors
+* they decide whether a given gene is transcribed or not
+* they all have a similar structure
+
+We can use exact pattern matching to find sequences that match the zinc finger motif
+
+=== Approximate pattern matching
+
+What if we don't need/can't use exact pattern matching?
+
+* deletions/mutations
+
+2 ways of comparing strings:
+
+.Global alignment
+Align 2 strings such that they match as much as possible
+
+.Local alignment
+Align 2 strings such that a specific region of the strings are exactly matched
+
+Use *dot plots* to visually compare strings
+
+* draw a dot at stem:[(i, j)] if characters stem:[\mathbf{w}] match
+* the more continuous the diagonal line the more exact matches there are between the sequences
+
+We need to compare them mathematically to be sure
+
+* use string distance functions/algorithms
+** Hamming/Edit distance
+
+==== Hamming distance
+
+Consider 2 strings stem:[s_1, s_2] of identical lengths stem:[l_1, l_2]
+
+==== Edit distance
+
+Consider 2 strings stem:[s_1, s_2] of identical lengths stem:[l_1, l_2]
+
+Count the total number of operations required to make stem:[s_1 == s_2]
+
+Each operation has a cost
+
+* deletion
+* insertion
+* replacement
+
+There are multiple solutions to this so we need to find the best
+
+* use an *objective function* to more reliably find the best solution
+
+== Objective functions
+
+Used to evaluate all possible solutions and find the optimal solution
+
+Additive objective functions are the simplest
+
+[source,python]
+----
+# Simple additive function
+
+score = 0
+
+for c1, c2 in zip(s1, s2):
+    if c1 == c2:
+        score += 1
+    else:
+        continue
+----
+
+Slightly more complex additive functions remove points for mismatched characters and add different scores depending on the matches
+
+* common for DNA/RNA but not for proteins
+* overall sequence is more important than individual nucleotides
+
+For proteins this is different
+
+* chemically similar amino acids will have a lower cost than chemically different amino acids
+** this changes the structure of the protein fundamentally
+
+=== Substitution Matrices
+
+There are substitution matrices that map the cost of replacing amino acids
+
+==== BLOSUM (1992)
+
+Based on real data
+
+Based on the probability of finding a pair of AA in a known good block of amino acids
+
+* AA frequency based
+
+BLOSUM62 was built using alignments with similarity of at least 62%
+
+==== PAM - Point Accepted Mutations
+
+Derived from closely related protein families
+
+* known evolutionary distances between members of family
+* the smaller the distance the closer the AA

@@ -1,0 +1,333 @@
+= ELSA
+:toc:
+:toc-title: Contents
+:nofooter:
+:stem: latexmath
+
+== National Health System (SSN/NHS)
+
+Public health has been in the legal system since 1888
+
+* legge Crispi-Paglianini
+* introduces concept of centralization of healthcare functions/systems
+* foucsed on hygene and prevention
+
+Social medicine (?) also emerged in the 1800s
+
+== Testo Unico (1934)
+
+Fascist government centralized healthcare data and began centralizing services
+
+* mostly as a means of control and surveillance
+
+=== Mutualistic System (1934-1978)
+
+Workers are organized into groups
+
+* railway engineers
+* soldiers
+* doctors
+
+Each group had their own healthcare rights
+
+* created asymmetry
+* unequal application of healthcare services
+
+Not all groups equally wealthy or organized
+
+The Ministry of Health was founded in 1958
+
+* Reduced the load on the Ministry of the Interior
+
+The mutualistic system was removed by a legal reform in 1978
+
+==== Art. 32 of the constitution (1948)
+
+Article 32 states that health is a fundamental right and a collective interest
+
+* everyone must have the same access to health
+* everyone must receive the same level of care
+
+== Legge 833/78
+
+Moved towards a more universal welfare system
+
+* Beveridge model
+
+There is a hierarchical structure for healthcare (sub)systems
+
+. State
+. Regions
+. Municipalities
+. USL
+
+Overlapping responsibilities caused problems
+
+* is the local clinic responsible for lack of service? is the region responsible?
+
+=== Foundational principles
+
+. Universality
+* Everyone must have access to healthcare regardless of income or social status
+
+. Equality
+* everyone must receive the same level of care
+
+. Globalness
+* every USL must provide the same level of care regardless of location
+
+=== National/Regional Healthcare Plan (PSN/PSR)
+
+.PSN
+* Defines objectives, standards, and splits monetary resources
+
+.PSR
+* Applies objectives and standards set by PSN according to regional specificities
+
+== National Health Fund (FSN)
+
+Taxes/contributions collected by revenue agencies
+
+* INPS
+* Agenzia delle entrate
+
+Taxes/contributions are split according to spending history and populations
+
+* more populated regions need more money than less populated regions
+** raw population isn't enough
+** need population composition
+* regions that used to spend more money were considered more likely to need more in the future
+** seemed ok at the time
+** this could mean that high spenders were using funds ineffectively/inefficiently/improperly
+** this also made it so that the rich got richer and the poor stayed poor
+
+It was then decided that more focus needed to be placed on current spending habits
+
+=== Ticketing systems
+
+A ticketing system was put in place to gauge demands
+
+* how many people went to a specialist visit?
+* how many went to a GP for a generic checkup?
+* how many went to urgent care?
+
+This created another problem
+
+* it became more difficult to measure/gauge costs (how???)
+
+=== Financial flow
+
+. Taxes/contributions
+. FSN
+. Regions
+. USL
+
+Funds were assigned based on:
+
+* population
+** size and composition
+* spending history
+* specific needs
+
+Funds invested into:
+
+* construction
+* technology
+* networking equipment
+
+=== Ambiguity in institutional roles
+
+Ovelapping responsibilities between major stakeholders
+
+* USL
+* Regions
+* State
+
+== Fragility of management systems
+
+Checks were done on actions instead of results
+
+* check if new wing is being buil
+* don't check if care quality improves
+
+Few indicators of results and quality
+
+* see above
+
+Little data collection
+
+* how do we measure improvements if we don't have data?
+
+=== Spending explosion
+
+Unchecked demands and inefficient fund allocation caused spending to explode
+
+Stricter management was applied in the 90s
+
+=== D.Lgs 502/1992 & 517/1993
+
+USL became ASL
+
+* were given legal responsibility for the services they provide
+
+ASL became more autonomous
+
+* accounting autonomy
+* organizational autonomy
+* economic autonomy
+** in some ways
+
+ASL management became responsible for results
+
+== Hospitals and ASL
+
+ASL != hospitals
+
+Hospitals produce services
+
+* ASL buy services from hospitals (Aziende Ospedialiere)
+* ASL check service demands
+* ASL provide other services
+
+=== Accreditation
+
+Accreditation replaced convention/partnership
+
+* clinics used to be partnered with USL
+** this enabled favoritism
+** USL management could partner with their friend's clinic
+
+Clinics/hospitals now need to have some level of accreditation
+
+* minimum requirements
+* quality assurance
+* negotiated/fixed costs
+
+Regions regulate supply chains
+
+* they balance supply quality and demand
+
+=== Riforma Bindi (D.Lgs. 229/1999)
+
+Essential levels of assistance were standardized
+
+* urgent care
+* day hospital
+* whatever
+
+=== Federalism and Titolo V (2001)
+
+Regions became more reposnsible for funding their healthcare operations
+
+* decentralized operations
+
+This made the overall system leaner
+
+* risk of divergence remains unchanged
+
+Federalism generated multiple models of ASL
+
+== ASL models
+
+=== Lombard Model (third payer ASL)
+
+Citizens can freely choose between various accreditated providers
+
+* they can go to whatever clinic/hospital they want
+
+This creates competition
+
+* ideally leads to overall improvement
+
+This also creates scheduling/management issues
+
+* if everyone goes to the same hospital because it's the best they might be overwhelmed
+* fragmentation of care
+
+=== Sponsor Model
+
+ASL chooses the best providers
+
+More control of contracts
+
+* ensures high care quality
+* coordination costs are very high
+
+=== Tuscan Model (Managing ASL)
+
+Region is a strict regulator
+
+Reconciles freedom of choice and service/demand management
+
+* reduces risk of overwhelmed hospitals
+* strong coordination between providers
+* not very flexible
+
+Integrates major hospitals and smaller providers
+
+== Accreditation in depth
+
+Created to guarantee consistent quality of care
+
+3 phases
+
+. Authorization
+
+* minimum structural/managerial/technological requirements are assessed
+
+. Institutional accreditation
+
+* certifies management and healthcare quality
+
+. Contractualization
+
+* formalizes collaboration between the Region/ASL and the healthcare provider
+* defines:
+** activity volume
+** prices/costs
+** healthcare objectives
+
+CAUTION: requirements may vary between regions
+
+== Healthcare Federalism
+
+Created during constitutional reform in 2001
+
+Gives more power to regions to manage their healthcare systems
+
+Needed to strike a balance between equality and autonomy
+
+This caused inequality
+
+* poorer regions (generally in the south) have fewer resources
+* lower quality, worse management, fewer personnel
+
+There is now a stronger push towards cooperative federalism
+
+* regions cooperate to ensure minimum care standards
+* the Ministry of Health help monitor/manage/evaluate regional performance
+
+== Current Spending and Investments
+
+Investments in physical expansion (i.e. building new hospitals/ASL/USL) and technology are the most common
+
+The funding system was changed from spending history based to per-capita spending
+
+* entities that spend more per person receive more funding
+
+=== DRG
+
+*Diagnosis Related Groups* were introduced in the 90s
+
+* they are key playeers in healthcare structure remuneration
+
+Diagnoses/prognoses/recoveries? are classified into groups
+
+* each group has a standard fare
+* large hospitals often offload the overflow onto smaller hospitals (maybe? idk)
+
+== Accountability and management control
+
+Healthcare providers have to keep track of finances and performance reports
+
+* they have to know the outcomes in real time to align management and operational needs

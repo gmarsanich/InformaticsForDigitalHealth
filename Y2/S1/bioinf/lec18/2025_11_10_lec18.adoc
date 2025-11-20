@@ -1,0 +1,45 @@
+= BSB - Phylogenetic Alignments/Trees
+:toc:
+:toc-title: Contents
+:nofooter:
+:stem: latexmath
+
+== Phylogenetic Analysis Algorithms
+
+A lot of phylogenetic tree construction problems become NP hard
+
+* require a lot of sequence alignments
+** they become intractable after ~10 sequences
+* naive/trivial solutions aren't good enough
+
+Have to use more specialized algorithms
+
+=== Branch and Bound
+
+Instead of building all trees and picking the best:
+
+* build trees one by one and step by step
+* any partial tree that doesn't beat the previous best score is discarded
+** initial best score can be obtained by a heuristic tree
+
+Good for up to 20 sequences
+
+=== Maximum likelihood
+
+Probabilistic approach
+
+Estimates the likelihood of possible trees
+
+Still computationally intensive
+
+* NP hard
+
+Use a pruning algorithm to reduce complexity
+
+== Motif Discovery Algorithms
+
+Non-trivial patterns shared across multiple sequences
+
+* meaningful functions
+
+Motifs can be indicators of similar/same functions
