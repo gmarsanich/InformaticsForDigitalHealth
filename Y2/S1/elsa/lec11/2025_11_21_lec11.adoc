@@ -1,0 +1,87 @@
+= ELSA - Economic Dynamics
+:toc:
+:toc-title: Contents
+:nofooter:
+:stem: latexmath
+
+== Budgeting and value over time
+
+Hospital H spends 100k on something
+
+* they are able to use the thing:tm: over the next 10 years
+** basically a morgage
+* the value of the thing outweighs its cost
+
+Accounting sheets are split into 2 sections
+
+. Production value (A)
+* basically revenue
+* *Contributi in conto esercizio (A.1)* contains resources given by the region to provide healthcare services
+** regional health fund
+** if CCE funds are spent on investments and not directly on healthcare services the entire cost of the investment must be spent within the year
+* *Contributi in conto capitale* contains resources given by the region to invest
+* *A.4* contains revenue from healthcare activities
+** people spend a bit of money to receive a service
+** that money goes into this section
+* *A.6* contains money received through day hospital fees
+. Production costs (B)
+* *B.1* acquisition of consumable goods (65% of the costs)
+** health goods
+*** medications
+*** medical/diagnostic equipment
+** non health goods
+*** pens
+*** paper
+*** food
+* *B.2* acquisition of health services
+** when person P receives healthcare outside the ASL's area
+** when person P receives healthcare at an accredited private clinic
+* *B.5* usage of third party goods/services
+** renting space
+** renting networking
+
+== Diagnosis Related Groups
+
+Classification tool for classifying patients based on their diagnosis and the resources used to treat them
+
+* after a hospital stay patients are given a DRG code based on a multitude of factors
+** diagnosis
+** complications
+** patient characteristics
+* DRGs are the same across all regions
+** associated costs are not the same across all regions
+*** they are decided by the region
+*** what happens when patient P (linked to ASL A) goes to a hospital in ASL B?
+*** they pay a *TUC (Tariffa Unica Convenzionale)*
+
+== Spending ceilings
+
+The Ministry of Economics and Finances manages healthcare finances as well
+
+All healthcare facilities cannot spend more than their ceilings
+
+2 main spending ceilings:
+
+. Personnel costs (1.4% of their revenue)
+* hiring
+* payroll
+. Medical costs (4.4% of their revenue)
+* medications
+* medical devices
+
+If they go over the ceiling they aren't allowed to spend any more
+
+* personnel costs are very strict
+* medical costs are a bit more lax
+** there is a payback mechanism -> if region/AO goes over ceiling -> medication provider is required to contribute 50% of the extra
+*** pharmaceutical companies basically give away 50% of the revenue for sales that are over the AO's ceiling
+*** this system doesn't take private clinics into account (!!!)
+
+== Planning and budgeting
+
+2 types of budgets
+
+. 3 year investment plan (capital budget)
+* expresses how a region plans to invest their investment budget in the next 3 years
+. Budget (operational budget)
+* documents that contain objectives and results

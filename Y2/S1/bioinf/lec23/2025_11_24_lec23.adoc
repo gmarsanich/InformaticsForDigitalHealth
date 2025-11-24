@@ -1,0 +1,270 @@
+= BSB - Gene Regulatory Networks - Modeling with Boolean Networks
+:toc:
+:toc-title: Contents
+:nofooter:
+:stem: latexmath
+
+== Old central dogma of molecular biology
+
+Certain genes are (de)activated to change the expressed proteins -> change the functionality of genes
+
+=== DNA -> Genes
+
+DNA is transcribed into RNA which is then translated into proteins
+
+Inhibition can happen in 3 places:
+
+. stopping transcription
+. stopping translation
+. inhibiting protein function
+
+The opposite can also happen -> *promotion*
+
+== Gene Regulatory Networks (GRNs)
+
+Mechanisms that allow cells to react to the environment
+
+Cells change function by (de)activating specific genes
+
+GRNs can be extremely complex and involve dozens of genes with multiple layers of influence
+
+Inferring GRNs is complicated as well
+
+* done using information about gene function
+
+=== Environmental Changes
+
+These changes include:
+
+* changes in available metabolites
+** cell nutrients
+* cell signals
+** reaction to communications from other cells
+* chimical/physical changes
+** temperature, pH, osmolarity
+
+=== Example: Lac operon in E. Coli
+
+*Operon*: portion of DNA with specific function
+
+* can include multiple genes
+
+in E.Coli -> 6 genes responsible for lactose metabolism
+
+* translated into 3 proteins
+** responsible for lactose degradation
+
+Gene I -> lac repressor
+
+* binds to gene O
+
+When no lactose:
+
+* blocks DNA polymerase
+** blocks transcription
+
+When lactose:
+
+* binds to lactose
+* DNA polymerase can translate genes into RNA which is transcribed into enzymes XYZ
+** gene I regulates genes X Y A
+
+== Modeling GRNs
+
+It is possible to simulate GRNs using standard chemical reaction methods
+
+* ODEs
+* stochastic methods
+
+High concentrations of reactants increase complexity
+
+* modeling with ODE/stochastic methods becomes unfeasible
+
+Need to model in a more abstract way
+
+* using *graphs* decreases complexity
+* Nodes are genes
+* Edges are interactions
+** positive influence (promotion)
+** negative influence (inhibition)
+
+== Boolean modeling
+
+Each node has a boolean value `Active = True`, `Inactive = False`
+
+Represent interactions as boolean functions
+
+[source,python]
+----
+LACT = LACT
+
+I = not LACT
+Z = not I
+Z = not I
+A = not I
+----
+
+What happens when one gene depends on multiple genes with different types of influence?
+
+* not immediately clear
+** depends on certain factors 
+** multiple options
+
+At the end of the day the model designer picks the formula
+
+For example:
+
+
+[stem]
+++++
+A \rightarrow (+) X\\
+
+B \rightarrow (+) X\\
+
+C \rightarrow (-) X\\
+++++
+
+[source,python]
+----
+X = A and B and not C
+X = (A or B) and not C
+----
+
+=== Formal definition
+
+BNs are tuples stem:[BN = (G, F)]
+
+where:
+
+* stem:[G = \{g_1, g_2, \dots, g_n\}] is the set of genes/nodes
+* stem:[F = \{f_1, f_2, \dots, f_n\}] is the set of boolean update functions
+
+The network is in state
+
+[stem]
+++++
+\mathbf{x}(t) = (x_1(t), x_2(t), \dots, x_n(t)) \in \{0, 1\}^n
+++++
+
+at every discrete time step stem:[t]
+
+Each gene has an update rule given by:
+
+
+[stem]
+++++
+x_i(t+1) = f_i(x_1(t), x_2(t), \dots, x_n(t))
+++++
+
+There are 2 update strategies:
+
+* *synchronous update*: all genes are updated at a time
+** preferred for simulations
+* *asynchronous update*: one gene are updated at a time
+** more realistic
+*** gene A might take a while to influence gene B
+*** gene C might be able to influence gene D instantly
+
+Synchronous BNs are *deterministic*
+
+* all functions stem:[f_i] are evaluated in parallel 
+* state stem:[x_0] will lead to state stem:[x_1], etc
+** stem:[x_0 \rightarrow x_1 \rightarrow x_2]
+
+Asynchronous BNs are *not deterministic*
+
+* changing the state of gene stem:[g_i] can lead to multiple future states
+
+Synchronous/asynchronous strategies are not equivalent
+
+* they can reach different states even with the same variables and update rules
+
+== Attractor Analysis
+
+BNs often stabilize on a single state but they can also oscillate between a fixed number of states
+
+* the state space is finite
+* maximum of stem:[2^n] states
+** form stem:[\{\mathbf{x_1}, \dots, \mathbf{x_k} \}]
+
+An *attractor* is a stable configuration reached by a BN 
+
+* a single stable state -> *fixed point*
+* a set of oscillatory states -> *cyclic attractor*
+
+The set of states leading to the same attractor is called *the basin of attraction*
+
+* set stem:[A] and stem:[B] lead to attractor stem:[AC]
+
+=== Attractors in Asynchronous Dynamics
+
+Since the state of the system is not deterministic things become more complicated
+
+The system can be represented as a *state transition graph* where:
+
+* nodes = all possible states -> stem:[\mathbf{x} \in \{0, 1\}^n]
+* edges = allowed transitions obtained by updating a single variable -> stem:[\mathbf{x} \rightarrow \mathbf{y}]
+
+.Formal definition
+
+An _asynchronous_ attractor is a non empty set of states:
+
+[stem]
+++++
+A \subseteq \{ 0, 1 \}^n
+++++
+
+* meaning that the attractor needs to have at least one possible state -> stem:[0, 1, \{0, 1\}] 
+
+such that:
+
+. Colosure -> stem:[\forall \mathbf{x} \in A], if stem:[\mathbf{x} \rightarrow \mathbf{y}], then stem:[\mathbf{y} \in A]
+* i.e. for all states stem:[\mathbf{x}] in attractor stem:[A], if state stem:[\mathbf{x}] leads to state stem:[\mathbf{y}] then state stem:[\mathbf{y}] is in attractor stem:[A]  
+. Minimality -> there is no proper subset of stem:[A] that satisfies the closure
+* i.e. there is no state stem:[\mathbf{x}] that leads to state stem:[\mathbf{y}] in the attractor stem:[A]
+
+In addition, each attractor stem:[A] has a basin of attraction:
+
+[stem]
+++++
+\text{Basin}(A) = \{
+  \mathbf{x} | \exists 
+    \text{ path } \mathbf{x} 
+      \rightarrow 
+    \ast \mathbf{y} \in A 
+\}
+++++
+
+Meaning that for each state stem:[\mathbf{x}] there exists a reachable state stem:[\mathbf{y}] in attractor stem:[A] 
+
+==== Example
+
+Given the following boolean network
+
+* `A = not B`
+* `B = not A`
+
+.Using the synchronous update rule
+
+starting with stem:[A = 0, B = 0]
+
+* the network will iterate forever through these states: stem:[(0, 0), (1, 1), \dots, (0, 0)]
+** the inverse iteration will happen for the inverse case
+
+starting with stem:[A = 1, B = 0]
+
+* the network will iterate forever through these states: stem:[(1, 0), (0, 1), \dots, (1, 0)]
+** again, if we invert the values the iteration will be inverse
+
+We end up with an attractor of size 4: stem:[\{ (0, 0), (1, 1), (1, 0), (0, 1) \}]
+
+.Using the asynchronous update rule
+
+Depends on the STG
+
+We will end up with 2 fixed point attractors: 
+
+. stem:[\{ (0, 1) \}]
+. stem:[\{ (1, 0) \}]
+
+

@@ -1,0 +1,92 @@
+= BSB - Pathway Analysis of chemical reaction networks
+:toc:
+:toc-title: Contents
+:nofooter:
+:stem: latexmath
+
+== Pathway Databases
+
+3 main pathway databases:
+
+* https://genome.jp/kegg[KEGG] (Descriptive)
+** represents reactions as graphs
+** reactants are nodes
+** reactions are edges
+** some molecules influence reactions without being consumed
+
+== Sensitivity Analysis
+
+Given a function stem:[f(x, y, z)]
+
+* how much does each parameter influence the result?
+
+This is very important
+
+* finds critical reactions
+* assesses robustness
+* finds critical parameters for experiments
+** test only the most important parameters to save time
+
+Typically parameters represent 2 things:
+
+. reaction rate constants
+. initial molecule concentration
+* not as important in biology because processes are happening constantly
+** still useful to know in other applications
+
+stem:[S_i] increases as the strength of stem:[p_i] grows
+
+2 types of sensitivity analysis:
+
+=== Local SA
+
+Measures the effect of single parameters on the output
+
+* if I increase stem:[p_i] by 1% how much does stem:[X_t] change?
+* numerically or analytically
+** through partial derivatives
+
+=== Global SA
+
+Explores the entire parameter space
+
+* requires sampling and variance based models
+
+Many methods for global SA
+
+* typically you want to reduce the number of combinations to reduce computational cost
+
+==== Morris method
+
+Usess the *Elementary Effect (EE)*
+
+Tries random combinations of parameters
+
+* picks a random parameter and computes the derivative
+* compute for all random samples
+* take the mean -> overall influence of parameter
+
+Requires few simulations
+
+==== Sobol Method
+
+Decompose the total variance into contributions from each parameters and their interaction
+
+* how much does each parameter+its interaction contribute to the variance of the model?
+
+Returns first order effect
+
+* effect of a single parameter on Variance
+
+Also returns total effect
+
+* effect of all group parameters
+
+== Knockout+mutation analysis
+
+You can simulate models with structural/kinetic perturbations
+
+* knockout: loss of gene
+* mutation: partial loss/gain of some function
+
+Used to predict effects of genetic mutations

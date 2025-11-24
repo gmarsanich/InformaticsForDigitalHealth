@@ -1,0 +1,86 @@
+= BSB - Stochastic Modeling of Chemical Reaction Networks
+:toc:
+:toc-title: Contents
+:nofooter:
+:stem: latexmath
+
+== Why stochastic models?
+
+ODE models are good but they have some limitations
+
+* they are deterministic
+* only really useful when there is a high quantity of reactants
+
+Sometimes reactions have random/unpredictable behaviors
+
+* we can't easily predict when and where molecules will meet within the liquid medium
+** on average the reaction should have the same frequency
+
+Using *stochastic* methods we can account for these behaviors
+
+Stochastic methods are used when there are smaller quantities
+
+== Gillespie's stochastic approach
+
+Gillespie's stochasti simulation algorithm (SSA)
+
+* assumes a stochastic reaction constant stem:[c_{\mu}] for each reaction such that the derivative of the constant returns the probability that a combination of reactants will react during the interval stem:[dt]
+** analogous to reaction rate constant
+* stem:[c_{\mu}] is used to compute the propensity stem:[a_{\mu}]
+** used to model the time between subsequent occurrences of a reaction stem:[R_{\mu}]
+** stem:[a_{\mu}] is a parameter in the *exponential probability distribution*
+
+Given multiple instances of each reactants:
+
+* multiply the amount of reactants with the propensity constant
+** i.e. the combinations of all reactants
+
+stem:[\lambda] is the frequency of the event
+
+* the higher it is -> the more likely
+* the lower it is -> the less likely
+
+Eventually the cumulative probability will reach 1
+
+* it will reach 1 sooner when stem:[\lambda] is higher
+
+
+The mean of an exponentially distributed variable with parameter stem:[\lambda] is stem:[\frac{\lambda}{2}]
+
+The exponential distribution has no memory
+
+* X = time at which reaction will take place
+* we want to compute the probability that X > t+s
+* we know the reaction will happen for sure after s -> X > s
+* the probability of -> X > t
+** this means that from time s we can generate a new time and we don't care about the past
+
+Given, molecule types, molecule amounts (natural numbers):
+
+. set clock t = 0
+. while t < t_stop
+. generate exponentially distributed number tau -> sum of the propensity of all of the reactions (a_0 is exp parameter)
+* minimum time after which each reaction will occur
+** reaction R_n+1 will happen at t+tau
+** we don't know which reaction, just the next reaction
+. Pick one of the reactions out of a probability distribution
+* more frequent reactions => more likely to happen
+. remove reactants and add products
+. increase t => t+=tau
+
+This algorithm is *very* expensive
+
+* each step simulates a single reaction
+* the more reactions -> the smaller tau is -> the longer the overall simulation is
+
+There are other stochastic approaches that are a bit less expensive
+
+* Gibson & Bruck
+** scans reactions in a tree format (growth is more logarithmic)
+* Cao et. al, McCollum et al.
+** sorts the reaction list in some order
+** e.g. put highest propensity first -> reaction will likely happen sooner
+
+SSA is generally preferable because of its simplicity and generality
+
+* other algorithms can be more efficient but they are often more difficult to implement and use
