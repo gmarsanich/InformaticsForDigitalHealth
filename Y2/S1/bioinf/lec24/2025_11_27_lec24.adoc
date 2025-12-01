@@ -1,0 +1,113 @@
+= BSB - Gene Regulatory Networks - Boolean Network Variants
+:toc:
+:toc-title: Contents
+:nofooter:
+:stem: latexmath
+
+== Why so many variants?
+
+Real biological networks are more complex than what can be represented by abstract boolean networks
+
+* real genes aren't only active/inactive
+* gene regulation changes with the context
+* genes aren't always expressed exactly the same way
+* gene activation is continuous and dose dependent
+* regulators act with different timings
+
+== Threshold boolean networks
+
+Simplify update definition
+
+Use weights and thresholds for interactions
+
+* often exact boolean formulas are unknown
+* weighted sums make modeling simpler
+
+There is a set of input weights that describe the strength and sign of the influence
+
+* if weighted sum > threshold -> become active
+
+Some genes can self activate
+
+* if the weighted sum == 0 -> become active
+* otherwise inactive
+
+=== Why threshold networks?
+
+More specific than vanilla boolean networks
+
+More expressive than vanilla boolean networks
+
+* more usable as well
+
+* in principle threshold networks can be implemented with complex vanilla boolean networks
+
+Robust to perturbations
+
+* arrives to the same attractor regardless of perturbation*
+
+== Multi state/state networks
+
+Not very common but good to know about
+
+Genes can have multiple states
+
+* define expression levels
+* each gene can have its own expression levels
+
+More compact and natural than vanilla boolean networks
+
+* fewer variables required to express the same number of states
+
+Update rules use thresholds
+
+== Probabilistic boolean networks
+
+Updates are associated with probability distributions
+
+* models stochasticity of cell events
+* genes may have multiple update functions
+** each update function will have an associated probability
+
+At each time step a function is selected according to their associated probability
+
+* the selected functions are used to compute the next step
+* the network becomes a Markov chain over the state space stem:[\{0, 1\}^n]
+
+More compact than vanilla boolean networks
+
+* a single PBN can represent multiple vanilla boolean networks
+
+== Fuzzy boolean networks
+
+Not very common in bioinformatics
+
+* more common in human relations and geopolitics
+
+The activation of a gene is any real number between 0 and 1
+
+* not necessarily discrete
+
+Logical operators are replaced with fuzzy operators
+
+* operators that approximate logical operators
+* AND is replaced with min
+** AND(1, 1) = 1; AND(1, 0) = 0
+* OR is replaced with max
+* NOT is replaced with 1 - 
+
+The update rule takes in a fuzzy combination of inputs and an activation function
+
+* activation function may be nonlinear
+
+Attractors become fixed points in the space
+
+== Reaction Systems
+
+Abstract rules that define GRNs
+
+. Turn all boolean formulas into disjunctive normal form
+. Write a reaction for each disjunct
+. Prune irrelevant information from the execution trace
+* tells us which genes contributed to the final state -> which genes contributed to the activation of gene F
+** the state of gene A is irrelevant to the final state

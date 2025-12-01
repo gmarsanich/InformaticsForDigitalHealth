@@ -1,0 +1,230 @@
+= ELSA - Federated Learning
+:toc:
+:toc-title: Contents
+:nofooter:
+:stem: latexmath
+
+== What is Federated Learning?
+
+TLDR: decentralized machine learning
+
+Logical centralization != physical centralization
+
+* AWS is centralized for us but distributed for AWS
+
+== Centralized Machine Learning
+
+. Take data
+. Train model
+. Get output
+
+.Pros
+* Preprocessing is somewhat easier because you have the entire dataset at your disposal
+* More mature ecosystem
+* Everything is in one place so it's easier to deal with
+
+.Contents
+* Privacy issues
+** legal issues
+** trusting compute base (what is AWS doing with my medical data?)
+* Data sharing laws (GDPR)
+* Scalability limits
+** at some point the machine may not be able to deal with all the data
+
+=== Issues with medical applications
+
+If the whole dataset is in a single place it's vulnerable to single breaches
+
+* whole dataset is on my computer -> my computer is stolen -> all data is gone
+
+Ethics/data sharing is extremely difficult
+
+Differing standards are annoying
+
+* Python 3.12 vs Python 3.9
+* HL7 vs JSONC
+
+Data is in silos
+
+* center A has a different system than center B
+* center A may treat a different population than center B
+** results may be biased despite same type of data
+
+Clinical centers don't much data
+
+* dataset of size 100 is huge for a clinical center
+* but it's nothing for a machine learning experiment
+
+== Federated Learning
+
+Logical decentralization of machine learning
+
+* introduced by Google in 2017
+** Google has no problems with data
+* phones/iot/other devices generate billions of data points
+
+The data stays where it is
+
+* decentralized
+
+Models are moved instead
+
+* centralized
+* data is sent to orchestrator
+* orchestrator manages results of models
+** e.g. on device keyboard prediction models -> outputs sent to orchestrator but data stays on phone
+
+Better privacy than sending data
+
+* HOWEVER
+* under certain circumstances you can retrieve the original data
+
+*Differential privacy* is used to mitigate this problem
+
+* dataset is perturbed (1%)
+** perturbed dataset is used to train
+** if I can't tell whether model was trained on D or D' then we have *differential privacy*
+* this is ok for non critical data but there are problems with critical data
+** skewing population of diabetics
+** introducing biases
+
+=== Federated Learning Workflow
+
+. Orchestrator sends basic model to clients
+. Clients train models with their data/weights/hyperparameters
+. Clients send trained model to orchestrator
+. Orchestrator does some magic to aggregate learning
+. Orchestrator sends new model back
+
+.GBoard
+* GBoard text prediction was trained using federated RNNs
+* better performance than centralized learning
+* more scalable
+
+== Data Partitioning
+
+There are multiple clients each with their own datasets so they need to be partitioned
+
+There are multiple ways to partition data
+
+=== Horizontal Partitioning
+
+Used with homogenous clients
+
+Same sample space, different features
+
+* Slicing on points and not features
+** same features -> different values
+
+=== Vertical Partitioning
+
+Used with heterogeneous clients
+
+* banks and hospitals
+** Bank has income information for Bob
+** Hospital has bloodwork for Bob
+
+Same sample space but different features
+
+== Model combination
+
+Models are combined in 2 main ways:
+
+* cross device
+* cross silo
+
+Main difference is number of training participants
+
+* GBoard has billions of devices
+* Clinical centers have few silos
+
+=== Cross device
+
+High number of clients
+
+* intermittent particpation
+
+Single device data is very important
+
+* also very sensitive
+
+Clients are anonymous
+
+* model updates are anonymous
+* can't fully trust updates
+** need to be robust
+
+Each tranining round may have different participants
+
+* can result in biased rounds
+
+Dealing with millions of devices can be computationally/communicationally problematic
+
+Almost always horizontally partitioned data
+
+=== Cross silo
+
+Low number of clients
+
+* more consistent participation
+* high availability
+
+Clients are not anonymous
+
+* higher trust because you know who's sending what
+
+Each training round will have the same participants
+
+Dealing with few clients is generally doable
+
+Generally vertically partitioned data
+
+== Data distributions
+
+Each client has a different distribution of data
+
+* one population may be more/less represented
+* etc.
+
+Each individual dataset is biased -> each model will be biased
+
+* label skew
+* feature skew
+* quantitiy skew
+* concept drift
+* noise skew
+
+This causes training to become unstable
+
+* Orchestrator needs to deal with this
+
+== Hyperparameter tuning
+
+This is the most complicated part of the process
+
+* decentralized data
+* biased data
+* training is expensive
+
+2 approaches:
+
+. local hyperparameters
+* each client has their own hyperparameters
+* hyperparameters search is federated as well
+
+. global hyperparameters
+* orchestrator decides all
+** GBoard does this
+** Siri does this
+* more doable if you have some prior knowledge of what hyperparameters to use
+
+== Personalized FL
+
+Invidividual models should ideally be personalized 
+
+* text prediction
+* speech analysis
+* medical diagnosis
+
+There are techniques to personalize federated learning models
+
