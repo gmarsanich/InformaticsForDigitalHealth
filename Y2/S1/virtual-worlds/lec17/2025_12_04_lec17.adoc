@@ -1,0 +1,143 @@
+= Virtual Worlds Open-Vocabulary Vision II
+:toc:
+:toc-title: Contents
+:nofooter:
+:stem: latexmath
+
+== Open-Vocabulary Detection
+
+Standard object detection works when there is an abundance of data
+
+It doesn't work well when there are many rare classes in the dataset
+
+* works really bad when there are classes from outside the training set
+
+* *Faster R-CNN* was/is the state of the art for standard object detection
+
+* *DETR* uses CNNs and transformers 
+
+Open-vocabulary involves finding objects in images given a textual description
+
+=== General functionality
+
+.Input
+* image(s)
+* vocabulary
+
+.Output
+A list of:
+
+* bounding boxes (coordinates)
+* best matching vocabulary item for that bounding box
+* confidence score
+
+Models include:
+
+* *ViLD*
+** distils a CLIP encoder
+* *OWL-ViT*
+** transformer based
+** uses a whole CLIP model
+
+== Class-agnostic Segmentation
+
+Used in open-vocabulary segmentation
+
+Used to find object masks without also getting the object label(s)
+
+=== Models
+
+.*SAM* (Meta, 2023)
+
+Trained on 1 billion masks
+
+Segments pretty much anything
+
+* given a point -> mask what's under that point
+* given a masked image -> refine the mask
+* ambiguous task
+** what specific part needs to be masked?
+
+.*Segment3D* (2024)
+
+Segments point clouds
+
+* unsupervised because labeling point clouds is incredibly time consuming
+
+Builds off 2D models (like SAM)
+
+Uses 2 stage training process
+
+. RGBD camera -> unproject to 2D -> feed to SAM -> add depth back -> pseudo Ground Truth
+. RGBD camera -> point cloud -> 3D segmentation -> predict mask
+
+== Open-Vocabulary Segmentation
+
+How do we segment objects using natural language queries?
+
+=== LSeg (2022)
+
+Language driven Semantic Segmentation
+
+Uses CLIP (again)
+
+Does per pixel prediction
+
+* need to have class for background/noise/whatever
+
+How does it work?
+
+. Extracts pixel wise features using CLIP (text encoder)
+. features fed to pixel level ViT
+. generates masks
+* dot product between pixel and class embeds (seems expensive)
+. uses small convnet to smoothen masks
+
+Requires training on masks
+
+=== Talk2DINO (2025)
+
+Does not require training on masks
+
+Uses CLIP and DINOv2
+
+* DINOv2 is trained using contrasted self-supervision
+* ViT where each head focuses on semantic parts of the object
+** CLIP can't do this
+
+Use DINOv2 to segment + use CLIP to align text to segments?
+
+* maps CLIP embeddings into DINO's feature map
+** mapped using small MLP
+** compute element wise similarity of learned category embeddings and DINO feature map
+
+=== ConceptFusion (2023)
+
+Open-vocabulary segmentation of 3D point cloud
+
+Accepts text queries but also:
+
+* other images
+* audio
+* point
+
+Assigns a CLIP feature to every point (like lSeg but in 3D)
+
+* use the 2D images used to construct the point cloud
+** assign features to those
+
+How?
+
+. Uses SAM to produce masks
+. Crop each mask
+. Apply CLIP feature to every pixel on the cropped mask
+
+=== OpenMask3D (2023)
+
+Same as Mask3D but open-vocabulary
+
+Extract 2D clip features -> convert to 3D
+
+. Select 2D views where object is visible
+. use SAM to crop mask
+

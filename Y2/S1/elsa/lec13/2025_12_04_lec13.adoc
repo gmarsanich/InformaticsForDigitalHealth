@@ -1,0 +1,165 @@
+= ELSA - Fairness and Discrimination in Healthcare
+:toc:
+:toc-title: Contents
+:nofooter:
+:stem: latexmath
+
+== Why AI in healthcare?
+
+=== AI can be used in healthcare
+
+* Imaging
+* Diagnostics
+
+=== AI has to interact with the healthcare/legal system
+
+* it impacts therapeutic relationship
+** caretakers + patients
+* those that know how to use AI have more power than those who don't
+
+=== Healthcare is a constitutional right
+
+* AI may have an impact on this
+** turning patients into data (dignity)
+** determining who requires some treatment
+*** why is person A chosen over person B?
+
+== Public/private intersection
+
+The integration of AI into public systems creates an intersection with the private sector
+
+* the private sector
+** owns the models
+** has access to data
+** has impact on decision making processes
+
+Fairness must be by design
+
+=== Informed Consent
+
+Important legal artifact
+
+Fundamental aspect of doctor/patient relationship
+
+* patients must know what is being done and why
+
+How can we be sure that patients actually understand what the treatment entails?
+
+* especially when AI is involved
+* transparency issue
+
+Deep learning is a black box
+
+* the model might have learned a bias we don't know about
+
+By 2030 AI will be involved in 75% of all healthcare interactions
+
+* we should start addressing these issues now
+
+== Ethical Frameworks
+
+Many ethical frameworks exist
+
+.Italian Bioethics Bodies
+
+Ethics committee involved in interactions between technology and healthcare
+
+.World Health Organization
+
+6 basic principles all members adhere to (there are 4???)
+
+* autonomy
+* safety
+* transparency
+* equity
+** everyone must be treated fairly
+* responsibility
+** legal responsibility
+* accountability
+** explaining the reasoning behind certain choices
+
+.United Nations
+
+Models must be built with fairness in mind from the start
+
+Models must also be built with the inclusion of external stakeholders
+
+* patients
+* healthcare staff
+* legislators
+* ethics committees
+
+Side effects must be predictable and prevented
+
+* we have to know what can go wrong and when (lol???)
+* we have to fix it before it does
+
+== Coregulation and AI act
+
+EU directive built using coregulation
+
+* EU members sat down and figured it out
+
+=== Obligations
+
+AI act counts all AI systems as high risk
+
+All stakeholders are involved
+
+* designers
+* developers
+* deployers
+
+The obligations include:
+
+. Data quality
+* cleanliness
+* completeness
+* no bias
+. Impact on rights
+* groups that may be damaged by this system
+* vulnerabilities that may be amplified by this system
+* are public rights respected?
+. Transparency
+* documentation
+* human oversight
+** models shouldn't be left completely alone
+. Multimodal/general purpose AI
+* participatory governance
+** third parties must be involved
+*** healthcare professionals
+*** ethics committees
+*** the usual suspects
+
+=== Sandboxes
+
+AI act defines *sandboxes*
+
+* controlled systems
+** under public scrutiny
+* designed to experiment with novel AI models
+** AI models running in these sandboxes can *bypass (!!!)* applicable laws
+
+Sandboxes should allow biases to be detected before the model is deployed to the public
+
+== Fairness Metrics
+
+Fairness is a broad term
+
+* needs to be traslated from legalese to technicalese
+
+Models cannot produce unequal results
+
+* different groups should have the same ratio of positive outcomes
+** enough help should be given for groups to have the same opportunities
+
+== Legal framework of discrimination
+
+The source of discimination doesn't matter:
+
+* design
+* error
+* lack of data
+
+The only thing that matters is the *effect*
+
