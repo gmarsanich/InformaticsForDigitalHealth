@@ -1,0 +1,19 @@
+= BSB - RNA Sequencing 
+:toc:
+:toc-title: Contents
+:nofooter:
+:stem: latexmath
+
+== Tools and libraries
+
+=== Zenodo
+
+https://zenodo.org/[Zenodo] is a repository of scientific data hosted at CERN
+
+=== nf-core
+
+https://nf-co.re/[nf-core] is an automated pipeline runner for bioinformatics
+
+=== Nextflow
+
+https://www.nextflow.io/[Nextflow] is a dataflow programming model to combine simple functionalities into complex data processing pipelines
