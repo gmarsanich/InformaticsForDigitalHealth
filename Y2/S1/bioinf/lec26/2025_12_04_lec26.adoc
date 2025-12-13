@@ -1,0 +1,132 @@
+= BSB - Protein-Protein Interaction Networks
+:toc:
+:toc-title: Contents
+:nofooter:
+:stem: latexmath
+
+== What is a PPI? 
+
+Like GRNs but nodes are proteins and edges are interactions
+
+* nodes can also signify *functional association* instead of direct connection
+* knowing the source of an interaction can give additional information
+** if we know that 2 proteins are translated together then they are likely functionally related
+
+The set of all proteins in a being is called the *proteome*
+
+* humans have around 20k different proteins
+
+=== PPI graph properties
+
+PPI graphs are: 
+
+* undirected
+** the direction of the interaction doesn't matter
+* unweighted
+** binary
+* weighted
+** confidence scores
+
+=== Interactome
+
+20,000 proteins generate about 650,000 interactions
+
+* well known proteins have more known interactions because researchers look for them
+* interactions may only happen in certain conditions
+** database lump them all together instead
+
+== Network Biology*
+
+Core concepts are the same as GRNs
+
+* hubs
+* modules
+* betweenness
+* propagation
+
+=== Module Identification/Community Detection
+
+PPI networks are highly modular
+
+* there are highly interlinked regions in the network
+
+They can be detected by:
+
+* community detection methods
+** Louvain
+** MCL
+* clustering methods on *node embeddings* (embedding node information as vectors)
+** DBSCAN
+** k-means
+
+== Network Medicine
+
+Barabasi says that diseases and therapies can be studied using network information
+
+If known disease proteins are connected to other proteins then those proteins somehow affect the disease
+
+=== Network Separation of Diseases
+
+When relating multiple diseases you can compute distances between modules related to those diseases
+
+* if 2 diseases are very close or overlap then they are likely functionallvery close
+** may be variants of each other
+
+Distance is computed with the network separation matrix
+
+* composed of average shortest path distance of all combination of nodes
+
+Negative separation means the 2 diseases are not independent
+
+* strong indicator of *comorbidity*
+
+Positive separation means they are very likely independent
+
+=== Drug/therapeutic module
+
+Starting from the drug's target proteins:
+
+* compare the distance between the drug module and the disease module
+** closer -> likely effective drug
+
+2 types of distances:
+
+* average shortest path distance
+* average closest path distance stem:[d_c]
+** for every node in the drug module: find the shortest path to the closest node of the disease
+** normalizing the distance using the z-score reduces randomness and preserves degree
+
+If we know a drug is effective for a disease we can try it on a different but similar disease
+
+* this is called *drug repurposing*
+* if the Z score is < 2 then the drug could be repurposed
+
+Diffusion and random walks are more commonly because PPIs are sparse
+
+* a missing node can really screw with the distance metrics
+* mutual distance is also good
+
+== New approaches 
+
+=== Multiomics
+
+Integrating multiple networks into a single network
+
+* PPI + GRN
+* combine information from both networks can give new insights
+
+=== Dynamic/tissue specific networks
+
+Certain interactions may happen under specific circumstances
+
+* during events
+* in specific places
+
+=== Combination therapy
+
+Complex diseases often require multiple drugs
+
+* maximize the effect of each drug on the disease
+* combined effect != additive
+** topologically complementary
+
