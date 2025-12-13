@@ -1,0 +1,87 @@
+= ELSA - AI Act overview
+:toc:
+:toc-title: Contents
+:nofooter:
+:stem: latexmath
+
+== Overview
+
+EU robotics/AI resolutions and such have been a thing since around 2015
+
+The 2017 robolaw resolution lumped all robotics together
+
+* autonomous cars
+* exoskeletons
+
+It was way too broad to ever be applicable
+
+* focused on responsibility and prevention of accidents
+** who is responsible if Bobert is trapped in his exoskeleton?
+
+European Commission started working on AI specific rulesets in 2018
+
+* AI for Europe (2018)
+* AI Act (2021)
+
+== Road to AI regulation
+
+Regulators went from robotics to AI
+
+High risk AI products are more strictly regulated than low risk products
+
+* providers/manufacturers must ensure that the products they ship are adequately safe
+
+=== Defining AI
+
+Before proper regulations/legislations can be implemented we need to know what AI really is
+
+* technical definitions?
+* legal definitions?
+
+== Risk based approach
+
+Risk levels are defined and represented as a pyramid
+
+. Complete prohibition
+* products/applications with unacceptable risk
+** subliminal techniques
+** manipulative/deceptive techniques
+** techniques that cause significant harm
+** systems that exploit users based on personal characteristics and cause them to behave unexpectedly
+*** AI powered toy that causes children to put themselves in dangerous situations
+. Requirements/conformity required
+* high risk applications
+. informational/transparency obligations
+* medium/low risk
+** inform users that they are interacting with an AI system
+. no restrictions required
+* low/no risk
+
+=== High risk systems
+
+High risk systems have strict requirements:
+
+* high quality data
+** clean
+** low bias
+** representative of reality
+* documentation and logging
+* transparency
+* *human oversight (!!!)*
+* robustness
+* accuracy
+* cybersecurity
+
+2 subcategories of high risk systems:
+
+. AI components/final products that would be subject to some other legislation
+* some high risk device that has AI built in
+* requires legislative verification
+
+. Standalone AI components that are used in certain areas
+* law enforcement
+* immigration
+* employment
+* education
+* access to essential services
+* manufacturer has to run certification process
