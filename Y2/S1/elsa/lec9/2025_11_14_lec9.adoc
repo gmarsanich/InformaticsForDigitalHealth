@@ -1,0 +1,23 @@
+= ELSA - Organizational and functional healthcare models
+:toc:
+:toc-title: Contents
+:nofooter:
+:stem: latexmath
+
+== Organizational Models
+
+The state (Ministry of Health) defines essential healthcare services (LEA)
+
+* bare minimum services
+** cosmetic surgery is not in LEA
+** emergency appendix removal is in LEA
+
+Regions manage healthcare services within their territory
+
+* national system is sum of 21 regional systems
+
+=== Subsection 1
+
+== Section 2
+
+=== Subsection 2
