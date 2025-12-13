@@ -1,0 +1,13 @@
+= BSB
+:toc:
+:toc-title: Contents
+:nofooter:
+:stem: latexmath
+
+== Section 1
+
+=== Subsection 1
+
+== Section 2
+
+=== Subsection 2
