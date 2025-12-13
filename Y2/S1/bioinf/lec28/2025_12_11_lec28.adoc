@@ -1,0 +1,31 @@
+= BSB - Computational Structural Biology
+:toc:
+:toc-title: Contents
+:nofooter:
+:stem: latexmath
+
+== Proteins and 3D structures
+
+Proteins are 3D structures
+
+Their structure can be understood using x-ray crystallography
+
+The output is stored in PDB
+
+FASTA is a 1D representation of a 3D protein
+
+== AlphaFold (Google)
+
+Generates protein folds using multiple FASTA representations
+
+* uses multiple sequence alignment
+* AlphaFold 2 can do single proteins
+** open source
+* AlphaFold 3 can predict protein complexes
+** closed source
+
+== ESMAtlas (Meta)
+
+Faster than AlphaFold but less confident
+
+* does not perform MSA
