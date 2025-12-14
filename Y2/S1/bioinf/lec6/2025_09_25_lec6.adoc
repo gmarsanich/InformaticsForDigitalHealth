@@ -23,10 +23,10 @@ Different conformations have higher *strain* energy
 
 Molecules typically pick the lowest energy conformation available
 
-Going from a low/high energy conformation to a higher/lower energy conformation state isn't instant
+Molecules can't instantaneously change their conformation
 
 * there is a transition state between the 2 conformations
-* transition states are energetically expensive
+* transition states are more energetically expensive than either low or high energy states
 
 If there isn't enough energy to cross the transition state and cross the *energy barrier* then the conformation cannot change
 
@@ -46,7 +46,22 @@ Temperature affects energy usage too
 
 The lower an energy state is the more molecules will be at that state in the equilibrium
 
-* stem:[]
+[stem]
+++++
+p(\mathbf{x}) \propto \exp \biggl( \frac{-U(\mathbf{x})}{k_BT}    \biggr)
+++++
+
+where:
+
+* stem:[p(\mathbf{x})] is the probability of a molecule assuming conformation stem:[\mathbf{x}]
+* stem:[-U(\mathbf{x})] is the potential energy function conformation stem:[\mathbf{x}] has
+** the potential energy a conformation has
+** negative because lower energy states are more likely
+* stem:[k_B] is the Boltzmann constant
+* stem:[T] is absolute temperature
+** higher -> lowers impact of energy differences -> flattens distribution
+*** the hotter it is the more energy there is -> the easier it is to assume normally unlikely conformations
+** lower -> increases impact of energy differences -> unflattens distribution
 
 ==== Example: cyclohexane
 
@@ -129,10 +144,17 @@ They can stretch and compress
 
 There is an ideal length that requires the least energy
 
-This length can be computed using *spring law*
+This length can be computed using *spring law*/*Hook's law*:
 
-stem:[\text{E}_L = \sum k_L (L - L_0)^2]
+[stem]
+++++
+E_{(L)} = \sum_i k_L (L_i - L_0)^2
+++++
 
+where:
+
+* stem:[k_L] is the stretching force constant
+* stem:[L_0] is the equilibrium position
 * it's a sum because there are multiple bonds in a molecule
 ** each bond has a different constant (Hydrogen bond is weaker than double phosphor bond)
 
@@ -145,14 +167,30 @@ The angles between 3 different atoms have an ideal value
 * there is ideal angle
 ** lowest energy state
 
-stem:[E_\theta = ]
+angles different from this optimal angle are penalized
 
-* stem:[\theta_0] is equilibrium
-* stem:[\theta] is the current angle
-* stem:[k] is a constant
+This can be expressed using a variation of Hook's law:
+
+[stem]
+++++
+E_{(\theta)} = \sum_i k_{(\theta)} (\theta_i - \theta_0)^2
+++++
+
+* stem:[\theta_0] is angle at equilibrium
+* stem:[\theta_i] is the current angle
+* stem:[k_{(\theta)}] is the bending force constant
 ** changes depending on the angle of interest
 
 === FF components: torsional contributions
+
+Each torsion angle has an associated energy cost
+
+This cost comes from 2 sources:
+
+* space steric interactions
+** repulsive forces between unbonded atoms
+* electronic interactions between unbonded atoms
+** if electron clouds clash the conformation is more expensive
 
 Sum of Fourier series
 
@@ -161,15 +199,17 @@ Associated to rotation of molecules
 * depends on rotatable bonds
 ** a bond that can be rotated about some axis
 
-If electron clouds clash the conformation is more expensive
-
 Rotate until electron clouds no longer clash
 
-Planar molecules are generally not subject to torsion
-
-stem:[E_\theta]
-
+* this produces the *rotational barrier* cost
 * consider all rotatable bonds in a molecule
+
+WARNING: Planar molecules are generally not subject to torsion
+
+[stem]
+++++
+E_{(\theta)} = \sum_i V_i [1 + \cos n (|{\theta}| + t)]
+++++
 
 Number of torsions = double the number of angles
 
@@ -192,12 +232,29 @@ For generic unbonded interactions:
 
 * take all possible interaction pairs of all atoms that are not sigma bonded
 
-.Lennard-Jones potential
-stem:[]
+Given by the *Lennard-Jones potential*
+
+[stem]
+++++
+
+V_{LJ} = 4\epsilon
+\biggl[ 
+    \biggl( 
+        \frac{\sigma}{r} 
+    \biggr)^{12} 
+    - 
+    \biggl(
+        \frac{\sigma}{r} 
+    \biggr)^6 
+\biggr]
+
+++++
+
+where:
+
+* stem:[\epsilon] and stem:[\sigma] are particle specific Lennard-Jones parameters
 
 === FF components: electrostatic dipolar contributions
-
-Calculated with Coulomb potential
 
 The higher the partial charge of 2 oppositely charged atoms the stronger the attraction
 
@@ -205,14 +262,69 @@ The higher the partial charge of 2 oppositely charged atoms the stronger the att
 
 Same generic unbounded interaction as van der Waals applies here
 
-=== FF components: Hydrogen bond energy contribution
+The dipolar contribution can be expressed in 2 ways:
 
-// this equation sucks
+* one way describes the interaction between point charges using Coulomb potential
+* the other way describes the interaction between bond dipoles
+
+.Point charges
+[stem]
+++++
+E_{el} (R^{AB}) = \frac {Q^A Q^B} {\epsilon R^{AB}}
+++++
+
+.Bond dipoles
+[stem]
+++++
+E_{el} (R^{AB}) = 
+    \biggl(
+        \frac {\mu^A \mu^B} {\epsilon (R^{AB})^3}
+    \biggr)
+    
+    \cdot
+
+    (
+        \cos_{\mathcal{X}} - 
+        3\cos{\alpha}_A
+        \cos{\alpha}_B
+
+    )
+++++
+
+where: 
+
+* stem:[Q] is the atomic charge
+* stem:[R] is the distance between 2 atoms
+* stem:[\epsilon] is a dielectric constant
+
+=== FF components: Hydrogen bond energy contribution
 
 Needs polarized hydrogen 
 
 * Donor
 * Acceptor (free bond of another atom)
+
+The contribution of hydrogen bonds is given by this formula:
+
+[stem]
+++++
+E_{\mathrm{HB}} \;=\;
+\frac{332}{
+   \varepsilon \;\cdot\;
+   \Biggl[
+      \sum\!\bigl( \frac{q_{D}\,q_{A}}{d_{DA}} \bigr) \;+\;
+      \frac{A\,K}{d_{HA}^{12}} \;-\;
+      \frac{B\,K}{d_{HA}^{10}}
+   \Biggr]
+}
+++++
+
+where:
+
+* stem:[\epsilon] is a dielectric constant
+* stem:[q] is the charge of the atom
+* stem:[d] is the distance
+* stem:[AK], stem:[BK] are specific parameters
 
 === Amber ff94 force field
 
@@ -231,6 +343,35 @@ Hydrogen bonds are not considered
 * other techniques are used
 * very strict unbonded interaction calculation rules
 ** using very specific atom types to avoid generic calculations
+
+=== Atom Types
+
+Atom types are extremely important
+
+They describe the type of atom and thus its properties
+
+CAUTION: the element DOES NOT matter. What matters are the specific characteristics of the atom
+
+Atoms can be defined based on 3 characteristics:
+
+. hybridization
+. atomic charge
+* positive or negative
+. bound atoms
+* what is this atom bound to?
+
+Amber FF has 5 atom types for oxygen:
+
+. O
+* oxygen in a carbonyl group
+. OW
+* oxygen in water
+. OH
+* oxygen in a hydroxyl group
+. OS
+* ether and ester oxygen
+. O2
+* carboxyl and phosphate group oxygen
 
 == Conformational search
 
