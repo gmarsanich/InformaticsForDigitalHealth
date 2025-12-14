@@ -1,14 +1,220 @@
-= Virtual Worlds
+= Virtual Worlds - Synthetic Data Generation
 :toc:
 :toc-title: Contents
 :nofooter:
 :stem: latexmath
 
-== Section 1
+== Game engines for AI training
 
-=== Subsection 1
+Modern game engines (Unity, Unreal Engine, Source 2, Decima) allow for extremely realistic environments
 
-== Section 2
+* lighting
+* physics
+* high definition textures
+* huge asset libraries
+** don't need to spend hours painting rocks
 
-=== Subsection 2 
+They can be used for AI training:
+
+* can be used to generate data
+** models can be trained on that generated data
+* this bypasses a lot of restrictions
+** ethics committees
+** privacy regulators (the data doesn't belong to anyone)
+
+=== Virtual World Architectures
+
+Game engines have the following characteristics:
+
+* scene management systems
+** sorts objects hierarchically
+* rendering pipelines
+** converts 3D scenes to 2D
+** high fidelity lighting and shadows
+* asset managers
+** handles 3D models and their components efficiently
+* procedural generation pipelines
+** generates terrain/structures/other objects automatically
+** based on algorithms
+** no need for manual intervention
+
+== AI in Virtual Worlds
+
+How does AI operate in Virtual Worlds?
+
+=== Learning paradigms
+
+3 main learning paradigms:
+
+. supervised learning
+* model is given labeled training data
+** this sample belongs to class C1
+** this sample belongs to class C2
+. unsupervised learning
+* model is not given labeled training data
+** model has to learn to discriminate by itself
+** clustering models do this
+. reinforcement learning
+* mostly for agents
+** AI models that perform actions
+* agents learn by doing
+** correct actions are rewarded
+** incorrect actions are penalized
+** they try to maximize the rewards
+
+=== Issues with supervised learning
+
+Supervised learning tends to be the best option but it has a few problems:
+
+* someone needs to label the data
+** someone needs to know what to label
+* data has to be validated
+** so do labels
+
+Reliable models need a *lot* of data
+
+* like a lot lot
+* in the order of thousands/tens of thousands samples per class
+* labeling potentially hundreds of thousands of samples is quite difficult
+** pay people to do it
+*** it becomes expensive
+** get volunteers to do it
+*** it takes forever
+
+=== Annotation Types
+
+There are many ways of annotating/labeling data
+
+==== Classification labels
+
+What's in this image?
+
+. Binary classification
+* this image has/doesn't have a cyst 
+
+. Multiclass classification
+* this image has a malign cyst
+
+. Multi label classification
+* this image has both a malign and benign cyst 
+** it gets even harder when there are multiple labels per sample
+
+==== Bounding boxes
+
+Draw boxes around objects/areas of interest
+
+Works in both 2D and 3D
+
+* rectangles in 2D
+** there is a malign cyst in the center of the bounding box with origin `(x, y)`
+* volumes in 3D
+** there is a malign cyst of size `S` in the center of the volumne `(x, y, z)`
+
+No standard catch all approach
+
+Models may have their own methods
+
+* COCO format != YOLO format != Pascal VOC format
+
+==== Semantic segmentation
+
+Much more complex than bounding boxes
+
+Does classification per pixel 
+
+* this pixel belongs to object `O1` -> class `C1`
+* this pixel belongs to object `O2` -> class `C2`
+* etc.
+
+Provides much more granularity than bounding boxes
+
+* can segment individual organs/tissues
+
+==== Instance segmentation
+
+Kind of like semantic segmentation
+
+Instead of giving each member of the same class the same label -> each instance has its own label
+
+* every organ has its own label
+** `lung_l, lung_r` instead of `lung`
+
+==== Panoptic segmentation
+
+Combination of instance and semantic segmentation
+
+Can tell the difference between countable/uncountable objects
+
+* skin -> uncountable
+* pores -> countable
+
+Also per-pixel classification
+
+==== Keypoint detection
+
+Coordinates of individual points of interest
+
+* joints
+* surgical incision points
+
+==== Image captioning
+
+More abstract than previous techniques
+
+* includes free natural language
+** "the lower right corner contains the bottom corner of the right lung that has a suspicious growth, while the top left corner has unusual coloring"
+
+Instead of classifying what each pixel belongs to/broadly classifying what class the image belongs to it generates a description of the contents
+
+==== Action Captioning
+
+Similar to image captioning but includes time dimension
+
+Can be used to classify what actions are happening and when
+
+* "video shows surgeon performing incision: 34:33 - 35:33"
+
+==== 3D annotations
+
+Like per-pixel labeling but for voxels
+
+* this voxel is part of this volume
+
+== Automatic labeling
+
+Virtual worlds can be used to generate large quantities of automatically labeled data
+
+* generate multiple organs
+* assign attributes to each of them
+** this one has a cyst here
+** this one has a weird color here
+** this one is ok
+** etc.
+* use different lighting/environment conditions
+** surgical theater
+** back of a moving ambulance
+** crime scene photo
+
+This automatically labeled data can be used to train supervised learning models
+
+Training only on synthetic data can cause issues down the line
+
+* as good as it may be it can't really replace real data
+* might be cheaper to buy access to a dataset somewhere or make your own
+
+Using both real and synthetic data might be the best option
+
+=== Hybrid annotation strategies
+
+. Start with synthetic data
+* continue with real data
+. train generic version of model with synthetic data -> fine tune on real data
+* fine tuning requires less data because it assumes a (partially) pre-trained model
+. augment real datasets with synthetic data
+* generate missing conditions
+* upscale low resolution images
+* perform other data augmentation techniques
+** rotation
+** cropping
+** etc.
 
