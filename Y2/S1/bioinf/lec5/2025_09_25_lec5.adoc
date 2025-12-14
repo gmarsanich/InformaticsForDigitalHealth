@@ -10,19 +10,9 @@ Computational chemistry exploits computer science to solve chemical problems
 
 * predict chemical behaviors
 * estimate structures and behaviors of molecules
-* predict catalyitic reactions
+* predict catalytic reactions
 
-Focus on ligand design rather than drug design
-
-.Ligands
-*ligands* are small molecules that can somehow interact with some receptor somewhere
-
-.Drugs
-*drugs* are commercial molecules that can contain ligands
-
-* they need to be optimized
-* they need to pass clinical trials
-* they also need to go through ethics committees
+Focus on *ligand* design rather than drug design
 
 .Receptor
 biological structure to which specific signaling molecules can bind to 
@@ -36,6 +26,16 @@ these molecules can be:
 * toxins
 * and many more
 
+.Ligands
+*ligands* are small molecules that can somehow interact with some receptor somewhere
+
+.Drugs
+*drugs* are commercial molecules that can contain ligands
+
+* they need to be optimized
+* they need to pass clinical trials
+* they also need to go through ethics committees
+
 === Induced Fit Model
 
 Ligands and receptors are not rigid
@@ -43,6 +43,10 @@ Ligands and receptors are not rigid
 They can adapt somewhat to fit each other
 
 * the receptor can only really modify the binding site
+
+The geometry of the binding site changes depending on conformational changes induced by the bound ligand
+
+* if a ligand doesn't quite fit into the binding site the binding site can adapt itself to allow the ligand to fit
 
 == Molecular Modeling
 
@@ -87,7 +91,7 @@ Specific colors are used in 3D models to denote different atoms and bonds
 * each atom is given the van der Wallis radius of the real atoms
 * the bigger then radius -> the bigger the atom
 
-=== Amino acids to proteins
+== Amino acids to proteins
 
 Amino group + carboxylic acid group -> amino acid
 
@@ -102,7 +106,7 @@ This is a *peptide bond*
 * peptide bonds behave like a double bond
 ** no free rotation around the peptide bond
 ** they can move if they have a good reason
-** they tend to be parallel -> bd , or reverse -> dp
+** they tend to be parallel -> bd, or reverse -> dp
 * generally the bulky groups are oriented in opposite directions (dp)
 
 The *alpha* carbon is the carbon atom that connects the amino group and the carboxylic group
@@ -110,13 +114,55 @@ The *alpha* carbon is the carbon atom that connects the amino group and the carb
 They are used to represent each amino acid
 
 * we can draw a connection between 2 alpha carbons to represent the whole protein
+** the result will be the protein's skeleton
+** simplified view
+** ignores all other molecules/atoms present
 
-The angles between amino acids are called *phi* and *psi*
+The angles between amino acids in a protein are called *phi* and *psi*
 
-* the most common angles are 100 to 180 and ~ -60 +/- 10 degrees
-* beta strands mostly 100-180
-* right helix mostly ~-60
+The most common angles are:
+
+* between 100 and 180 degrees
+** beta strands mostly (100, 180)
+* ~ -60 +/- 10 degrees
+** right helix mostly ~-60
 * left helix very rare but mostly medium positive angles
+
+=== Protein representation
+
+Proteins can be represented as *ribbons* to visualize their secondary structure
+
+.1. stem:[\alpha]-helices
+Most common secondary structure
+
+Most stable secondary structure
+
+* high number of internal bonds keep the shape steady
+
+Right-handed coil
+
+Every backbone N-H group donates a hydrogen bond to the backbone C=O group 4 residues earlier
+
+* `i+4 -> t`
+
+.2. stem:[\beta]-sheets
+Laterally connected beta strands
+
+* needs at least 2 backbone H bonds
+* formed into twisted pleated sheet
+* generally between 3 and 10 amino acids long
+
+Mostly found near other strands
+
+* they form large H bond networks
+* the N-H bonds in one strand bond with the C=O groups in one of the adjacent strands
+
+.3 .stem:[\beta]-turns
+Non regular secondary structure
+
+Most common *turn* type
+
+* molecule that causes change in direction of the polypeptide chain
 
 == X ray resolution
 
