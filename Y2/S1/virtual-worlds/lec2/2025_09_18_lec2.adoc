@@ -95,13 +95,17 @@ Can be used in healthcare:
 Product digital twins
 
 * physical items
+** e.g. pacemakers, autoinjectors
 
 Process digital twins
 
 * workflows and procedures
+** e.g. surgical procedures
 
 Systems digital twins
 
+* complex interconnected systems
+** e.g. entire hospitals
 
 === Digital Twin Examples
 
@@ -116,7 +120,7 @@ Systems digital twins
 . Surgical procedure
 
 * Pre-op planning
-** model specific workslofs and decision points
+** model specific workflows and decision points
 * Resource optimization
 ** tracks resource usage in different procedures
 * Smart scheduling
@@ -132,56 +136,97 @@ Systems digital twins
 ** OR scheduling
 ** resource allocation
 
-All these need to be within 16ms to be considered REAL TIME
+All these need to update within 16ms to be considered REAL TIME
+
+* e.g. intake information must be updated at 60hz/60fps
 
 == Architecture Framework
 
-. Application layer
-* Direct communication with end user
-* insights/control/visualization
-. Digital model
-* simulations and state representations
-. Data processing
-* Ingestion
-** Stream processing
-** Batch processing
-** Real time data
+Digital twins can be very complex and may require multiple layers
+
+=== Physical entity layer
+
+Interacts with the real world
+
+Physical objects
+
+* equipment
+* biological systems
+* processes
+
+Sensors
+
+* temperature
+* pressure
+* motion
+* imaging
+
+Actuators
+
+* motors
+* valve
+* displays
+* treatment devices
+
+Communication
+
+* BLE
+* WiFi
+* USB
+
+=== Connectivity layer
+
+Manages data transmission
+
+Data transmission protocols
+
+* MQTT (IoT messaging protocol)
+* HTTP/REST (standard web communication)
+* WebSocket (realtime bidirectional communiation)
+* Custom
+
+Edge computing
+
+* on device processing
+* low latency transmission to other system
+
+=== Data processing
+
+Data processing is a wide term with several components
+
+Ingestion
+
+* Stream processing
+* Batch processing
+* Real time pipelines
+
+Storage
+
+* Timeseries DBs
+* Data lakes
+* structured storage
+
+Quality
+
 * cleaning
-* aggregation
-* Storage
-** Timeseries DBs
-** Data lakes
-** structured storage
-. Physical entity layer
-* Physical objects
-** equipment
-** biological systems
-** processes
-* Sensors
-** temperature
-** pressure
-** motion
-** imaging
-* Actuators
-** motors
-** valve
-** displays
-** treatment devices
-* Communication
-** BLE
-** WiFi
-** USB
-. Connectivity layer
-* Data transmission protocols
-** MQTT (IoT messaging protocol)
-** HTTP/REST (standard web communication)
-** WebSocket (realtime bidirectional communiation)
-** Custom
-* Edge computing
+** removing noise
+** removing outliers
+* validation
+** is this data correct/in the format we expect?
+** anomaly detection
+
+Integration
+
+* multi sensor fusion
+** combining data from IMU and pressure sensors
+* data alignment
+** synchronizing data from different sources
 
 === Digital Model Layer Components
 
-. Representation
+Responsible for visualization and representation
+
+. 3D geometry Representation
 * CAD model
 ** e.g. scanning heart of patient
 * String
@@ -193,7 +238,35 @@ All these need to be within 16ms to be considered REAL TIME
 * Mathematical models
 * AI/ML algorithms
 
-=== Application Layer Services
+. State representation
+* current conditions
+** what does the system look like now?
+* historical trends
+** what did the system look like yesterday?
+* predicted future states
+** what will the system look like tomorrow?
+** makes predictions based on trends
+
+. Visualization
+* 3D renderings
+** organ models
+** OR renders
+* Dashboards
+** real time data visualization (Grafana)
+* AR/VR interfaces
+** immersive applications
+** e.g. exposure therapy
+
+=== Application layer
+
+Responsible for
+
+* Direct communication with end user
+* insights/control/visualization
+. Digital model
+* simulations and state representations
+
+==== Application Layer Services
 
 Gather emergent behavior from defined behaviors
 
@@ -262,6 +335,7 @@ Use/do these things:
 
 . Phase shift
 * Checks difference between phases of out light and in light
+* uses difference to compute distance
 
 . Point cloud generation
 * Millions of points measure the distance from observer
@@ -270,15 +344,15 @@ Use/do these things:
 
 .Healthcare applications
 
-* Operating room mapping
-** 3D recreation of operating theater
-** digital twin creation
-** workflow optimization
-* Medical Device Digitalization
-** high precision scanning of medical equipment
-** for maintenance and training
-* Patient Environment Analysis
-** room layout optimization for patient mobility and accessibility assessment
+. Operating room mapping
+* 3D recreation of operating theater
+* digital twin creation
+* workflow optimization
+. Medical Device Digitalization
+* high precision scanning of medical equipment
+* for maintenance and training
+. Patient Environment Analysis
+* room layout optimization for patient mobility and accessibility assessment
 
 === Structured Light
 
@@ -301,25 +375,168 @@ They project known patterns onto objects (e.g. a 3D 3x3x3 voxel grid)
 ** volume measurement
 ** documenting healing process
 
-=== Photogrammetry
+== Detailed view of photogrammetry
 
 Using images from a camera to extract useful data
 
 * Feature detection
 ** extract keypoints (SIFT, ORB) from multiple photographs
+
 * Feature matching
 ** match features across multiple images
+
 * Camera pose estimation
 ** use bundle adjustment to estimate where the camera is and how it's oriented
+
 * 3D reconstruction
 ** generating dense point clouds
 ** applying texture mapping
 
-=== Magnetic Resonance Imaging (MRI)
+=== Pinhole camera
+
+Based on physical pinhole cameras
+
+* camera with no lens
+* tiny aperture
+* light comes in through aperture
+* image projected upside down
+** *camera obscura effect*
+
+Basically a matrix that projects 3D world points onto 2D plane
+
+* `plane = map(project, (x, y, z))`
+
+[stem]
+++++
+x = PX
+++++
+
+where:
+
+* stem:[x] is the resulting 2D image
+* stem:[X] is the 3D world point
+* stem:[P] is the projection matrix
+
+The projection matrix is defined as:
+
+[stem]
+++++
+P = K [R | \mathbf{t}]
+++++
+
+where:
+
+* stem:[K] is the intrinsic matrix
+** 3x3 matrix
+** contains camera properties
+*** focal length(s)
+*** principal point offset
+*** pixel aspect scaling (are pixels squares/rectangles/circles/octagons?)
+*** skew
+* stem:[R] is the rotation matrix
+** 3x3 matrix
+** describes the orientation of the camera relative to the world frame
+* stem:[\mathbf{t}] is the translation vector
+** 3x1 vector
+** describes the location of the center of the camera
+** uses world coordinates
+*** same units as 3D points to be projected
+
+How?
+
+* stem:[R] and stem:[\mathbf{t}] are concatenated (with the stem:[|] operator)
+* the resulting matrix is multiplied with stem:[K]
+* the output of the multiplication is a 3x4 matrix
+** `P[:3]` contains the intrinsically scaled rotation
+** `P[-1]` contains the intrinsically scaled translation
+
+==== Example
+
+A world space point stem:[\mathbf{X} = (X, Y, Z)] is transposed into stem:[\mathbf{X} = (X, Y, Z)^T]
+
+The result is turned into a homogenous 4-vector
+
+[stem]
+++++
+\mathbf{\tilde{X}} = \begin{bmatrix} X \\ Y \\ Z \\ 1 \end{bmatrix}
+++++
+
+stem:[\mathbf{\tilde{X}}] is multiplied with the projection matrix stem:[P] to give a 3-vector in homogenous image coordinates stem:[\tilde{x}]
+
+[stem]
+++++
+\tilde{x} = P \mathbf{\tilde{X}}
+++++
+
+stem:[\tilde{x}] is de-homogenized
+
+* gives projected 2D pixel coordinates stem:[(u, v)]
+
+[stem]
+++++
+u = \frac{\tilde{x}_1}{\tilde{x}_3},
+
+v = \frac{\tilde{x}_2}{\tilde{x}_3}
+++++
+
+=== Multi point vision
+
+If we have 2 cameras (or a single moving camera) that capture the same scene from different positions we need to be able to combine their information
+
+* only if cameras can be approximated by pinhole camera models
+
+Key part of photogrammetry pipelines
+
+* enables feature matching algorithms like SIFT and RANSAC to work efficiently
+
+*Epipolar geometry* is used for this
+
+* used to align images
+* uses converging epipolar lines
+
+.Epipolar constraint
+
+Determines whether points in n images match
+
+* if 0 -> good
+* else -> bad
+
+[stem]
+++++
+x_2^T Fx_1 = 0
+++++
+
+where:
+
+* stem:[F] is the fundamental matrix
+** 3x3, rank = 2
+* stem:[x_i] are corresponding points in the images
+** in this case stem:[x_1], stem:[x_2]
+
+.Essential Matrix
+
+Encodes the pure relative rotation between 2 calibrated cameras
+
+* rotation stem:[R]
+* translation stem:[t]
+
+[stem]
+++++
+E = K_2^T FK_1 \\
+
+E = [t]_{\mathbf{x}} R
+++++
+
+where:
+
+* stem:[F] is the fundamental matrix
+* stem:[K] is the calibration matrix
+
+== Magnetic Resonance Imaging (MRI)
 
 .Signal generation
 
-. Strong magnetic field aligns the hydrogen nuceli in soft tissues
+. Strong magnetic field aligns the hydrogen nuclei in soft tissues
 . Radio frequency pulses tips nuclei out of alignment
 . Nuclei emit signals as they return to equilibrium
 . Signal strength varies by tissue type and properties
