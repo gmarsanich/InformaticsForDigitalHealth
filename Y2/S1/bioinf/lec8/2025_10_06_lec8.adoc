@@ -23,6 +23,8 @@ Doing it continuously is very hard
 
 Can discretize it to get close enough
 
+* use integration
+
 If we can calculate the acceleration felt by A in delta T we can estimate the force felt by A
 
 * how do we calculate the acceleration?
@@ -37,14 +39,17 @@ Consider carbon dioxide (CO2)
 
 It can change in a lot of ways
 
-* stretching
-** symmetric -> both bonds stretch equally
-** asymmetric -> one bond stretches differently than the other
-* bending -> bonds can bend up and down
-* rotational motion
-** atoms can rotate
-* translational motion
-** it can move in space
+. stretching
+* symmetric -> both bonds stretch equally
+** O--C--O
+* asymmetric -> one bond stretches differently than the other
+** O--C-O
+. bending -> bonds can bend up and down
+* O_C_O
+. rotational motion
+* atoms can rotate
+. translational motion
+* it can move in space
 
 == Molecular Dynamics Simulations
 
@@ -56,40 +61,50 @@ The required equations are very complex
 * different algorithms are required
 * need to pick the right algorithm for the job
 
-The motion is divided into time steps (delta T)
+The motion is divided into time steps (stem:[\Delta T])
 
 * this applies to *all* algorithms
 
-=== Problems
+== Problems with MD simulations
 
-==== Time
+=== Time
 
-But how short can delta T be?
+How short can stem:[\Delta T] be?
 
 * needs to be short enough to compute precise force and velocity vectors for each atom
 * this implies that the time step needs to be so short that no movement occurs
-* delta T cannot be lower than the most common atomic motion time
-* delta T cannot be higher than the fastest atomic motion (sigma bonds with hydrogen atoms)
-* delta T = 1 femtosecond
+* stem:[\Delta T] cannot be longer than the most common atomic motion time
+* stem:[\Delta T] cannot be higher than the fastest atomic motion (sigma bonds with hydrogen atoms)
+* thus stem:[\Delta T] = 1 femtosecond
 ** 1 microsecond of simulation is a billion samples
 ** like filming Oppenheimer at 300 fps
-** can use delta T = 2 femtosecond if you constrain hydrogen bonds to a fixed distance
+** can use stem:[\Delta T] = 2 femtosecond if you constrain hydrogen bonds to a fixed distance
 * simulation times are kept very short (10s-100s of nanoseconds)
 * good computers can generate nanoseconds per day (lol?)
 
-==== Solvents
+Only the local area near the starting point can really be sampled
+
+* only small barriers can be overcome
+** few local minima can be found
+
+=== Solvents
 
 What do we do with the solvents?
 
 Simulating RNA and DNA requires taking water into account
 
 * cells are mostly water
+* cells contain some ions
+** those must be taken into account
 
-Solvents can be considered:
+Solvents can be:
 
-.Implicit
+* *implicit*
+* *explicit*
 
-Ignore it
+==== Implicit
+
+Ignore the solvent and modify the electrostatic interactions to account for the solvent
 
 . Pick a constant depending on solvent
 * Consider that based on reciprocal distances atoms feel different polarizability
@@ -100,11 +115,13 @@ Ignore it
 
 These methods are used when considering individual molecules is impractical
 
-.Explicit
+Less reliable but computationally cheaper
 
-Take water individual water molecules into account
+==== Explicit
 
-But:
+Take individual water molecules + ions into account
+
+Few things to consider:
 
 * how much solvent is there?
 * What is beyond the solvent?
@@ -119,7 +136,9 @@ Use *periodic boundary conditions*
 . Molecule movements are mapped
 . Molecule from simulation exits right -> molecule from left replica enters left
 
-=== MD simulation steps
+More reliable but computationally expensive
+
+== MD simulation steps
 
 . Initial coordinates
 * where is the initial position of the object?
@@ -138,7 +157,7 @@ Use *periodic boundary conditions*
 * calculate values at each frame -> final trajectory
 * MD movie
 
-==== Trajectory Analysis
+=== Trajectory Analysis
 
 Can compute RMSD (ligand position in frame i initial conformation) in each frame
 
@@ -160,7 +179,7 @@ Can compute RMSF (root mean square fluctuation)
 * each point represents mean RMSD alpha carbons in each amino acids
 * lower RMSF -> more stable w.r.p to initial conformation
 
-=== MD for conformational search
+== MD for conformational search
 
 Classic minimization algorithms cannot overcome energy barriers between local minima
 

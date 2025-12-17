@@ -1,0 +1,248 @@
+= Virtual Worlds - Edge AI
+:toc:
+:toc-title: Contents
+:nofooter:
+:stem: latexmath
+
+== Why?
+
+Models are huge and require enormous amounts of resources to train
+
+How do we reduce the impact on the world (and our wallets)?
+
+. Reduce stuff
+* smaller models
+* inference latency
+* energy consumption
+
+. Preserve
+* accuracy
+* robustness
+* performance
+
+. Enable
+* deployment on weak hardware
+* faster inference
+* lower computational costs
+* efficient hardware optimization
+
+== Distillation
+
+Compresses large models into smaller models
+
+* aka Teacher student approach/training
+
+for logits:
+
+* teacher produces output distribution
+* student learns distribution instead of hard labels
+
+for regression:
+
+* student learns final output
+** can also use intermediate output
+*** e.g. L2 loss
+
+=== DistilBERT
+
+Distillation of BERT
+
+* 50% of BERT's layers
+* 97% of BERT's performance
+* 60% faster than BERT
+
+2 losses:
+
+* entropy loss between teacher and student output probabilities
+* cosine loss between teacher and student word embeddings
+
+== Pruning
+
+Neural networks have millions of connections
+
+Not all are useful
+
+* some neurons might not be used in inference
+* some connections might be useless
+
+By removing useless structures we can have a smaller model with similar performance
+
+* neurons
+* connections
+* weights
+
+Some caveats:
+
+* GPUs prefer pruning larger structures to keep things even
+* Entire channels/filters can be pruned from CNNs
+* Entire MLP blocks/heads can be pruned from transformers
+
+=== Optimal Brain Damage method (1989)
+
+Use the loss function to estimate importance/weight of individual neurons
+
+* using second order Taylor expansion of the loss w.r.p to the selected weight
+* if I set w to 0 how much does the loss change?
+* if it barely changes then w is probably not important
+** can likely prune
+* otherwise w is probably important and best not to prune (yet)
+
+Overall process:
+
+. for all weights
+. measure stem:[\Delta L (w)]
+. sort by importance
+. remove stem:[n] least important weights
+
+=== Lottery Ticket Hypothesis (2019)
+
+A randomly initialized dense neural network has a subnetwork
+
+If this subnetwork is trained by itself it will match the performance of its source network
+
+* if it works then they won the lottery
+** their weight initialization is particularly good (lmao machine learning isn't real)
+
+How do we spot a winning ticket?
+
+. Randomly initialize a NN
+. Train it
+. Prune some % of the parameters
+* using OBD
+. Reset the surviving parameters to their initial values
+
+If the winning ticket network has 50% of the weights remaining it will outperform the source network
+
+=== Variance based pruning (2025)
+
+Prune neurons that do not vary
+
+If they never change they're probably useless
+
+How?
+
+. compute neuron wise mean and variance
+. replace neurons with smallest variances with the mean of the layer
+. remove those neurons
+. add the mean to the bias of the next layer
+
+Can prune up to ~80% of the network and basically have the same performance
+
+== Quantization
+
+Using lower precision formats
+
+* 32 bit floats -> 16 bit floats
+** do we really care that this activation is 32.8271348913675361687613651?
+** can we get the same performance with activation 32.827134891367?
+* Can even use ints if you can get away with it
+* Can even use binary values
+** very specialized networks/layers required
+** very power efficient
+*** custom implementations required
+*** not always feasible
+
+WARNING: depends highly on the accelerator used and how it handles low precision formats. CPUs can deal with low precision better than most GPUs (especially NVIDIA GPUs)
+
+* NVIDIA Tensor Cores
+** FP16
+** FP8
+** INT8
+** INT4
+* Google TPU
+** FP8
+** FP16
+* Edge accelerators
+* Arm Ethos-U
+* Qualcomm DSPs
+
+Lower precision means:
+
+* smaller models
+* faster inference
+** quicker calculations
+** hardware dependent
+* lower power consumptions
+** also hardware dependent
+
+Quantization can happen after training
+
+* different quantization per layer
+* different quantization per block
+
+Quantization can also happen during training
+
+* make network aware of quantization
+* performance metrics will take quantization into account
+
+== Efficient Architectures
+
+Efficiency by design
+
+Keep high accuracy and performance while minimizing power consumption and computational cost
+
+* use efficient architectures over pruning/quantization when possible
+
+Like MobileNet
+
+* uses Depthwise Separable Convolution
+
+and EfficientNet
+
+== Inference Libraries
+
+Libraries that implement compression/pruning/quantization
+
+* hardware manufacturers generally make them
+** they have proprietary runtime engines
+
+Such as:
+
+* TensorRT
+** compresses and runs models on Jetson GPUs
+* OpenVINO
+** same as TensorRT but for Intel hardware
+* TVM
+** virtual machine based
+** open source
+** hardware independent(ish)
+** not as performant as proprietary tools (man)
+
+These libraries need models in a format they can digest
+
+* current standard representation is *ONNX*
+** open neural network exchange format
+* can export model from PyTorch/TensorFlow to ONNX
+* can export model to PyTorch/TensorFlow from ONNX
+
+=== TensorRT
+
+Given a trained model it will spit out an optimized inference engine
+
+The pipeline looks like this:
+
+. Model input
+* PyTorch
+* ONNX
+* TensorFlow
+. Graph optimizations
+* removes useless repeated operations
+. Horizional optimization
+* e.g. fusing layers that can be run in parallel
+. Vertical optimization
+* e.g. vertical layer fusion -> combines sequential operations into a single CUDA kernel
+. Quantization
+* needs data to calibrate quantization
+. Kernel selection
+* pick the most appropriate kernel for the task
+** e.g. use classic CNN vs Fourier transform
+. Memory optimization
+* memory reuse
+* memory pooling
+** sharing the same memory for certain layers
+*** convolution
+. runtime optimizations
+* static batching
+** if batch size is always the same it can preallocate resources appropriately
+* dynamic batching
+** can handle unknown batch sizes
