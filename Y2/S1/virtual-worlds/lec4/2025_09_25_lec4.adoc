@@ -40,14 +40,16 @@ image::image.png[title=Basic graphics pipeline]
 
 Multiple buffers used to generate final images
 
-* depth buffer for 3D depth
-** certain pixels need to go behind/in front of others
-** stores the pixels nearest to the observer
-** initialize with 1 and test if pixel is within a certain range
-** if > then draw, else it's behind something else
-** basically sorts primitives
-* sometimes pixels are interleaved and we don't know which goes in front
-* simple but expensive algorithm
+.Depth buffer for 3D effect
+* certain pixels need to go behind/in front of others
+* stores the pixels nearest to the observer
+* initialize with 1 and test if pixel is within a certain range
+** if > range then draw it
+** if < range then dont't draw it (it's behind something else)
+* basically sorts primitives
+
+sometimes pixels are interleaved and we don't know which goes in front
+simple but expensive algorithm
 
 == Mathematical Projection Systems
 
@@ -55,20 +57,34 @@ Use 100 year old concepts on modern graphics
 
 === Orthographic projection
 
+Projecting 3D objects in 2D
+
 No depth, everything is parallel to the observer
 
 * the sun is so far from earth that we can consider the rays to be parallel when they hit the earth
-** they aren't parallel because the sun is a sphere but it's so far that it doesnt really matter
+** they aren't actually parallel because the sun is a sphere but it's so far that it doesnt really matter
 
-=== Perspective projection
+This results in no perspective distortion
 
-Warp the object to simulate depth
-
-=== Projection methods in medical images
+Also preserves measurements
 
 X-rays use orthographic mapping
 
 * we don't want to distort perspective
+
+=== Perspective projection
+
+Uses converging projection lines
+
+* warps the object to simulate depth
+* like that thing you do in art class with focus points/lines
+
+Object size scales with distance
+
+* farther => smaller
+* closer => biggers
+
+Similar to human vision
 
 3D visualization typically use perspective projection
 
@@ -78,7 +94,11 @@ X-rays use orthographic mapping
 
 === Rasterization 
 
+Projects geometric primitives onto screen pixels
+
 Fast but inaccurate
+
+* good for real time use
 
 === Ray Tracing
 
@@ -97,6 +117,11 @@ In practice we use reverse ray tracing
 Uses the first normal to determine whether the object is hit or not
 
 Enables shadows, reflections and refractions for free basically
+
+Much more expensive than rasterization
+
+* not really used for real time visualization
+* more commonly used for still imagery
 
 === Modern rendering techniques
 
@@ -139,6 +164,7 @@ How do we specify something real in (a) space?
 *** comes in at 45 degrees and leaves at 45 degrees
 
 * texture coordinates
+** `(u, v)` coordinates
 ** take 3D mesh and splat it on plane
 
 === Vertex attributes in WebGL
@@ -165,6 +191,11 @@ gl.vertexAttribPointer(
 
 A single point is represented by a single vertex
 
+* sparse data representation
+* individual scan points
+** point cloud
+* particle systems
+
 Most primitive of the primitives
 
 === Lines
@@ -172,12 +203,15 @@ Most primitive of the primitives
 2 points joined together (not really)
 
 * technically segments
+* wireframes
+* vector fields
+* anatomical pathways
 
 Needs 2 vertices
 
 === Triangles
 
-First type of surface
+First type of *surface*
 
 need 3 points
 
@@ -187,7 +221,7 @@ GPUs are good at triangles
 
 Triangles can be used to generate all kinds of polygons
 
-* planar
+* guaranteed to be planar
 * can be assembled into any shape
 ** a square is just 2 triangles arranged in some way
 ** a hexagon is the same but 6
@@ -198,15 +232,60 @@ Using matrix multiplications we can move objects around in a space
 
 There are different spaces
 
-=== Object space
+=== Local/Object space
+
+Local model definition relative to the object's origin
+
+The coordinate space local to an object
+
+* basically the origin coordinates of an object within its space
+
+For example if you made a cube in Blender at `(0, 0, 0)` its local coordinates would be `(0, 0, 0)` despite of where it's placed in the final application
 
 === World space
 
-=== View space
+The coordinate space local to the world
+
+* if we imported a bunch of objects into the world directly they'd probably all end up at `(0, 0, 0)` (cringe)
+* the local coordinates of each object have to be transformed into the world space's coordinates
+
+Local coordinates are transformed into world coordinates using the *model matrix*
+
+=== View/Camera/Eye space
+
+The transformation of the world space coordinates into objects visible to the observer
+
+* objects are manipulated in some way such that they appear to be in front of the camera
+** translation
+** rotation
+
+World coordinates are transformed into view coordinates using the *view matrix*
 
 === Clip space
 
+The space where objects with coordinates outside a specified range are put
+
+* say our world space has a range of `(-1000, 1000)` coordinates in each axis
+* an object with coordinates `(-1001, 1001, 1001)` would have its excessive edges clipped off
+** e.g. like the tip of a triangle or whatever
+*** OpenGL normalizes this to be between `(-1, 1)`
+
+This creates a viewing box called a *frustum*
+
+* anything within the box is drawn
+* the rest is clipped
+
+==== NDC
+
+The 3D clip space coordinates are divided by the homogenous vector's 4th item (`w`) to produce normalized device coordinates
+
+* a cube stem:[[ -1, +1 \]^3]
+
 === Screen space
+
+Transforms the NDC coordinates into the same pixel grid that the rasterizes draws into
+
+* where the GPU draws stuff
 
 == Transformation matrix chain
 
@@ -230,11 +309,29 @@ The output is converted into normalized coordinates so it can be drawn on screen
 
 == Homogenous coordinates
 
+Represent N-D coordinate n-ples as n+1 ples
+
+* 2D `(x, y)` -> `(x, y, w)`
+* 3D `(x, y, z)` -> `(x, y, z, w)`
+
+In principle `w` can be any nonzero value
+
+* if stem:[w = 0] -> its vector is a direction
+** an unreachable point
+* if stem:[w \neq 0] -> its vector is a point
+** any nonzero value means it's a point
+** only the scale changes
+
+`w` allows nonlinear computations to become vector or matrix operations
+
+* easy computations
+* very optimized
+
 Object matrix + matrix
 
-* `x, y, z, w`
-
 When you go from clip space to screen space you take the clip matrix and use `w` to represent everything between the eye of the observer and a given line
+
+* no idea what this means btw
 
 Divide `xyz` by `w` to get the screen coordinates
 
@@ -268,6 +365,10 @@ High resolution acquisition
 * they collect a lot of data
 * more data than possible for other methods
 
+Can go straight into ML training
+
+* no geometric preprocessing required
+
 .Cons
 * Samples of a surface
 ** points exist independently
@@ -285,16 +386,21 @@ Using enough triangles we can obtaina very good approximation of a surface
 
 === Mesh Classification
 
+NOTE: These all use triangles at some point
+
 .Triangular meshes
 As before
 
 .Quad models
+Made with 4 sided objects
+
+* rectangles
+* squares
+
 Easier to edit
 
 .Polygonal meshes
 use more abstract shapes for more specialized applications
-
-These all use triangles at some point
 
 === Mesh Data Organization
 
@@ -325,6 +431,10 @@ Fix aliasing
 
 .Subdivision surfaces
 
+Subdivides the faces of a surface into smaller faces
+
+Enables higher definition
+
 == Volumetric Representations
 
 Fixed grid where you grab everything on every voxel of a volume
@@ -341,11 +451,21 @@ Much more expensive than a mesh
 
 === Voxel grid math
 
-Store position in space
+Voxel size determines resolution and affects memory usage
 
-Store what sensor is able to read
+* higher size 
+** lower resolution
+** lower memory usage
 
-?????
+* smaller size 
+** higher resolution
+** higher memory usage
+
+// Store position in space
+
+// Store what sensor is able to read
+
+// ?????
 
 === Volume rendering techniques
 
@@ -353,12 +473,18 @@ Store what sensor is able to read
 Cast ray through volume where opacity < 1 and record everything
 
 .Isosurface extraction
+use the marching cubes algorithm
 
-ma cristo bestia questo si ferma a metà
+* creates mesh surfaces from volumes
+* density can be set
+
+.Hybrid rendering
+
+Mixes both
 
 === Skeletal Structures
 
-hierarchycal geometric structure
+hierarchical geometric structure
 
 * uses bone chains and joint relationships
 * considers torso as the source
@@ -395,7 +521,9 @@ Micro structures that affect light scattering and glossiness
 
 Any texture can be mapped on any surface
 
-Projects 2D mimages onto 3D images using UV coordinates
+Projects 2D mimages onto 3D images using `(u, v)` coordinates
+
+* where stem:[(u, v) \in [ 0, 1\]^2]
 
 * using *normal mapping*
 
@@ -417,9 +545,94 @@ more realistic
 
 based on physical properties
 
-=== Shader programming
+== Shader programming
 
 use GPU and specialized programs to write lighting
 
-.Vertex shading
+.Vertex shader
 processes individual vertices
+
+* coordinate transformations
+* lighting
+* attributes
+
+.Fragment shader
+handles material properties
+
+* colors
+* textures
+* etc.
+
+=== Shader Techniques
+
+.1. Normal mapping
+* simulates surface details
+* no extra geometry required
+
+.2. Parallax mapping
+* creates illusion of depth
+* more realistic
+
+.3. Subsurface scattering
+* allows light to penetrate surfaces
+* penetration depth varies depending on parameters
+** strength of ray
+** material type
+** material reflectance
+** material thickness
+
+=== Medical Shader Applications
+
+.1. Tissue color coding
+* assigning color based on conditions
+** tissue type
+** pathology
+** other parameters
+
+.2. Value Thresholding
+* filtering/highlighting specific measurement values (?)
+
+.3. Interactive segmentation
+* users can select/isolate specific structures
+
+== Healthcare visualization
+
+Healthcare data is sensitive so it's important to represent it properly
+
+=== Hybrid representation strategies
+
+Use the most appropriate representation technique for the target
+
+. meshes for bones
+* solid* structures
+** if we ignore the marrow I guess
+* clear details
+
+. volumes for organs
+* internal detail required
+
+== Healthcare visualization pipeline
+
+. Data acquisition
+* imaging data is required
+** CT
+** MRI
+** ultrasound
+** x-ray
+
+. Tissue segmentation
+* proper visualization requires knowing what is being visualized
+* organs need to be separated from bones/muscles/whatever
+** can do manually (slow)
+** can use AI (fast)
+
+. Geometry conversion
+* segmented data is meaningless
+* needs to be converted into geometric representation
+** volumes
+** meshes
+** etc.
+
+GPUs are designed for this so they should be used if available
+
+* they should be acquired if unavailable (good luck with that these days)
