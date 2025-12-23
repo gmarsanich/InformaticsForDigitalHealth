@@ -115,15 +115,147 @@ Triangulate points with matching rotation and translation
 
 ==== Epipolar Geometry
 
-Given point X and 2 observers O1, O2
+Given point X and 2 observers O1, O2:
 
-Light R from X lies on epipolar line (???)
+* there is a relationship between observers
+*  the corresponding points lie on *epipolar lines*
 
 ==== Triangulation
 
 Given 2 camera poses and 2 matched features:
 
 * find the 3D point that appears in both views
+
+== SfM strategies
+
+=== Incremental SfM
+
+. Start with 2 strong baseline images
+. Triangulate initial points
+* these points are visible from these cameras when C1 is here and C2 is there
+. Add additional camera using PnP
+. Repeat triangulation
+. Periodically run bundle adjustment
+
+.Incremental SfM pseudocode
+[source,python]
+----
+image1, image2 = images
+
+triangulation = triangulate(image1, image2, camera1, camera2)
+
+while score <= threshold:
+    for i, camera in enumerate(cameras):
+        triangulation = triangulate(*triangulation, camera)
+        if i % 5 == 0:
+            triangulation = adjust_bundle(triangulation)
+----
+
+=== Global Sfm
+
+Estimate all poses simultaneously instead of adding cameras iteratively 
+
+* uses rotation and position averaging
+
+More robust than Incremental SfM but more complex to optimize
+
+== Dense reconstruction from SfM
+
+SfM returns sparse point clouds
+
+* we want dense representations
+
+Using *Multi View Stereo* techniques we can estimate depth for every pixel
+
+Compares rays from multiple views
+
+* makes representation more dense
+
+== SfM Challenges
+
+. Textureless surfaces
+* it's hard to match features when there are no features to be matched
+. Repetitive patterns
+* Pattern P appears in 1841 points in view 1
+* how are we supposed to know where to stitch view 2?
+. Moving objects
+* SfM only works with static images (ironically)
+. Scale drift
+* error accumulates in long sequences
+* 0.01% error in every image adds up to a significant amount with lots of images
+. Lighting changes
+* an ojbect may be in shadow in view 1 and brightly lit in view 2
+* the extra light can cause models/solvers to think it's a different object
+. Computational cost
+* not a cheap solution
+
+== Perspective n Point (PnP)
+
+Finding camera pose (rotation and translation) given 3D points and their 2D projections in a new image
+
+* at least 3 points
+** P3P produces up to 4 solutions
+* more is more
+* *RANSAC PnP* is robust to outliers
+
+== Reprojection error
+
+Global optimization step that minimizes reprojection error
+
+* refines all camera parameters
+* refines 3D points
+
+In other words:
+
+* adjusts ray starting position
+* adjusts camera pose + camera properties
+
+Such that the rays land as close as possible to their real measurements
+
+* ensures reconstruction is an accurate representation of the real scene
+
+With the following objective function:
+
+[stem]
+++++
+\sum || P(p, C) - O || ^2
+++++
+
+Where:
+
+* stem:[P] is the projection
+* stem:[p] is the point
+* stem:[C] is the camera
+* stem:[O] is the observation
+
+Basically a big non linear least squares problem
+
+=== Bundle Adjustment Complexity
+
+Typically camera pose has 6 parameters
+
+* rotation
+** pitch
+** roll
+** yaw
+* translation
+** vertical (up/down)
+** lateral (left/right)
+** longitudinal (forward/backward)
+
+And each point has 3 coordinates
+
+* X
+* Y
+* Z
+
+Each point is only visible in a subset of the cameras used
+
+* there probably isn't a single point that is visible to all cameras at the same time
+
+So bundle adjustment spaces/matrices/fields/whatever they're called tend to be sparse 
+
+* specific solvers exist for sparse adjustments
 
 == SLAM
 
@@ -157,3 +289,60 @@ Multiple types of SLAM depending on technology/purpose
 * Multi sensor fusion
 
 Can also use graphs to compute SLAM
+
+=== SLAM problem
+
+There's a problem with SLAM:
+
+* the state space grows with environment size
+** the object can be in more places
+** i.e. there are more possible states
+
+Given:
+
+Robot pose at time stem:[t]:
+
+[stem]
+++++
+x_t = (p, o)
+++++
+
+and
+
+Map (set of landmarks stem:[m])
+
+[stem]
+++++
+\mathbf{m} = {m_1, m_2, \dots, m_n} 
+++++
+
+Estimate the posterior probability
+
+[stem]
+++++
+P(x_t, \mathbf{m} | \mathbf{b}, \mathbf{c})
+++++
+
+where:
+
+* stem:[p] is the position
+* stem:[o] is the orientation
+* stem:[m_n] is a landmark in stem:[\mathbf{m}]
+* stem:[\mathbf{b}] is a list of observations
+** measurements made by some sensor
+* stem:[\mathbf{c}] is a list of controls
+** commands issued to the robot by some controller (automated or not)
+
+Basically:
+
+* compute the probability that the robot was at position stem:[x_t] at time stem:[t] and that the world contains the set of landmarks stem:[\mathbf{m}] given the sequence of observations stem:[\mathbf{b}] and issued controls stem:[\mathbf{c}]
+
+=== SLAM as a graph
+
+Consider a robot
+
+* nodes represent robot poses and landmarks
+* edges represent constraints
+
+Allows for graph based optimizations
+
