@@ -49,11 +49,13 @@ Each has different albedo/metallic/roughness values
 * Viewing angle affects reflection
 ** looking at a mirror while parallel shows you what the sky looks like
 . Microsurface modeling
-* basically roughness
+* surface roughness affects scattering
+** perfectly smooth surfaces will reflect more light
+** rough surfaces will absorb more light
 
 ==== BRDF
 
-A function called *BRDF* calculates what reflections look like
+A function called *BRDF* describes how light is reflected off surfaces
 
 needs:
 
@@ -66,11 +68,16 @@ Taking into consideration the light only is ok for some applications
 
 3 main BRDF models:
 
-.Lambert BRDF
+. Lambert BRDF
+* best for matte tissues
+* basic medical visualization
 
-.Phong/Blinn-Phong
+. Phong/Blinn-Phong
+* considers reflections as well
+* more complex medical visualizations
 
-.Cook-Torrance
+. Cook-Torrance
+* most realistic
 
 === Optical Properties of Tissues
 
@@ -79,6 +86,8 @@ Taking into consideration the light only is ok for some applications
 ==== Absorption coefficients
 
 How much light is absorbed
+
+* varies with wavelength
 
 ==== Subsurface Scattering
 
@@ -93,9 +102,25 @@ The light then exits the material at some point
 
 * the output light is scattered
 
+=== Pathological Material Changes
+
+Certain pathologies can affect tissue properties
+
+Materials need to be handled properly to reflect these changes
+
+* jaundice+inflammations change the hue
+* necrosis changes roughness and hue
+* swelling changes the geometry of the tissue
+
 == Texturing Techniques for medical applications
 
-Texture mapping splats a 2D image onto a 3D object
+Texture mapping (UV mapping) splats a 2D image onto a 3D object
+
+* transforms 3D organ surfaces to 2D textures
+* preserves anatomical relationships
+* minimizes distortions
+
+How?
 
 * coordintes between texture and objects are parametric (0, 1)
 ** 0 is first thing
@@ -117,9 +142,28 @@ Few techniques to generate atlases
 
 .Cylindrical Mapping
 
+Good for tubular structures
+
+* blood vessels
+* bones
+* long organs
+** intestines
+
 .Spherical Mapping
 
+Good for mostly spherical organs
+
+* heart
+* brain
+* eyeballs
+* cranium
+
 .Planar Mapping
+
+Best for relatively flat surfaces
+
+* surgical cuts
+* cross sections
 
 === Procedural texturing
 
@@ -143,26 +187,179 @@ Textures can be compressed with various algorithms depending on the requirements
 
 Image compression is generally lossy
 
-* image will degrade
-* will look bad but may also cause issues 
+* image quality will decrease
 
 WARNING: do NOT use compression methods that could affect accuracy
 
 Can use texture streaming but it's very difficult to implement
 
-== UV mapping and texture coordinates 
-
-=== Anatomical UV mapping
-
 == Lighting models
 
-PBR is the most complex lighting model
+How is light modeled?
 
-* most complex
-* photorealistic
-* works with basically all materials
+Light is a wave and a particle
 
-=== Shadows
+* visible light occupies a spectrum of electromagnetic radiation
+
+How do we model it?
+
+Using Kajiya's equation
+
+[stem]
+++++
+L_o = (x, \omega_o) = L_e(x, \omega_o) + \int_{\Omega} f_r(x, \omega_i, \omega_o) \cdot L_i(x, \omega_i) \cdot (n \cdot \omega_i) \mathrm{d} \omega_i
+++++
+
+CAUTION: light wavelength and time factors omitted for simplicity
+
+Where:
+
+. stem:[L_o] is the outgoing radiance
+* The total amount of light leaving the surface point stem:[x] in direction stem:[\omega_o]
+
+. stem:[L_e] is the emitted radiance
+* The light emitted directly by the surface
+** only applicable to light sources
+
+. stem:[f_r] is the BRDF function
+* one of the 3 from earlier
+* describes surface reflection
+
+. stem:[L_i] is the incoming radiance
+* light going to point stem:[x] from direction stem:[\omega_i]
+
+. stem:[\Omega] is the hemisphere
+* integration happens around the surface normal
+** point where light leaves the surface
+
+. stem:[n] is the surface normal at point stem:[x]
+
+So the outgoing radiance is equal to the emitted radiance plus the integral of the product of the BRDF, the incoming radiance, and the surface normal 
+
+== Light Sources
+
+=== Point light
+
+Only exists in computer graphics
+
+Infinitesimally small light source
+
+Emits uniformly in all direction
+
+Poing light properties:
+
+* position: stem:[P = (x, y, z)] 
+* intensity: stem:[I]
+** light strength
+* color: stem:[C = (r, g, b)]
+** spectral distribution
+
+Light is attenuated with distance according to this formula:
+
+[stem]
+++++
+L_{\text{attenuated}} = \frac{l}{k_c + dk_l + d^2k_q}
+++++
+
+Where:
+
+* stem:[k_{c, q, l}] are constant, linear and quadratic attenuation coefficients
+* stem:[d] is distance
+
+=== Directional Light
+
+Infinitely distant light sources with no attenuation
+
+* all rays are parallel
+
+Directional light properties:
+
+* direction: stem:[\mathbf{D} = (dx, dy, dz)]
+** normalized vector
+* intensity: stem:[I]
+** constant intensity
+
+Intensity depends on:
+
+* light color
+* angle with the surface normal
+** maxed when light and normal are parallel
+** 0 when perpendicular
+
+Illumination formula:
+
+[stem]
+++++
+l = l_\text{light} \cdot \max(0, n \cdot (-\mathbf{D}))
+++++
+
+where:
+
+* stem:[n] is the surface normal
+* stem:[\mathbf{D}] is the light direction
+** the dot product returns the angle of incidence
+
+=== Spotlight
+
+Cone shape dillumination
+
+Attenuated by fall off component
+
+Changes with cone axis angle and maximum aperture of cone
+
+Also attenuated by distance
+
+Spotlight properties:
+
+* position: stem:[\mathbf{P}]
+** in world coordinates
+* direction: stem:[\mathbf{D}]
+** also normalized vector
+* cutoff angle: stem:[\theta_\text{cutoff}]
+** maximum angle between the light direction and the pixels
+** pixels outside this angle won't be illuminated 
+
+Intensity calculation:
+[stem]
+++++
+I_\text{spot} = I_\text{point} \cdot (\max(0, \cos \alpha))^p
+++++
+
+where:
+
+* stem:[\alpha] is the angle between spot direction and light to point vector
+** if stem:[\alpha \gt \theta_\text{cutoff}] pixels in that angle won't be illuminated
+* stem:[p] is the falloff exponent
+** determines falloff strength
+** higher -> earlier falloff -> shorter beam
+
+=== Area light
+
+Area that emits light
+
+* rectangles
+* circles
+* spheres
+* other polygons
+
+In real life everything is area light
+
+Not a single point
+
+* the sun can be considered a light emitting circle
+
+Need to calculate multiple things
+
+Surface radiance used to determine how much light is emitted:
+
+[stem]
+++++
+dE = L \cdot (\cos \theta_i \cdot \cos \theta_o / r^2) \cdot dA
+++++
+
+CAUTION: this is for each differential area. Use integration for the whole area
+
+== Shadows
 
 Lack of light
 
@@ -177,49 +374,263 @@ Expensive with ray tracing but good quality
 
 Doable with raster but hard
 
-=== Light Sources
+How do we determine whether something is visible or not?
 
-.Point light
+[source,python]
+----
+# visibility = (depth_shadow < depth_current + bias) ? 0 : 1
 
-Only exists in computer graphics
+visibility = 0 if depth_shadow < (depth_current + bias) else 1
+----
 
-Infinitesimally small light source
+The bias is a small value that avoids self shadowing
 
-Emits uniformly in all direction
+This means:
 
-Light is attenuated with distance according to this formula:
+. if the depth value in the shadow map (`depth_shadow`) is smaller than the fragment's own depth + the bias term:
+* the fragment is behind something
+* that something blocks the light
+* visibility is 0
+. otherwise:
+* the fragment is at least as close to the light as the nearest blocker
+* visibility is 1
 
-stem:[math here]
+== Illumination
 
-.Directional Light
+Objects can be illuminated with 2 main techniques:
 
-Infinitely distant light sources with no attenuation
+. local illumination
+. global illumination
 
-Intensity depends on:
+=== Local illumination
 
-* light color
-* angle with the surface normal
-** maxed when light and normal are parallel
-** 0 when perpendicular
+Only considers direct light contribution
 
-.Spotlight
+* i.e. the light that hits the object directly
 
-Cone shape dillumination
+Faster than global illumination
 
-Attenuated by fall off component
+Less realistic 
 
-Changes with cone axis angle and maximum aperture of cone
+Good for realtime applications
 
-Also attenuated by distance
+==== Global illumination
 
-.Area light
+Considers both direct and indirect lighting
 
-area that emits light
+* light that hits the object directly and light that is relected from other objects in the scene
 
-In real life everything is area light
+Slower than local illumination
 
-Not a single point
+More realistic
 
-* the sun can be considered a light emitting circle
+Better for renders
 
-Need to calculate multiple things
+Direct and indirect light accumulate according to these equations:
+
+[stem]
+++++
+L_\text{total} = L_\text{direct} + L_\text{indirect} \\
+
+L_\text{indirect} = \int f_r \cdot L_\text{reflected} \mathrm{d}\omega
+++++
+
+== Light/surface interactions
+
+4 things can happen to light when it hits a surface:
+
+. Reflection
+* light bounces off
+. Refraction
+* light passes through
+. Absorption
+* light is converted to heat
+** determines color
+. Scattering
+* light is redirected in multiple directions
+* material+light dependent
+
+=== Lambertian Diffuse Reflection Model
+
+Assumes that surfaces perfectly diffuse light
+
+* they appear equally bright from all angles
+* follows *Lambert's cosine law*
+
+[stem]
+++++
+I_\text{diffuse} = k_d \cdot I_l \cdot \max(0, n \cdot l)
+++++
+
+Where:
+
+* stem:[k_d]: diffused light coefficient
+** in range stem:[[ 0,1 \]]
+* stem:[I_l]: Light intensity
+* stem:[n]: Surface normal  
+* stem:[l]: Light direction 
+
+This basically means that the light diffusion is equal to the product of the diffused light coefficient, the light intensity and either 0 or the product of the surface normal and the direction
+
+* the side that is hit by the light source will be equally illuminated
+* the other side will be completely dark
+
+=== Ambient Lighting
+
+Approximates global illumination
+
+* adds uniform illumination to all surfaces
+* fast but not realistic 
+
+Avoids completely black shadows
+
+Is directionless
+
+[stem]
+++++
+I_\text{ambient} = k_a \cdot I_a
+++++
+
+where:
+
+* stem:[k_a] is the ambient reflection coefficient
+** how reflective the environment is
+* stem:[I_a] is the intensity of light within the environment
+
+=== Phong reflection model
+
+Combines multiple components
+
+* ambient
+* diffusion
+* specularity
+
+Phong equation:
+
+[stem]
+++++
+I = k_a I_a + k_d I_l (n \cdot l) + k_s I_l (r \cdot v)^\alpha
+++++
+
+where:
+
+* stem:[k_a I_a] is the ambient component
+** ambient lighting formula
+* stem:[k_d I_l (n \cdot l)] is the diffusion component
+** Lambert's cosine law
+* stem:[k_s I_l (r \cdot v)^\alpha] is the specularity component
+* stem:[r] is the reflection vector
+** computed as stem:[r = 2(n \cdot l) n - l]
+
+This model can be used per pixel for higher quality but worse performance
+
+* requires barycentric and normal interpolation
+
+Barycentric interpolation:
+
+[stem]
+++++
+C_p = \lambda_1 C_1 + \lambda_2 C_2 + \lambda_3 C_3
+++++
+
+CAUTION: stem:[\sum_n \lambda_n \stackrel{!}{=} 1]
+
+Normal interpolation:
+[stem]
+++++
+n_p = \text{normalize}(\lambda_1 n_1 + \lambda_2 n_2 + \lambda_3 n_3)
+++++
+
+==== Specularity component
+
+The specularity component creates reflections
+
+* depend on the viewer's position
+* stem:[\alpha] controls how shiny the reflection is
+** higher -> more mirror like
+
+=== Blinn-Phong model
+
+Modified Phong model
+
+Uses the *halfway vector*
+
+* vector that lives halfway between the light and view directions
+** light direction is stem:[(0, 0, 0)]
+** view direction is stem:[(2, 2, 2)]
+** halfway vector direction is stem:[(1, 1, 1)]
+
+.Halfway vector
+[stem]
+++++
+h = \text{normalize}(l+v)
+++++
+
+BP model defines specularity as:
+
+[stem]
+++++
+I_\text{specular} = k_s \cdot I_l \max(0, n \cdot h)^{\alpha '}
+++++
+
+Overall better than pure Phong
+
+* faster
+* more realistic
+* more numerically stable
+
+=== Gouraud shading
+
+Performs lighting calculations at vertices
+
+Interpolates colors across triangle faces
+
+Smooth shading for cheap
+
+* not as clean as Phon/Bill-Phong but faster
+
+. Computes BP at each vertex
+. Interpolates colors across surfaces
+* uses barycentric coordinates
+. The shader receives interpolated color values
+
+=== Multiple Light surfaces
+
+Most real scenes have multiple light sources
+
+* multiple lamps
+* a lamp and a monitor
+* 3 floodlights
+
+They all contribute to the total illumination
+
+Additive light formula
+[stem]
+++++
+I = k_a I_a + \sum_{i=1}^N [k_d Ii (n \cdot l_i) + k_s I_i (r_i \cdot v)^\alpha]
+++++
+
+where:
+
+* stem:[k_a I_a] is the usual ambient lighting formula
+* stem:[\sum_{i=1}^N] is the sum of all the light sources
+** runs the operations inside the square brackets for every light source
+* stem:[k_d I_i] is the product of the diffusion coefficient and the illumination for light source stem:[i]
+* stem:[n] is the normal
+* stem:[k_s I_i] is the product of the specularity coefficient and the illumination for light source stem:[i]
+
+Doing this naively is inefficient
+
+* what if some lights are completely blocked?
+* doing lots of lighting calculations is very expensive
+
+3 things to optimize:
+
+. light culling
+* only calculate lights that actually affect the objects in the scene
+. deferred shading
+* separate lighting and geometry passes
+* more efficient
+. tiled/clustered shading
+* shade the scene bit by bit
+* only use the lights that affect that particular bit
