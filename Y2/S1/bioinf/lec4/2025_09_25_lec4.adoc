@@ -64,7 +64,6 @@ Basic compounds have a lot of OH-
 
 If a cell's pH changes it can seriously mess up the organism
 
-
 .Hydrogen bond
 Forms bonds with negatively charged ions (atoms?)
 
