@@ -233,3 +233,181 @@ Q-learning will always find a stem:[Q*] with probability 1 given:
 How do we find these functions?
 
 * Neural networks (of course)
+
+== Deep Q Networks
+
+Approximate the stem:[Q] function using a neural network
+
+[stem]
+++++
+Q(s, a; \theta) \approx Q^{*}(s, a)
+++++
+
+where stem:[\theta] are neural network parameters
+
+=== DQN limitations
+
+DQNs aren't magic
+
+. Inefficient
+* they need millions of environment interactions to be good
+** humans might need a few dozen idk
+. Discrete actions only
+* continuous actions need to be discretized
+. Overestimation bias
+* max operator is optimistic
+** initial stem:[Q] values are extreme
+. Stability
+* even with the appropriate modifications (below) DQNs can still diverge
+
+They work best in discrete and high dimensional spaces and in (near) deterministic environments
+
+* where stem:[\pi: A \rightarrow S] 
+** a given action will (almost) always lead to a particular state
+
+=== DQN architecture
+
+. State representation
+* e.g. game pixels
+** this pixel is red
+** this one is green
+. CNN1
+* e.g. (32 filters, 8x8, stride 4)
+. CNN2
+* e.g. (64 filters, 4x4, stride 2)
+. CNN2
+* e.g. (64 filters, 3x3, stride 1)
+. MLP
+* 512 units
+. Output
+* all actions with corresponding stem:[Q] values
+
+=== DQN updates
+
+The naive method is a typical loss function and gradient update combo
+
+.Loss function
+[stem]
+++++
+L(\theta) = \mathbb{E}[(r + \gamma \max_{a'}Q (s', a'; \theta) - Q(s, a;\theta))^2]
+++++
+
+.Gradient update
+[stem]
+++++
+\theta \leftarrow \theta \alpha \nabla_{\theta} L(\theta)
+++++
+
+this has 3 main problems:
+
+. Learning is unstable
+* optimizers expect a fixed target parameters stem:[\theta]
+** if stem:[\theta] changes the optimizer can overshoot or become unstable
+* the gradient optimization problem becomes non convex
+** gradient can explode
+. Sequential states are highly correlated
+* sequential states are often very similar
+** moving left at t1 -> probably still moving left at t2
+* can confuse the optimizer
+** gradient changes in the same direction for 10 epochs
+** optimizer doesn't know how to react -> unstable/slow learning
+. Divergence
+* single big rewards can explode the TD error
+* the stem:[\max] operator can pick overly optimistic stem:[Q] values
+** can lead network on a wild goose chase
+
+2 methods to resolve/mitigate these issues:
+
+.1. Experience Replay
+
+Stores state transitions in a buffer
+
+* stem:[(s, a, r, s')]
+
+Takes random mini batches during training
+
+* breaks consecutive sample correlation
+* improves efficiency
+
+.2. Target Network
+
+Uses a different network with parameters stem:[\theta^{-}] that are used to compute target values
+
+* the target becomes fixed
+* wild goose chase avoided
+
+the targets are calculated like this:
+
+[stem]
+++++
+y = r + \gamma \max_{a'} Q(s', a'; \theta^{-})
+++++
+
+The target network weights are updated:
+
+* every stem:[C] steps instead of at every step (hard update)
+** stem:[\theta^{-} \leftarrow \theta]
+* using stem:[\tau] (soft update)
+** stem:[\theta^{-} \leftarrow \tau \theta + (1 - \tau) \theta^{-}]
+
+Learning becomes stable
+
+With these changes we can modify the loss and gradient update functions:
+
+.MSTDE
+[stem]
+++++
+L(\theta) = \mathbb{E}_{(s, a, r, s')} \sim D [(y - Q(s, a; \theta))^2]
+++++
+
+with stem:[y] equal to the target network target calculation
+
+.Gradient update
+[stem]
+++++
+\nabla_\theta L(\theta) = \mathbb[-2 (y - Q(s, a; \theta)) \nabla_{\theta}Q(s, a; \theta)] 
+++++
+
+== Policy gradient methods
+
+Parametrizes the policy directly instead of the action(s) or state(s)
+
+* works with continuous actions
+* handles non deterministic policies
+
+However:
+
+* slower convergence
+* higher variance
+** less stable performance
+
+=== Parametrized policies
+
+A policy is represented as:
+
+[stem]
+++++
+\pi_\theta (a | s) = P(a | s;\theta)
+++++
+
+* i.e. policy stem:[\pi_{\theta}] with action stem:[a] given state stem:[s] is equal to the probability of action stem:[a] given state stem:[s] parametrized by stem:[\theta]
+
+This changes depending on whether we are using discrete or continuous actions
+
+.Discrete actions
+[stem]
+++++
+\pi_\theta (a | s) = \frac{e^{h(s, a; \theta)}}{\sum_{a'} e^{h(s, a'; \theta)}}
+++++
+
+This feeds the output logits into a softmax to decide which action to take
+
+.Continuous actions
+[stem]
+++++
+\pi_\theta (a | s) = \mathcal{N} (a; \mu_{\theta}(s), \sigma^2_\theta(s))
+++++
+
+This draws an action stem:[a] from a Gaussian distribution given the current state stem:[s]
+
+* the mean and spread are functions of our state stem:[s]
