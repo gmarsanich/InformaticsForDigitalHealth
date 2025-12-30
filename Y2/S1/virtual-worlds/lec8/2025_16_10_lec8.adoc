@@ -184,7 +184,7 @@ Compares rays from multiple views
 * error accumulates in long sequences
 * 0.01% error in every image adds up to a significant amount with lots of images
 . Lighting changes
-* an ojbect may be in shadow in view 1 and brightly lit in view 2
+* an object may be in shadow in view 1 and brightly lit in view 2
 * the extra light can cause models/solvers to think it's a different object
 . Computational cost
 * not a cheap solution

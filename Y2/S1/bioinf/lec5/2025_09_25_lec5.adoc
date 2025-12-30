@@ -15,7 +15,7 @@ Computational chemistry exploits computer science to solve chemical problems
 Focus on *ligand* design rather than drug design
 
 .Receptor
-biological structure to which specific signaling molecules can bind to 
+biological structure to which specific signaling molecules can bind to
 
 these molecules can be:
 
@@ -56,7 +56,7 @@ In the 70s they were represented as 2D topological structures
 * halogens aren't drawn because they are implied
 * carbon is also usually not drawn
 
-Real molecules exist in 3D space 
+Real molecules exist in 3D space
 
 * deducing 3D structures from 2D representations is very difficult
 * you need to know the reciprocal space between the atoms
@@ -76,7 +76,7 @@ Specific colors are used in 3D models to denote different atoms and bonds
 
 .Line/Wireframe
 * Use lines to draw the molecule
-* bonds and atoms are mostly indistinguishable 
+* bonds and atoms are mostly indistinguishable
 
 .Stick
 * Atom-atom bonds are like tubes (thicker lines)
@@ -88,7 +88,7 @@ Specific colors are used in 3D models to denote different atoms and bonds
 
 .CPK
 * space filling representation
-* each atom is given the van der Wallis radius of the real atoms
+* each atom is given the van der Waals radius of the real atoms
 * the bigger then radius -> the bigger the atom
 
 == Amino acids to proteins
@@ -163,6 +163,74 @@ Non regular secondary structure
 Most common *turn* type
 
 * molecule that causes change in direction of the polypeptide chain
+
+== Protein representation formats
+
+Many ways of representing protein composition
+
+=== PDB Format
+
+Row based text file containing atomic coordinates
+
+* rows are called *records*
+* fixed width
+** known number of columns
+
+Columns include:
+
+* type
+** atom
+** heteroatom
+*** atom that isn't part of the protein
+* atom number
+** order in which the atom is seen
+* atom name
+** chemical symbol
+*** C, O, Mg, Na, H, etc.
+* XYZ coordinates
+** where each object is in space
+* Occupancy
+** estimation of the amount of each conformation observed in the crystal
+* B-factor
+** represents the amount of motion of an atom within the protein
+** lower -> not much movement, atom is in the same position in every molecule
+** lower -> lots of movement, atom is in a different position in every molecule
+
+=== MOL2 Format
+
+Section based
+
+Each section has multiple lines
+
+.1. `@<TRIPOS>MOLECULE`
+. contains general information about the molecule
+.. name/human readable comment(s)
+. number of entries in the next sections
+. molecule class
+.. single molecule
+.. protein
+. types of charges
+
+.2. `@<TRIPOS>ATOM`
+. contains atom information
+. atom number of each atom in the file
+. chemical name
+. XYZ coordinates (Angstrom)
+. Mol2 atom type
+.. additional information
+.. formal charge
+.. hybridization
+. residue number
+. residue name
+. atomic charge(s)
+
+.3. `@<TRIPOS>BOND`
+. Bond number
+. 1st atom participating in bond
+. 2nd atom participating in bond
+. bond order
+* can be either `1, 2, 3, ar`
+** `ar` indicates *aromatic*
 
 == X ray resolution
 

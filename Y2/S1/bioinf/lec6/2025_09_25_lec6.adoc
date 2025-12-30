@@ -31,7 +31,9 @@ Molecules can't instantaneously change their conformation
 If there isn't enough energy to cross the transition state and cross the *energy barrier* then the conformation cannot change
 
 * energy barrier is lower when going high -> low
+** think standing -> sitting
 * energy barrier is higher when going low -> high
+** think sitting -> standing
 
 This applies to all kinds of molecules
 
@@ -63,7 +65,7 @@ where:
 *** the hotter it is the more energy there is -> the easier it is to assume normally unlikely conformations
 ** lower -> increases impact of energy differences -> unflattens distribution
 
-==== Example: cyclohexane
+=== Example: cyclohexane
 
 Cyclohexane is a non aromatic cyclomatic molecule
 
@@ -78,7 +80,7 @@ The chair is 22.5 kJ/mol cheaper than the twisted boat
 
 * 99.9% of all cyclohexane assume the chair conformation
 
-==== Example: methylcyclohexane
+=== Example: methylcyclohexane
 
 Methylcyclohexane can assume 2 chair positions depending on where the methyl points
 
@@ -113,11 +115,26 @@ Approximate energy levels using force field equation(s) on the basis of the stru
 
 == Force Fields
 
-Energy calculations are done using *Force field* equations
+Energy calculations are done using *force field* equations
+
+* also called *energy functions*
+
+They include:
+
+. bond stretching
+. angle bending
+. torsional rotation
+. van der Waals interactions
+. electrostatic interactions
+. hydrogen bonds
+
+The sum of these functions is called the *steric energy*
+
+* represents the total energy used by a conformer
 
 Depending on the computational model different components are treated differently
 
-Component values are generally positive 
+Component values are generally positive
 
 * they represent strain
 ** high strain = high energy
@@ -146,6 +163,8 @@ There is an ideal length that requires the least energy
 
 This length can be computed using *spring law*/*Hook's law*:
 
+* works well for geometries near the equilibrium length
+
 [stem]
 ++++
 E_{(L)} = \sum_i k_L (L_i - L_0)^2
@@ -171,6 +190,8 @@ angles different from this optimal angle are penalized
 
 This can be expressed using a variation of Hook's law:
 
+* also works well for geometries near the equilibrium length
+
 [stem]
 ++++
 E_{(\theta)} = \sum_i k_{(\theta)} (\theta_i - \theta_0)^2
@@ -184,6 +205,11 @@ E_{(\theta)} = \sum_i k_{(\theta)} (\theta_i - \theta_0)^2
 === FF components: torsional contributions
 
 Each torsion angle has an associated energy cost
+
+* the amount of energy required for a molecule to fully rotate around a certain bond is called the *rotational barrier*
+** this is bond specific
+** bond B1 may have requirement Bx
+** bond B2 may have requirement Bz
 
 This cost comes from 2 sources:
 
@@ -210,6 +236,8 @@ WARNING: Planar molecules are generally not subject to torsion
 ++++
 E_{(\theta)} = \sum_i V_i [1 + \cos n (|{\theta}| + t)]
 ++++
+
+* Generally 3 stem:[V_i] values are used
 
 Number of torsions = double the number of angles
 
@@ -238,14 +266,14 @@ Given by the *Lennard-Jones potential*
 ++++
 
 V_{LJ} = 4\epsilon
-\biggl[ 
-    \biggl( 
-        \frac{\sigma}{r} 
-    \biggr)^{12} 
-    - 
+\biggl[
     \biggl(
-        \frac{\sigma}{r} 
-    \biggr)^6 
+        \frac{\sigma}{r}
+    \biggr)^{12}
+    -
+    \biggl(
+        \frac{\sigma}{r}
+    \biggr)^6
 \biggr]
 
 ++++
@@ -276,22 +304,22 @@ E_{el} (R^{AB}) = \frac {Q^A Q^B} {\epsilon R^{AB}}
 .Bond dipoles
 [stem]
 ++++
-E_{el} (R^{AB}) = 
+E_{el} (R^{AB}) =
     \biggl(
         \frac {\mu^A \mu^B} {\epsilon (R^{AB})^3}
     \biggr)
-    
+
     \cdot
 
     (
-        \cos_{\mathcal{X}} - 
+        \cos_{\mathcal{X}} -
         3\cos{\alpha}_A
         \cos{\alpha}_B
 
     )
 ++++
 
-where: 
+where:
 
 * stem:[Q] is the atomic charge
 * stem:[R] is the distance between 2 atoms
@@ -299,7 +327,7 @@ where:
 
 === FF components: Hydrogen bond energy contribution
 
-Needs polarized hydrogen 
+Needs polarized hydrogen
 
 * Donor
 * Acceptor (free bond of another atom)
@@ -463,9 +491,9 @@ It would be cheaper to categorize energy peaks and valleys as *conformation fami
 
 * we don't have to bother computing every possible conformation
 
-We can use *stochastic methods* 
+We can use *stochastic methods*
 
-* randomly jump around the conformation space 
+* randomly jump around the conformation space
 * eventually we find a set of conformation families
 
 === Conformational Search Algorithms
@@ -482,7 +510,7 @@ Specifically Metropolis-Hastings MC
 . If new is lower then apply another random kick to new conformation
 . If new is higher don't dismiss the initial conformation
 . Apply Boltzmann test
-* compute Boltzmann ratio for new 
+* compute Boltzmann ratio for new
 ** pick random number
 ** if random number is bigger than the ratio the new conformation is accepted
 
