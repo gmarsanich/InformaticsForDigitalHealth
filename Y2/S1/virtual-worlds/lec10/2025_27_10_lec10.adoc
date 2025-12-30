@@ -29,7 +29,23 @@ for t in timesteps:
     state = new_state
 ----
 
-=== RL components
+== Why reinforcement learning?
+
+. Can be used for training
+* no real patients
+* no harm done
+. Infinite data
+* simply generate more scenarios
+. High level of control
+* isolate specific challenges/scenarios
+. Rare event simulation
+* can simulate very uncommon events that would otherwise be difficult to train for/on
+. Cheap(ish)
+* no hardware required
+* software only
+** unless you need to test with physical agents in which case good luck
+
+== RL components
 
 4 main components:
 
@@ -411,3 +427,51 @@ This feeds the output logits into a softmax to decide which action to take
 This draws an action stem:[a] from a Gaussian distribution given the current state stem:[s]
 
 * the mean and spread are functions of our state stem:[s]
+
+== Actor-Critic Methods
+
+You can also learn both:
+
+* policy: stem:[\pi \theta (a|s)]
+** actor
+** selects actions
+* value function: stem:[V_w(s)] or stem:[Q_w (s, a)]
+** critic
+** evaluates actions 
+
+Requires estimating the *advantage*
+
+* measure of how much better an action is compared to the average action in a given state
+** state stem:[s_x] has stem:[y] available actions
+** take the mean reward stem:[\sigma = \frac{\sum_i y_i}{y}]
+** `advantage = {action: mean - action for action in state}`
+
+Or:
+
+[stem]
+++++
+\hat{A}_t = r_t + \gamma V_w(s_{t+1}) - V_w(s_t)
+++++
+
+i.e. advantage is equal to the reward at each time step plus the difference between the discounted value of the next step minus the current value
+
+stem:[\hat{A}] is use in updating the actor and the critic
+
+.Policy/actor update
+[stem]
+++++
+\theta \leftarrow \theta + \alpha_1 \hat{A}_t \nabla \theta \log \pi \theta(a_t | s_t)
+++++
+
+.Value/Critic
+[stem]
+++++
+w \leftarrow w + \alpha_2 \delta_t \nabla_w V_w(s_t)
+++++
+
+where stem:[\delta_t] is the TD error
+
+[stem]
+++++
+\delta_t = r_t + \gamma V_w(s_{t+1}) - V_w (s_t)
+++++
