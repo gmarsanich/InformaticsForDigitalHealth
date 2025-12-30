@@ -1,14 +1,235 @@
-= Virtual Worlds
+= Virtual Worlds - Reinforcement Learning
 :toc:
 :toc-title: Contents
 :nofooter:
 :stem: latexmath
 
-== Section 1
+== What is reinforcement learning?
 
-=== Subsection 1
+ML paradigm where an agent (AI model) learns by interacting with an environment
 
-== Section 2
+* correct actions are rewarded
+** rewards may be delayed
+* incorrect actions are penalized
 
-=== Subsection 2 
+Agents learn by trial and error
 
+* eventually they should converge to (one of) the correct sequence(s) of actions
+
+.Pseudocode
+[source,python]
+----
+initial_state = agent.observe(environment)
+
+for t in timesteps:
+    state = agent.observe(environment)
+    action = agent.select(actions, t)
+    new_state, reward = environment.update()
+    agent = agent.reward(reward)
+    state = new_state
+----
+
+=== RL components
+
+4 main components:
+
+. State stem:[s]
+* environment description
+** position
+** patient vitals
+
+. Action stem:[a]
+* available choices
+** discrete (move 1 unit left/right/forward/backward)
+** continuous (apply 1 n/m of force to this location)
+
+. Reward stem:[r]
+* feedback signal
+** higher = more rewarding
+** lower = less rewarding
+* need to decide reward frequency
+** more frequent = easier to learn
+*** can be a trap
+
+. Policy stem:[\pi]
+* behavior function
+** maps states to actions
+* can be deterministic (state stem:[S] will always lead to action stem:[A])
+** stem:[\pi: S \rightarrow A]
+** stem:[a = \pi(s)]
+* can also be stochastic (state stem:[S] has a probability to allow for action stem:[A])
+** each action has a probability
+** stem:[\pi: S \cdot A \rightarrow [0, 1\] ]
+** stem:[\pi(a|s) = P(A_t = a | S_t = s)]
+
+== Markov Decision Processes
+
+Framework for modeling decision making
+
+Defined by the tuple:
+
+[stem]
+++++
+\text{MDP} = (\mathbf{S}, \mathbf{A}, P, R, \mathbf{\gamma}) 
+++++
+
+Where:
+
+* stem:[\mathbf{S}] is the set of states
+* stem:[\mathbf{A}] is the set of actions
+* stem:[P] is the state transition probability function
+** see definition below
+* stem:[R] is the reward function
+** the function that returns the reward
+** defined below
+* stem:[\gamma] is the discount factor
+** value in stem:[0 \leq \gamma \leq 1]
+** reduces the value of future rewards
+** useful for ongoing tasks (i.e. tasks without a definite end)
+*** ensures that the final sum stem:[G] will always be a finite sum
+*** creates a preference for short term rewards (not necessarily good but can help in some situations)
+
+.State transition probability function
+[stem]
+++++
+P(s' | s, a) = Pr \{    S_{t+1} = s' | S_t = s, A_t = a      \}
+++++
+
+Where:
+
+* stem:[S_t] is a random variable that can take any value in the state space (the state at time stem:[t])
+** stem:[s] is the value given to stem:[S] state at time stem:[t]
+* stem:[A_t] is a random variable that can take any value in the action space (the action taken at time stem:[t])
+** stem:[a] is the actual value of the action stem:[A] at time stem:[t]
+* stem:[s'] is a different state
+** not necessarily new
+** it could be to stay in current state
+
+Basically:
+
+* if the system is in state s right now and I take action stem:[a], the chance that it will end up in state stem:[s'] on the next time step is stem:[P(s'|s,a)]
+
+.Reward function
+[stem]
+++++
+r = R(s, a, s')
+++++
+
+* what is the expected reward after transitioning from one state to the next?
+
+=== Value functions
+
+There are 2 main value functions:
+
+.1. State-value function
+[stem]
+++++
+V^{\pi} (s) =
+    \mathbb{E}_{\pi} [G_t | S_t = s] \\
+
+    \text{where:} \\
+ 
+    \mathbb{E}_{\pi} [G_t | S_t = s] = \mathbb{E}_{\pi} \bigg[\sum_{k=0}^{\inf} \gamma^{k} R_{t+k+1} | S_t = s    \bigg]
+++++
+* describes the expected return starting from state stem:[s] while following policy stem:[\pi]
+** the value is equal to the expected value of the final sum given the state
+** where the final sum is the discounted sum of all the time steps
+
+.2. Action-value function
+[stem]
+++++
+Q^{\pi} (s, a) = 
+    
+    \mathbb{E}_{\pi} [G_t | S_t = s, A_t = a] \\
+
+    \text{where:} \\
+ 
+    \mathbb{E}_{\pi} [G_t | S_t = s, A_t = a] = \mathbb{E}_{\pi} \bigg[\sum_{k=0}^{\inf} \gamma^{k} R_{t+k+1} | S_t = s, A_t = a    \bigg]
+++++
+* describes the expected return starting from state stem:[s] and taking action stem:[a] while following policy stem:[\pi]
+** the value is equal to the expected value of the final sum given the state and the action taken
+** where the final sum is the discounted sum of all the time steps and the action taken
+
+These can be related to each other (since they're basically the same except for the action component)
+
+.Relation
+[stem]
+++++
+V^{\pi}(s) = \sum_{a \in A} \pi (a | s) Q^{t}(s, a)
+++++
+
+* the value sum is equal to the sum of the policy of the action given the state times the action value for all possible actions in the action space
+
+There is an optimal policy stem:[\pi*], that is given by the following formulation:
+
+[stem]
+++++
+\pi * (s) = \text{arg} \max_{a'} Q*(s, a)
+++++
+
+Which makes it easy since to get the best possible policy we can just selectn the action with the highest stem:[Q]
+
+* makes stem:[P] and stem:[R] irrelevant
+
+=== Exploration vs exploitation
+
+Should a model *exploit*
+
+* always choose the best known action (farm easy rewards)
+
+Or should it *explore*
+
+* try different actions to potentially find a better strategy
+
+Typically models are set to be highly explorative at first but become more exploitatitve over time
+
+* find a good strategy quickly
+* accumulate relatively early
+* avoid constant exploration
+
+== Q learning
+
+Agents/models learn the optimal policy while following the exploratory policy
+
+* derives policy from Q function
+
+Governed by this update rule:
+
+[stem]
+++++
+Q(s, a) \leftarrow Q(s, a) + \alpha [r + \gamma \max_{a'} Q(s', a') - Q(s, a)]
+++++
+
+Where:
+
+* stem:[\alpha] is the learning rate (between 0 and 1, inclusive)
+* stem:[r] is the observed reward
+* stem:[\gamma] is the discount factor
+* stem:[s'] is the next state
+
+with Temporal Difference as the loss function
+
+[stem]
+++++
+\delta = r + \gamma \max_{a'} Q(s', a') - Q(s, a)
+++++
+
+You could represent Q learning as a table/matrix of state/action but it would become intractable
+
+* big
+** chess has stem:[10^{43}] states
+** continuous state spaces have infinite states
+* memory not big
+* not work
+* unknown states also exist
+
+Better to use the *convergence theorem*
+
+Q-learning will always find a stem:[Q*] with probability 1 given:
+
+. all (state, action) pairs are visited infinitely often
+. the sum of the learning rate at every time step is infinite AND the sum of the squared learning rate at every time step is not infinite
+
+How do we find these functions?
+
+* Neural networks (of course)
