@@ -39,8 +39,6 @@ Managing perception reasoning action loops
 
 === Learning
 
-
-
 === Memory
 
 === Reasoning
