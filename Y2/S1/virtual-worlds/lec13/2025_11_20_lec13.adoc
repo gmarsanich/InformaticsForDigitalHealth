@@ -91,6 +91,47 @@ Methodologies:
 * one stage: gets both keypoints and people in one shot
 ** based on bottom up
 
+=== Papandreou et al. (2017)
+
+Defined a 2 stage top down approach:
+
+. Person detection (standard object detection)
+.. Cropping around person bounding box
+. Mixed classification/regression
+* Fixed aspect ratio crop
+* using a fully convolutional model (ResNet-101)
+* Outputs stem:[3k] output maps
+** stem:[k] is the number of joints
+** 1 class heatmap -> disk indicating possible joint location (classifies whether the joint is inside or outside the disk)
+** 2 offset heatmaps -> x and y offsets that define how far you need to move to reach the predicted joint location
+*** vector field that points pixels towards the joint
+** pixels within the offset maps vote on where the joint really is
+*** weighted average of the candidate locations
+
+
+.Weighted average of estimated positions
+[stem]
+++++
+F_k (x_i) = \sum_j \frac{G(x_j + F_k(x_j) - x_i) h_k(x_j)}{\pi R^2} 
+++++
+
+where:
+
+* stem:[x_i] is the position in which to compute the output value
+* stem:[x_j] are other positions
+** typically near stem:[x_i]
+* stem:[x_j + F_k(x_j)] is the estimated position of the stem:[k_th joint]
+** stem:[x_j + ] offset
+* stem:[x_j + F_k(x_j) - x_i] is the distance between the estimate and stem:[x_i]
+* stem:[G] is a linear interpolation kernel
+** 1 pixel wide tent function around stem:[x_i]
+** stem:[G(0, 0) = 1]
+* stem:[G(x_j + F_k(x_j) - x_i)] is the the contribution to the vote
+** how confident it is that stem:[x_i] is the joint location
+* stem:[h_k(x_j)] is the condidence of the predictions
+** weighs the vote
+** high confidence = heavier
+
 == Single person 3D HPE
 
 Given an RGB image you can get 2 things:
@@ -105,3 +146,38 @@ Uses *Geodesic Point Similarity* instead of OKS
 
 * similar to OKS
 * works on 3D data
+
+.OKS formulation
+[stem]
+++++
+\text{OKS} =
+\frac
+{
+    \sum_i \exp \biggl(-\frac
+    {d^2_i}{2s^2 \cdot k_i^2}\biggr)
+    \mathbb{I} [v_i \gt 0]
+}    
+{
+    \sum_i \mathbb{I} [v_i \gt 0]
+}
+++++
+
+where:
+
+* stem:[d_i] is the Euclidian distance between the predicted point and the ground truth point
+* stem:[s] is the scale of the object
+** i.e. stem:[\sqrt{\text{area of segmentation}}]
+* stem:[k_i] is a constant that controls falloff
+* stem:[v_i] is the ground truth visibility flag
+** COCO:
+*** stem:[v_i = 0 \implies] not visible
+*** stem:[v_i = 1 \implies] labeled but not visible
+*** stem:[v_i = 2 \implies] visible
+
+i.e.:
+
+* while ignoring all invisible and unlabeled keypoints (stem:[\mathbb{I} [ v_i \gt 0 \]])
+* pass the distance stem:[d_i] through a Gaussian to give a measure of similarity
+** Gaussian standard dev is stem:[\sigma = sk_i]
+** similarity is value in stem:[[0, 1\]], where stem:[d_i \sim 0] is very good similarity
+
