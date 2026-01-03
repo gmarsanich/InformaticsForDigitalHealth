@@ -114,11 +114,18 @@ The *alpha* carbon is the carbon atom that connects the amino group and the carb
 They are used to represent each amino acid
 
 * we can draw a connection between 2 alpha carbons to represent the whole protein
+** called the stem:[C\alpha] *trace*
 ** the result will be the protein's skeleton
 ** simplified view
 ** ignores all other molecules/atoms present
 
-The angles between amino acids in a protein are called *phi* and *psi*
+The angles between amino acids in a protein are called *phi* (stem:[\phi]) and *psi* (stem:[\psi])
+
+* stem:[\phi] is the angle between the alpha carbon and the left backbone item
+** i.e. stem:[\phi]--stem:[C\alpha]--<rest of the molecule>
+
+* stem:[\psi] is the angle between the alpha carbon and the right backbone item
+** i.e. <rest of the molecule>--stem:[C\alpha]--stem:[\psi]
 
 The most common angles are:
 
