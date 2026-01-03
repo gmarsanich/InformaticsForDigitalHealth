@@ -68,6 +68,40 @@ For keypoint stem:[i]
 ** dataset curator(s) suggest values of stem:[k] so it doesn't come from training
 *** stem:[k] is higher for parts that are more difficult to segment
 
+.OKS formulation
+[stem]
+++++
+\text{OKS} =
+\frac
+{
+    \sum_i \exp \biggl(-\frac
+    {d^2_i}{2s^2 \cdot k_i^2}\biggr)
+    \mathbb{I} [v_i \gt 0]
+}    
+{
+    \sum_i \mathbb{I} [v_i \gt 0]
+}
+++++
+
+where:
+
+* stem:[d_i] is the Euclidian distance between the predicted point and the ground truth point
+* stem:[s] is the scale of the object
+** i.e. stem:[\sqrt{\text{area of segmentation}}]
+* stem:[k_i] is a constant that controls falloff
+* stem:[v_i] is the ground truth visibility flag
+** COCO:
+*** stem:[v_i = 0 \implies] not visible
+*** stem:[v_i = 1 \implies] labeled but not visible
+*** stem:[v_i = 2 \implies] visible
+
+i.e.:
+
+* while ignoring all invisible and unlabeled keypoints (stem:[\mathbb{I} [ v_i \gt 0 \]])
+* pass the distance stem:[d_i] through a Gaussian to give a measure of similarity
+** Gaussian standard dev is stem:[\sigma = sk_i]
+** similarity is value in stem:[[0, 1\]], where stem:[d_i \sim 0] is very good similarity
+
 == Multi person 2D HPE
 
 Predict keypoint positions for each person in an image
@@ -132,6 +166,146 @@ where:
 ** weighs the vote
 ** high confidence = heavier
 
+They also used 2 new evaluation metrics:
+
+. Keypoint-based confidence score/Pose Rescoring
+* combines the confidence scores of each keypoint
+* stem:[\text{score}(I) = \frac{1}{K} \sum_{k=1}^{K} \max_{x_i} F_k (x_i)]
+. Keypoint-based non-maximum suppression (OKS-NMS)
+* Measure overlap using OKS instead of IoU
+* detects true/false positives better
+
+=== OpenPose (2017)
+
+Bottom up approach
+
+* untangles complexity from number of people in image
+** constant time performance regardless of number of people (!!!)
+* better real time performance
+
+Based on *Part Affinity Fields*
+
+* 2D vector fields over image domain
+* encodes location and orientation of limbs
+** basically arrows that point to where the limb is oriented
+** requires finding limb first
+* Position and orientation makes them better than simple point estimates
+
+Uses FFCNN
+
+. predicts *part confidence maps*
+* measure of the belief that a part is located at a given pixel
+** "I'm 90% sure that the elbow is at pixel (5325, 1441)"
+* stem:[S = (s_1, s_2, \dots, s_J)  \subset [  0, 1  \]^{HW} ]
+** stem:[s_J] is a 2D array representing the confidence map of part stem:[j]
+*** each element is between 0 and 1 (0 = not confident at all, 1 = perfectly confident)
+** stem:[[  0, 1  \]^{HW}] is a set of vectors of length stem:[HW] where each vector can have values between 0 and 1
+*** basically the set of all stem:[s_J] arrays
+
+. also predicts the PAFs
+* encodes the degree of association between part pairs
+** "These 2 parts are very linked", "these 2 parts may or may not be linked"
+* stem:[L = (L_1, L_2, \dots, L_C) \subset \mathbb{R}^{2HW}]
+** stem:[C] is the number of vector fields where the length is equal to the number of connected part pairs
+*** like the mediapipe skeleton?
+** Each pixel in stem:[L_i] is a 2D vector
+*** encodes part orientation
+
+These ensure that overlapping limb keypoints are appropriately mapped to their rightful owners
+
+* 2 overlapping points with parts having different directions are likely to belong to different people
+
+==== Multiple Bipartite Matching
+
+Generating poses for multiple people is called *multiple bipartite matching*
+
+Uses *graphs* (because of course it does)
+
+* nodes are detections
+* edge weights are scores that quantify how much the detections fit
+** line integration over PAF
+
+.Multiple Bipartite Matching
+[stem]
+++++
+E = \int_0^1 \mathbf{L}_c( \mathbf{p}(u) ) \cdot \frac{ \mathbf{d}_{j2} - \mathbf{d}_{j1} }{ || \mathbf{d}_{j2} - \mathbf{d}_{j1} ||_2 } du
+++++
+
+where:
+
+* stem:[\mathbf{p} (u) = (1 - u) \mathbf{d}_{j1} + u \mathbf{d}_{j2}]
+** is the interpolation of the position of the 2 parts stem:[\mathbf{d}_{j1}] and stem:[\mathbf{d}_{j2}]
+** which can be discretized as a sum over N uniformly sampled points between stem:[\mathbf{d}_{j1}] and stem:[\mathbf{d}_{j2}]
+
+WARNING: connecting any joint to any other joint is an NP hard problem. Greedily connect nearby joints only to relax the problem
+
+=== Associative Embeddings (2017)
+
+One-stage method
+
+* detects and groups keypoints at the same time(ish)
+
+The network predicts and *identity tag* and a per pixel detection score (classic heatmap)
+
+* identity of group assignment
+** this bit belongs to this group
+*** a group can be a person but can also be other things (animals, plants, arbitrary objects)
+
+Given an image:
+
+[source,python]
+----
+def predict(image):
+    predictions = []
+    for keypoint in image:
+        heatmap = detection_hm(keypoint)
+        embedding = associative_embedding(keypoint)
+        predictions.append((heatmap, embedding))
+----
+
+Uses MSE loss for detection heatmaps
+
+Uses *Grouping Loss* for tags
+
+* made up of multiple parts
+
+==== Grouping Loss
+
+.1. Reference embedding
+[stem]
+++++
+\overline{h} = \frac{1}{K} \sum_{k} h_k(x_{nk})
+++++
+
+* gets reference embedding for person stem:[n]
+* mean of predicted embeddings for all joints of a person
+
+.2. Intra-person term
+[stem]
+++++
+\frac{1}{NK} \sum_n \sum_k (\overline{h}_n - h_k (x_nk))^2
+++++
+
+* minimizes variance between joint embeddings of the same person
+** pulls them close to the reference embedding
+
+.3. Inter-person term
+[stem]
+++++
+\frac{1}{N^2} \sum_n \sum_{n'} \exp \{  - \frac{1}{2 \sigma ^2} (\overline{h}_n - \overline{h}_{n'})^2 \}
+++++
+
+* pushes reference embeddings belonging to other people away
+** exponentially decaying penalty
+** closer => higher penalty (exponential decrease with distance)
+
+where:
+
+* stem:[x] is the pixel location
+* stem:[h_k \in \mathbb{R}^{HW}] is the predicted tag heatmap for the stem:[k]th joint
+* stem:[\{ (x_{nk}) \}] with stem:[n=1, \dots, N] and stem:[k=1, \dots, K] are the ground truth values
+** stem:[x_{nk}] is the ground truth pixel location of joint stem:[k] of person stem:[n]
+
 == Single person 3D HPE
 
 Given an RGB image you can get 2 things:
@@ -146,38 +320,3 @@ Uses *Geodesic Point Similarity* instead of OKS
 
 * similar to OKS
 * works on 3D data
-
-.OKS formulation
-[stem]
-++++
-\text{OKS} =
-\frac
-{
-    \sum_i \exp \biggl(-\frac
-    {d^2_i}{2s^2 \cdot k_i^2}\biggr)
-    \mathbb{I} [v_i \gt 0]
-}    
-{
-    \sum_i \mathbb{I} [v_i \gt 0]
-}
-++++
-
-where:
-
-* stem:[d_i] is the Euclidian distance between the predicted point and the ground truth point
-* stem:[s] is the scale of the object
-** i.e. stem:[\sqrt{\text{area of segmentation}}]
-* stem:[k_i] is a constant that controls falloff
-* stem:[v_i] is the ground truth visibility flag
-** COCO:
-*** stem:[v_i = 0 \implies] not visible
-*** stem:[v_i = 1 \implies] labeled but not visible
-*** stem:[v_i = 2 \implies] visible
-
-i.e.:
-
-* while ignoring all invisible and unlabeled keypoints (stem:[\mathbb{I} [ v_i \gt 0 \]])
-* pass the distance stem:[d_i] through a Gaussian to give a measure of similarity
-** Gaussian standard dev is stem:[\sigma = sk_i]
-** similarity is value in stem:[[0, 1\]], where stem:[d_i \sim 0] is very good similarity
-
