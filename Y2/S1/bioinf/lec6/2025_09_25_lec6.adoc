@@ -11,7 +11,7 @@ We (humans) assume different dispositions in space over time (we sit, stand, wal
 So do molecules
 
 * they exist in space
-* have a 3D structure
+* they have a 3D structure
 ** their structure sometimes changes
 ** they are more or less flexible
 ** they can take on more conformations
@@ -476,12 +476,12 @@ Testing energy usage for every reasonable conformation of a molecule
 For a molecule with 1 rotatable bond this is relatively easy
 
 * assuming 10 degree steps => 36 steps
-* 1 bond -> 36^1 -> 36 combinations
+* 1 bond -> stem:[36^1] -> 36 combinations
 
-For a molecule with 7 rotatabble bonds this is not that easy
+For a molecule with 7 rotatable bonds this is not that easy
 
 * assuming 10 degree steps => 36 steps
-* 7 bonds -> 36^7 * 4-> > 300,000,000 combinations
+* 7 bonds -> stem:[36^{7} \cdot 4 \rightarrow \gt 300,000,000] combinations
 
 This assumes that every conformation has a unique energy
 
@@ -522,7 +522,7 @@ It's also possible to use exhaustive algorithms in parallel
 
 * less strict than systematic
 * using steps of a few hunded degrees is more manageable
-* reduces 36^7 * 4 to 36^3 * 4
+* reduces stem:[36^7 \cdot 4] to stem:[36^3 \cdot 4]
 
 === Bioactive Conformations
 
