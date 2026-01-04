@@ -1,0 +1,259 @@
+= Virtual Worlds Open-Vocabulary Vision I
+:toc:
+:toc-title: Contents
+:nofooter:
+:stem: latexmath
+
+== What is Open-Vocabulary Vision?
+
+Models that recognize any object category expressed in natural language without retraining
+
+* finding objects in images that haven't been seen in training
+
+CAUTION: there is an overlap betwen OVV and Zero-Shot learning but they are NOT the same thing
+
+== Why OVV?
+
+. Annotating large datasets is expensive/time-consuming
+. Fixed label sets mean that a dataset may not contain a particular image at all
+* maybe I need to identify all species of beetles in a terrarium livestream
+* the dataset I used to train the model didn't have pictures of some beetle species
+
+== How OVV?
+
+Integrate language models and image models
+
+*Multimodal models*
+
+* requires representations of visual inputs
+** images
+** image embeddings
+* requires representations of language inputs
+** text
+** text embeddings
+
+These *need* to live in the same space
+
+* they need to be comparable (otherwise there's no point)
+
+== Text representations
+
+*Do use* classic word embeddings
+
+* can map words as vectors
+* words near other words in vector space likely have semantic similarity
+
+*Do not use* one-hot encodings and edit distance representations
+
+* unrealistic
+* not very representative
+
+=== Transformers
+
+Extremely powerful seq2seq architectures with very low inductive bias that can pretty much do anything
+
+* special `CLS` token encodes the global representation of a sequence
+** whole text
+** whole image
+
+Use transformers to extract meaning from image contents
+
+* e.g. cat
+
+Use text encoder to extract word embeding from text
+
+* tokens
+
+Find token with highest similarity to target image object
+
+* `max(cos(target, tokens))`
+
+Paired data required for supervised learning
+
+* need non matching pairs too
+** avoids representation collapse
+* called *contrastive learning*
+** " `X` matches with `Y` but it doesn't match with `Z` "
+** enforces discriminative features
+** avoids issues at class boundaries like in classification
+
+This isn't flawless though
+
+=== Modality Gap
+
+The cosine similarity of embeddings from different modalitites can still be quite low
+
+* they live in different *subspaces* even if they are mapped to the same space
+* due to initialization and low-temp contrastive learning
+
+== SimCLR (2020)
+
+Contrastive learning paper that illustrated a method to learn visual representations without labels
+
+Used new loss function called *information noise-contrastive estimation* (InfoNCE)
+
+* basically a softmax and a negative log-likelihood stapled together
+
+.InfoNCE
+[stem]
+++++
+l_{i, j} = -log 
+
+\frac
+
+{ \exp ( \text{sim} ( z_i, z_j ) / \tau ) }
+
+{ \sum^K_{k=1,k \neq i} \exp ( \text{sim} ( z_i, z_j ) / \tau ) }
+++++
+
+where:
+
+* stem:[z_i, z_j] is a matching positive pair
+** positive matches are different augmentations of the same image
+*** image of dog vs same image of dog rotated 90 degrees
+** negative matches are different images
+*** image of dog vs image of cat
+
+* stem:[\text{sim()}] is the cosine similarity function
+** takes in 2 elements (could be more) and returns how similar they are to each other
+
+* stem:[\tau] is the softmax temperature parameter
+** controls the peakiness of the output distribution
+** higher = more random distribution of values -> flatter distribution
+
+* stem:[K] is the batch size
+
+The normalization step requirest the full row/column
+
+* problematic in multi-GPU situations
+* communication reduces performance
+
+== CLIP (2021)
+
+Extremely influential contrastive learning paper on image-text pairs
+
+* many many many many models use CLIP as a basis
+** so many
+** like a lot
+
+Learns image and text representations in a common space
+
+Scrapes image/text pairs from the internet
+
+.Strengths:
+* Has strong zero-shot performance for free
+* reduces performance difference between benchmarks and real world
+* generalizes well to many tasks
+** fine-grained classification
+** action recognition
+** OCR
+** geolocation
+
+.Limitations:
+* abstract tasks
+** like spatial tasks (is A closer to B than to C)
+** and tasks relating to specific parts of images
+* systematic tasks
+** counting tasks (how many red balls are there)
+* biases
+** tends to predict stereotypes
+*** query = university professor; returns males
+*** query = elementary school professors (sic); returns females
+
+=== Clip architecture
+
+Parts:
+
+. Text encoder (transformer, GPT-2)
+* encodes raw text/image label into embedding
+. Image encoder (ResNet, ViT)
+* encodes image data into embedding
+. InfoNCE loss
+. Random init
+* no pretrained weights
+. Random square crop augmentation
+
+There are multiple versions of CLIP:
+
+. Zero-shot CLIP
+* same model for all datasets
+* outperforms rival models on 16/27 datasets
+** best for generic datasets
+** struggles with domain-specific datasets
+
+. Zero-shot cross-modal retrieval
+* finds images and sorts them by decreasing similarity
+** similarity between text (query) and image (target)
+
+=== CLIP applications
+
+CLIP is used for a ton of stuff (and often embedded in other stuff)
+
+* image + text
+* video + text
+** VideoCLIP
+* audio + text
+** CLAP
+* medical images + text
+** x-ray and such
+** ConVIRT
+* amino acids + text
+** CLASP
+* LLMs
+** LLaVa
+*** Large language and vision assistant
+*** Uses LLM+CLIP and an MLP
+*** MLP is used to project CLIP tokens into the next token space (what)
+* Stable diffusion
+** CLIP text embeddings used in the conditioning part of stable diffusion
+*** passed in denoising U-net
+** CLIP image embeddings are also used as guidance
+*** does diffusion generation match? if yes -> good; else: backprop
+
+== CLIP Competitors
+
+=== ALIGN (2021)
+
+Same concept as CLIP
+
+* dual encoder
+* contrastive loss
+* 1.8 billion image/text dataset
+* can do analysis of learned embeddings
+* retrieve more detailed queries
+** query = panda + ears => ears of panda
+* can do embedding algebra (add stuff to query)
+** query = panda + red => finds red panda
+
+=== SigLIP
+
+Replaces InfoNCE with BCE to improve multi-GPU performance
+
+.BCE
+[stem]
+++++
+- \frac{1}{|\mathcal{B}|}
+
+\sum^{|\mathcal{B}|}_{i=1}
+\sum^{|\mathcal{B}|}_{j=1}
+
+\underbrace{
+
+\log
+\frac{1}
+{ 1+e^{z_{ij} (-t \mathbf{x}_i \cdot \mathbf{y}_j+b) } }
+
+}_{\mathcal{L}_{ij}}
+++++
+
+where:
+
+* stem:[z_{ij} \in \{-1, 1 \}]
+* stem:[t] is still temperature
+* stem:[b] is bias
+** for class imbalance
+
+One submatrix can now fit nicely in memory
+
+* can increase batch size
+* training is stabilized at lower batch sizes too
