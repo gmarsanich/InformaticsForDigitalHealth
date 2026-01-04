@@ -320,3 +320,124 @@ Uses *Geodesic Point Similarity* instead of OKS
 
 * similar to OKS
 * works on 3D data
+
+.GPS
+
+[stem]
+++++
+\text{GPS}_j = \frac{1}{|P_j|} \sum_{p \in P_j} \exp \biggl(  \frac{-g(i_p, \hat{i}_p)^2}{2k^2}  \biggr)
+++++
+
+Where:
+
+* stem:[P_j] is the annotated ground truth set for person stem:[j]
+* stem:[i_p] is the estimated vertex position at point stem:[p]
+* stem:[\hat{i}_p] is the ground truth vertex position at point stem:[p]
+* stem:[g()] is the geodesic distance
+** the shortest distance between 2 points on a surface
+* stem:[k] is a normalization factor
+
+
+The stem:[GPS] for person stem:[j] is equal to:
+
+. the sum of:
+. the exponentiation of:
+.. the squared negative geodesic distance between the real point and predicted point
+... normalized by the normalization factor stem:[k]
+. multiplied by the number of points belonging to that person
+
+=== Supervised 2D to 3D mapping
+
+Getting 3D datasets in the wild is very hard
+
+* get data from motion caption datasets
+** videos+marker-based 3D poses
+* project 3D pose to 2D after transforming to camera coordinates (inverse camera transform)
+** predictable system
+* normalize inputs and targets
+** normalization location likely varies with implementation/model
+
+Predict 3D pose from 2D pose
+
+* full image not required
+* inputs: 2D pose stem:[\mathbf{x} \in \mathbb{R}^{2K}]
+* outputs: 3D pose stem:[\mathbf{y} \in \mathbb{R}^{3K}]
+** stem:[K] is the number of keypoints
+* can regress from 2D to 3D using FCN: stem:[\mathbf{y} = f(\mathbf{x, \theta})]
+
+=== VNect (2017)
+
+Skeleton-based single-person 3D HPE system
+
+* creates a skeleton instead of a dense model
+* heatmap-based approach
+* uses pelvis as root
+
+Overview:
+
+. Full frame input
+* big image
+. Bounding box around target
+* crop them out of FFI
+. CNN regression
+* confidence heatmap stem:[H_i]
+** estimates 2D location of joint in image
+* location maps
+** estimates 3D joint positions relative to pelvis -> stem:[[ \mathbf{X_i, Y_i, Z_i} \]]
+** find max pixel in stem:[H_i] -> use to find best in stem:[[ \mathbf{X_i, Y_i, Z_i} \]]
+*** `p = np.argmax(h_i); maxs = [plane[p] for plane in x, y, z]`
+. Temporal filter
+* generates 2D keypoints
+* can estimate 3D pose
+. Skeleton fitting
+* build skeleton
+
+=== DensePose (2018)
+
+Solves *dense surface correspondence*
+
+* assigning each pixel to a position of a template body 
+* much harder than predicting joint positions
+
+Uses https://is.mpg.de/code/smpl[SMPL]
+
+* learned 3D representation of human body surface
+* very realistic
+* easy to manipulate
+** body shape
+** body pose
+** body location in space
+* differentiable
+
+Overview: 
+
+. partition 3D surface into semantic parts
+* parts with meaning
+** torso, head, left leg
+. classify which part each pixel belongs to
+. regress pixel's 2D coords onto that part's UV map
+
+Network architecture:
+
+* Mask-RCNN + FPN
+* finds ROI for people
+* uses ROI-align pooling to extract features per region
+
+The head of the network does 2 things:
+
+* generates per pixel surface part classification
+** this pixel belongs to part stem:[p_0]
+** this pixel belongs to part stem:[p_1]
+
+Very poor real time performance
+
+* < 30 FPS using GTX 1080 at low resolutions
+* might be better with modern GPUs but who knows
+
+Ground truth data is sparse
+
+* we'd rather have dense data
+
+Use FCNN to paint areas near unannotated pixels
+
+* using UV values
