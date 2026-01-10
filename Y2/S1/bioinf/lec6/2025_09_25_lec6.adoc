@@ -14,7 +14,7 @@ So do molecules
 * they have a 3D structure
 ** their structure sometimes changes
 ** they are more or less flexible
-** they can take on more conformations
+** they can take on multiple conformations
 ** the same molecule can take on multiple conformations
 
 We can assume that each conformation is related to energy and vice versa
@@ -213,10 +213,10 @@ Each torsion angle has an associated energy cost
 
 This cost comes from 2 sources:
 
-* space steric interactions
-** repulsive forces between unbonded atoms
-* electronic interactions between unbonded atoms
-** if electron clouds clash the conformation is more expensive
+. space steric interactions
+* repulsive forces between unbonded atoms
+. electronic interactions between unbonded atoms
+* if electron clouds clash the conformation is more expensive
 
 Sum of Fourier series
 
@@ -465,7 +465,7 @@ How do we know when a molecule is actually minimized?
 Stop when the gradient is lower than a set threshold
 
 .Energy Comparison
-Compare the change in energy between this step and the previous. Stop if it's below a threshold
+Stop if the change in energy  between this step and the previous is below a threshold
 
 == Conformational Analysis Principles
 
@@ -481,7 +481,8 @@ For a molecule with 1 rotatable bond this is relatively easy
 For a molecule with 7 rotatable bonds this is not that easy
 
 * assuming 10 degree steps => 36 steps
-* 7 bonds -> stem:[36^{7} \cdot 4 \rightarrow \gt 300,000,000] combinations
+* 7 bonds -> stem:[36^{7} \cdot 4 \rightarrow \gt 300,000,000,000] combinations
+** the 4 accounts for 4 ring conformations (assuming this molecule has a ring)
 
 This assumes that every conformation has a unique energy
 

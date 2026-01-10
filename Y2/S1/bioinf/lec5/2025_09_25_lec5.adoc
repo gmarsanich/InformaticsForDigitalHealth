@@ -201,7 +201,7 @@ Columns include:
 * B-factor
 ** represents the amount of motion of an atom within the protein
 ** lower -> not much movement, atom is in the same position in every molecule
-** lower -> lots of movement, atom is in a different position in every molecule
+** higher -> lots of movement, atom is in a different position in every molecule
 
 === MOL2 Format
 
@@ -210,7 +210,7 @@ Section based
 Each section has multiple lines
 
 .1. `@<TRIPOS>MOLECULE`
-. contains general information about the molecule
+. general information about the molecule
 .. name/human readable comment(s)
 . number of entries in the next sections
 . molecule class
@@ -219,7 +219,7 @@ Each section has multiple lines
 . types of charges
 
 .2. `@<TRIPOS>ATOM`
-. contains atom information
+. atom information
 . atom number of each atom in the file
 . chemical name
 . XYZ coordinates (Angstrom)
