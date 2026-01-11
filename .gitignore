@@ -15,5 +15,10 @@
 # Ignore all nested .git directories
 **/.git/
 
+# Ignore all project directories
+**/project/
+**/*.bak
+
+# Allow these files
 !/convert.py
 !README.adoc
