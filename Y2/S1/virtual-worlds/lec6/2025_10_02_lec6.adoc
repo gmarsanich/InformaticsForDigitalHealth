@@ -116,7 +116,7 @@ How do you manage buffers?
 
 == Performance Optimization: LOD system
 
-=== Frustum calling
+=== Frustum culling
 
 If the object is outside the frustum it shouldn't render it
 
@@ -128,10 +128,9 @@ Combine similar object if they are within another object's bounding box
 
 == Interactive 3D Visualizations
 
-A complete virtual world application has 5 ish components
+A complete virtual world application has ~4 components
 
 . Scene management
 . Material system
 . User Interaction
 . Performance optimization
-. 
