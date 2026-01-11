@@ -82,7 +82,7 @@ Uses converging projection lines
 Object size scales with distance
 
 * farther => smaller
-* closer => biggers
+* closer => bigger
 
 Similar to human vision
 
@@ -120,7 +120,7 @@ Enables shadows, reflections and refractions for free basically
 
 Much more expensive than rasterization
 
-* not really used for real time visualization
+* not really used for real time visualization (despite NVIDIA's best efforts)
 * more commonly used for still imagery
 
 === Modern rendering techniques
@@ -136,7 +136,7 @@ Simulates realistic light bouncing and ambient occlusion
 * when a ray hits an object that object becomes a light itself
 
 .Real time RT and Path Tracing
-Very computational expensive
+Very computationally expensive
 
 Very complex to use
 
@@ -291,7 +291,7 @@ Transforms the NDC coordinates into the same pixel grid that the rasterizes draw
 
 Start in object space
 
-Using the model matrix transformthe object space into world space
+Using the model matrix transform the object space into world space
 
 * gives world coordinates
 
@@ -382,7 +382,7 @@ Using meshes
 * collection of connected triangles
 * each triangle shares an edge with another triangle
 
-Using enough triangles we can obtaina very good approximation of a surface
+Using enough triangles we can obtain a very good approximation of a surface
 
 === Mesh Classification
 
