@@ -493,6 +493,10 @@ Key part of photogrammetry pipelines
 
 * used to align images
 * uses converging epipolar lines
+** cameras project an imaginary line from their focal center towards their target
+** they will intersect at some point
+** given a point stem:[X] in the plane of the first image, find the corresponding point stem:[X'] in the second
+* describes the relation between the different views of each camera when capturing the same object
 
 .Epipolar constraint
 
