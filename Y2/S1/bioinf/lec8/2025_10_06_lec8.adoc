@@ -207,9 +207,9 @@ Use these algorithms to increase conformational space of the protein I want to a
 
 Conformational analysis of large systems
 
-Increase the temperature of a system to ~2000/3000 Kelving
+Increase the temperature of a system to ~2000/3000 Kelvin
 
-* without denaturating
+* without denaturing
 * gives enough energy to overcome energy barriers
 
 Slowly reduce the temperature (like in PCR)
