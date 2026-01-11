@@ -13,16 +13,19 @@ Extending physical reality with virtual elements
 All types of fake realities
 
 .Virtual Reality
-Pure virtual world
-Only interact with virtual objects (controllers aside)
+* Pure virtual world
+
+* Only interact with virtual objects (controllers aside)
 
 .Augmented Reality
-Primarily real world
-Interact with digital overlay
+* Primarily real world
+
+* Interact with digital overlay
 
 .Augmented Virtuality
-Mostly virtual world
-Introduce some physical elements
+* Mostly virtual world
+
+* Introduce some physical elements
 
 == Virtual Reality (VR)
 
@@ -244,7 +247,7 @@ AR has connection with the user
 Can use local information to keep virtual elements where they're supposed to be
 
 .Visual SLAM
-* *Simultaneous localizatio and mapping*
+* *Simultaneous localization and mapping*
 ** simulate camera pose when image was taken (like photogrammetry)
 * needs to be very fast (real time)
 * use first tracked frame as basis for rest (arbitrary coordinate system)
@@ -297,7 +300,6 @@ When using AR hands feedback is good to have
 
 * lack of feedback can be offputting
 
-
 == Mixed Reality
 
 Bidirectional interaction between real world and virtual world
@@ -328,7 +330,7 @@ Virtual objects interact with real objects
 
 .Direct manipulation in physical space
 * virtual objects can be placed on physical objects
-* comopute physics based interactions
+* compute physics based interactions
 
 .Hybrid input methods
 * Gaze
