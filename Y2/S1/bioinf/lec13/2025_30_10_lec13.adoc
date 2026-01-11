@@ -45,6 +45,8 @@ We need to compare them mathematically to be sure
 
 Consider 2 strings stem:[s_1, s_2] of identical lengths stem:[l_1, l_2]
 
+Count the number of positions in which the characters are different
+
 ==== Edit distance
 
 Consider 2 strings stem:[s_1, s_2] of identical lengths stem:[l_1, l_2]
@@ -103,6 +105,27 @@ Based on the probability of finding a pair of AA in a known good block of amino 
 * AA frequency based
 
 BLOSUM62 was built using alignments with similarity of at least 62%
+
+[stem]
+++++
+s(a, b) = \text{round} \bigg(  2 \cdot \log_2 \frac{P_{(a, b)}}{P_a P_b} \biggr)
+++++
+
+Example:
+
+* 1000 AA pairs
+* the Serine-Lysine pair occurs 9 times
+* Serine frequency: 15%
+* Lysine frequency: 10%
+
+[stem]
+++++
+s(S, L) = \text{round} \bigg(  2 \cdot \log_2 \frac{ 9/1000 }{0.10 \cdot 0.15} \biggr) \\
+
+\therefore
+
+s(S, L) = -1.47
+++++
 
 ==== PAM - Point Accepted Mutations
 
