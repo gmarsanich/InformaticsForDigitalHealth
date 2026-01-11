@@ -8,18 +8,42 @@
 
 Dynamic programming makes string matching and searching more simple
 
+Solve a big problem by dividing it into smaller subproblems
+
+* combine solutions to subproblems -> problem solved
+
 Several algorithms exist for these applications
 
 === Needleman-Wunsch algorithm
 
 Used for *global alignment*
 
-Maps 2 strings onto a matrix
+Maps 2 strings onto a matrix stem:[S]
 
 * one along x axis
 * other along y axis
+* stores the optimal subsequence alignment
+
+stem:[S_{i, j}] contains the optimal score for `A[0: i-1]` and `B[0: j-1]`
 
 Computes scores according to this formula:
+
+[stem]
+++++
+S_{i, j} = 
+    \max (
+        S_{i-1, j-1} + \text{sm}(a_i, b_j),
+        S_{i-1, j} + g,
+        S_{i-1, j-1} + g
+    )
+++++
+
+where:
+
+* stem:[\text{sm}] is the substitution matrix
+** BLOSUM50/62
+** PAM250
+* stem:[g] is the gap penalty
 
 The exact scores change depending on the substitution matrix used
 
