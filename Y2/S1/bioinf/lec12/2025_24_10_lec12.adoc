@@ -73,11 +73,20 @@ They are required for translation but they themselves are not translated
 
 One at 3'
 
-* determines lifetime of RNA
+* regulates gene expression
+* influences mRNA stability
+* affects within-cell localization
+* binds to regulatory molecules
+** microRNAs
+** other RNA binding proteins
 
 One at 5'
 
 * located before the start codon (AUG)
+* regulates translation
+** controls ribosome binding
+** mRNA stability
+** efficiency of protein synthesis
 
 == Sequence Analysis
 
@@ -102,7 +111,7 @@ Need the right algorithm for the job
 .Knuth-Morris-Pratt (KMP) algorithm
 . preprocess steps
 * construct Longest Proper Prefix that is also a Suffix
-i dont understand lol
+** when a mismatch occurs the word has enough information to guess where the next match could begin
 
 .Regular Expressions
 * Useful in genomes because fixed sequences
@@ -141,6 +150,3 @@ WARNING: this wheel does not apply to all living beings. Some bacteria and human
 ==== Chimps
 * https://www.ensembl.org/Pan_troglodytes/Gene/Sequence?g=ENSPTRG00000008703;r=17:7936163-7951161[Genomic sequence]
 * https://www.ncbi.nlm.nih.gov/datasets/gene/455214/#transcripts-and-proteins[Derived protein sequences]
-
-
-=== HW2: Code
