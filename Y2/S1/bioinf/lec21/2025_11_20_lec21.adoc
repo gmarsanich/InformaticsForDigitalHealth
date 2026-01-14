@@ -22,7 +22,7 @@ Stochastic methods are used when there are smaller quantities
 
 == Gillespie's stochastic approach
 
-Gillespie's stochasti simulation algorithm (SSA)
+Gillespie's stochastic simulation algorithm (SSA)
 
 * assumes a stochastic reaction constant stem:[c_{\mu}] for each reaction such that the derivative of the constant returns the probability that a combination of reactants will react during the interval stem:[dt]
 ** analogous to reaction rate constant
@@ -49,15 +49,15 @@ The mean of an exponentially distributed variable with parameter stem:[\lambda] 
 
 The exponential distribution has no memory
 
-* X = time at which reaction will take place
-* we want to compute the probability that X > t+s
-* we know the reaction will happen for sure after s -> X > s
-* the probability of -> X > t
-** this means that from time s we can generate a new time and we don't care about the past
+* stem:[X] = time at which reaction will take place
+* we want to compute the probability that stem:[X \gt t+s]
+* we know the reaction will happen for sure after stem:[s] stem:[X > s]
+* the probability of stem:[X > t]
+** this means that from time stem:[s] we can generate a new time and we don't care about the past
 
 Given, molecule types, molecule amounts (natural numbers):
 
-. set clock t = 0
+. set clock stem:[t = 0]
 . while t < t_stop
 . generate exponentially distributed number tau -> sum of the propensity of all of the reactions (a_0 is exp parameter)
 * minimum time after which each reaction will occur
@@ -67,6 +67,49 @@ Given, molecule types, molecule amounts (natural numbers):
 * more frequent reactions => more likely to happen
 . remove reactants and add products
 . increase t => t+=tau
+
+[source,python]
+----
+
+
+x = molecules.init() # vector of molecule counts (initial state)
+t = 0 # initial time (usually 0)
+t_stop = 10_000 # simulation horizon (stop time or max #steps)
+reactions = reactions.init
+results = []
+
+#       each reaction R_j has
+#           ν_j   – stoichiometric change vector
+#           a_j(x) – propensity function (depends on current x)
+# -------------------------------------------------------------
+
+while t < t_stop:
+
+    for R_j in reactions:
+        a_j = R_j(x)                     # evaluate propensity at current state
+    
+    a0 = sum(a_j)                         # total propensity
+
+    # if nothing can happen any more, exit
+    if a0 == 0:
+        break
+
+    r1 = np.uniform(0,1)                    # random number in (0,1)
+    tau  = -np.ln(r1) / a0                    # exponential waiting time
+    
+    r2 = np.Uniform(0,1) * a0                # scale by total propensity
+    cumulative = 0
+    for R_j in reactions :
+        cumulative += a_j
+        if cumulative > r2:
+            j = reactions.index(R_j)
+            break
+    
+    x += ν_j                           # apply stoichiometric change
+    t += tau                             # advance the simulation clock
+
+    results.append(t, x)                         # e.g. append to a list or write to file
+----
 
 This algorithm is *very* expensive
 

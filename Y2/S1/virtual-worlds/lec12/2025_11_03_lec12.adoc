@@ -42,7 +42,7 @@ PointNet is robust to missing points
 
 * VoxNet suffers when voxels are removed
 ** accuracy decreases linearly(ish)
-* PointNet is more resistant to missing point
+* PointNet is more resistant to missing points
 ** due to max pooling
 
 Uses *critical points*

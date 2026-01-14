@@ -176,14 +176,14 @@ V^{\pi}(s) = \sum_{a \in A} \pi (a | s) Q^{t}(s, a)
 
 * the value sum is equal to the sum of the policy of the action given the state times the action value for all possible actions in the action space
 
-There is an optimal policy stem:[\pi*], that is given by the following formulation:
+There is an optimal policy stem:[\pi^*], that is given by the following formulation:
 
 [stem]
 ++++
-\pi * (s) = \text{arg} \max_{a'} Q*(s, a)
+\pi^* (s) = \text{arg} \max_{a'} Q^*(s, a)
 ++++
 
-Which makes it easy since to get the best possible policy we can just selectn the action with the highest stem:[Q]
+Which makes it easy since to get the best possible policy we can just select the action with the highest stem:[Q]
 
 * makes stem:[P] and stem:[R] irrelevant
 
@@ -241,7 +241,7 @@ You could represent Q learning as a table/matrix of state/action but it would be
 
 Better to use the *convergence theorem*
 
-Q-learning will always find a stem:[Q*] with probability 1 given:
+Q-learning will always find a stem:[Q^*] with probability 1 given:
 
 . all (state, action) pairs are visited infinitely often
 . the sum of the learning rate at every time step is infinite AND the sum of the squared learning rate at every time step is not infinite

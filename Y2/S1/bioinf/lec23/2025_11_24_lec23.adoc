@@ -160,7 +160,7 @@ There are 2 update strategies:
 
 * *synchronous update*: all genes are updated at a time
 ** preferred for simulations
-* *asynchronous update*: one gene are updated at a time
+* *asynchronous update*: one gene is updated at a time
 ** more realistic
 *** gene A might take a while to influence gene B
 *** gene C might be able to influence gene D instantly
@@ -218,7 +218,7 @@ A \subseteq \{ 0, 1 \}^n
 
 such that:
 
-. Colosure -> stem:[\forall \mathbf{x} \in A], if stem:[\mathbf{x} \rightarrow \mathbf{y}], then stem:[\mathbf{y} \in A]
+. Closure -> stem:[\forall \mathbf{x} \in A], if stem:[\mathbf{x} \rightarrow \mathbf{y}], then stem:[\mathbf{y} \in A]
 * i.e. for all states stem:[\mathbf{x}] in attractor stem:[A], if state stem:[\mathbf{x}] leads to state stem:[\mathbf{y}] then state stem:[\mathbf{y}] is in attractor stem:[A]  
 . Minimality -> there is no proper subset of stem:[A] that satisfies the closure
 * i.e. there is no state stem:[\mathbf{x}] that leads to state stem:[\mathbf{y}] in the attractor stem:[A]

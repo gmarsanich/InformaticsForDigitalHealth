@@ -214,7 +214,7 @@ Information transfer takes very few steps
 * short average path length
 ** the shortest path between each pair of nodes is short relative to the size of the network
 
-Node have a clustering coefficient stem:[C_i] that measures the size of the node's cluster
+Nodes have a clustering coefficient stem:[C_i] that measures the size of the node's cluster
 
 [stem]
 ++++
@@ -228,7 +228,7 @@ where:
 
 === Centrality
 
-Importance is determined by centrality -> how central a node is within a network
+Importance is determined by centrality -> how central a node is within a network -> how well connected it is
 
 Multiple ways to determine centrality
 
@@ -309,7 +309,7 @@ The total sum of internal connections is higher than the number of external conn
 
 === Modularity stem:[Q]
 
-Brute forcing approaches to finding communities often do not work in practice
+Brute force approaches to finding communities often do not work in practice
 
 * bionets are huge
 
@@ -353,7 +353,7 @@ General approach (not heuristic)
 
 == Generative Network Models
 
-How do are networks generated?
+How are networks generated?
 
 3 main ways:
 

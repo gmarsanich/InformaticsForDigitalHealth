@@ -28,7 +28,7 @@ Pathways are collections of chemical reactions
 
 Each reaction transforms *reactants* into *products*
 
-* reaction within a pathway often share something
+* reactions within a pathway often share something
 ** reactant(s)
 ** product(s)
 

@@ -91,10 +91,15 @@ The activation of a gene is any real number between 0 and 1
 Logical operators are replaced with fuzzy operators
 
 * operators that approximate logical operators
-* AND is replaced with min
-** AND(1, 1) = 1; AND(1, 0) = 0
-* OR is replaced with max
-* NOT is replaced with 1 - 
+* `AND` is replaced with `min`
+** `AND(1, 1) = 1`; `AND(1, 0) = 0`
+** `min(1.01, 1.01) = 1`; `min(1.01, 1) = 1`
+* `OR` is replaced with `max`
+** `OR(1, 1) = 1`; `OR(1, 0) = 1`
+** `max(1.01, 1.01) = 1`; `max(1.01, 1) = 1.01`
+* `NOT` is replaced with `1 -`
+** `NOT(1) = 0`; `NOT(0) = 1`
+** `1 - (1) = 0`; `1 - (0) = 1` 
 
 The update rule takes in a fuzzy combination of inputs and an activation function
 
