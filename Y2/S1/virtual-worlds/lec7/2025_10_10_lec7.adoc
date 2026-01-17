@@ -355,7 +355,7 @@ Some VR headsets allow MR using their cameras
 Not so good
 
 * high latency
-* looks bads
+* looks bad
 
 == XR latency: Motion to Photon
 

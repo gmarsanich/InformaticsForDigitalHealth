@@ -142,7 +142,6 @@ Defined a 2 stage top down approach:
 ** pixels within the offset maps vote on where the joint really is
 *** weighted average of the candidate locations
 
-
 .Weighted average of estimated positions
 [stem]
 ++++
@@ -154,7 +153,7 @@ where:
 * stem:[x_i] is the position in which to compute the output value
 * stem:[x_j] are other positions
 ** typically near stem:[x_i]
-* stem:[x_j + F_k(x_j)] is the estimated position of the stem:[k_th joint]
+* stem:[x_j + F_k(x_j)] is the estimated position of the stem:[k_{th} joint]
 ** stem:[x_j + ] offset
 * stem:[x_j + F_k(x_j) - x_i] is the distance between the estimate and stem:[x_i]
 * stem:[G] is a linear interpolation kernel
@@ -245,7 +244,7 @@ One-stage method
 
 * detects and groups keypoints at the same time(ish)
 
-The network predicts and *identity tag* and a per pixel detection score (classic heatmap)
+The network predicts an *identity tag* and a per pixel detection score (classic heatmap)
 
 * identity of group assignment
 ** this bit belongs to this group

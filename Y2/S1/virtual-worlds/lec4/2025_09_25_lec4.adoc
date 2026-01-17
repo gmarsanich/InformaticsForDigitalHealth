@@ -49,6 +49,7 @@ Multiple buffers used to generate final images
 * basically sorts primitives
 
 sometimes pixels are interleaved and we don't know which goes in front
+
 simple but expensive algorithm
 
 == Mathematical Projection Systems
@@ -331,7 +332,11 @@ Object matrix + matrix
 
 When you go from clip space to screen space you take the clip matrix and use `w` to represent everything between the eye of the observer and a given line
 
-* no idea what this means btw
+* `w` grows with the distance from the camera
+* when we divide by `w` the distance is removed
+** only the direction of the ray that connects the camera to the point is kept
+* this gives an `NDC`
+** normalized cube
 
 Divide `xyz` by `w` to get the screen coordinates
 

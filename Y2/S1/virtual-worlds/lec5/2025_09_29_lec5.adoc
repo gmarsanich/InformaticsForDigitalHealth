@@ -47,7 +47,7 @@ Each has different albedo/metallic/roughness values
 * reflected light can never be stronger than origin light
 . Fresnel reflectance
 * Viewing angle affects reflection
-** looking at a mirror while parallel shows you what the sky looks like
+** looking at a mirror while it's parallel to the ground shows you what the sky looks like
 . Microsurface modeling
 * surface roughness affects scattering
 ** perfectly smooth surfaces will reflect more light
@@ -122,7 +122,7 @@ Texture mapping (UV mapping) splats a 2D image onto a 3D object
 
 How?
 
-* coordintes between texture and objects are parametric (0, 1)
+* coordinates between texture and objects are parametric (0, 1)
 ** 0 is first thing
 ** 1 is last thing
 ** texture changes don't affect parametric
@@ -246,7 +246,7 @@ Infinitesimally small light source
 
 Emits uniformly in all direction
 
-Poing light properties:
+Point light properties:
 
 * position: stem:[P = (x, y, z)] 
 * intensity: stem:[I]

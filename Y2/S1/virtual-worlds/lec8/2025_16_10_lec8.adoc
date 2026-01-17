@@ -206,6 +206,9 @@ Finding camera pose (rotation and translation) given 3D points and their 2D proj
 
 == Reprojection error
 
+.Definition
+"Reprojection error is a measure of the discrepancy between the predicted image positions based on perspective projection geometry and the actual observed image positions. It is obtained by constructing a camera imaging model using internal and external parameters, distortion coefficient, and re-projecting three-dimensional points in space. The error is defined as the mean Euclidean distance between the image coordinates of the projected control points and the image coordinates of the detected control points. Reprojection error is used to evaluate the accuracy of camera pose estimation in the image domain."
+
 Global optimization step that minimizes reprojection error
 
 * refines all camera parameters
@@ -237,6 +240,9 @@ Where:
 Basically a big non linear least squares problem
 
 === Bundle Adjustment Complexity
+
+.Definition
+"A process used in the reconstruction of a three-dimensional model from a set of photographs, simultaneously refining the coordinates describing the scene geometry as well as the parameters of the relative motion and the optical characteristics of the cameras that took the pictures."
 
 Typically camera pose has 6 parameters
 

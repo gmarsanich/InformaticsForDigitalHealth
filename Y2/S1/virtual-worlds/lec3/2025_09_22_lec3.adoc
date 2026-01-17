@@ -108,7 +108,7 @@ Works in both 2D and 3D
 * rectangles in 2D
 ** there is a malign cyst in the center of the bounding box with origin `(x, y)`
 * volumes in 3D
-** there is a malign cyst of size `S` in the center of the volumne `(x, y, z)`
+** there is a malign cyst of size `S` in the center of the volume `(x, y, z)`
 
 No standard catch all approach
 

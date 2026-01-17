@@ -160,7 +160,7 @@ Scrapes image/text pairs from the internet
 *** query = university professor; returns males
 *** query = elementary school professors (sic); returns females
 
-=== Clip architecture
+=== CLIP architecture
 
 Parts:
 

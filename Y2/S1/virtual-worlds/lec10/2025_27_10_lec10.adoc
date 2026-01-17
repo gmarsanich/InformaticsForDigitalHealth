@@ -308,6 +308,8 @@ The naive method is a typical loss function and gradient update combo
 L(\theta) = \mathbb{E}[(r + \gamma \max_{a'}Q (s', a'; \theta) - Q(s, a;\theta))^2]
 ++++
 
+* maximize stem:[a']
+
 .Gradient update
 [stem]
 ++++
