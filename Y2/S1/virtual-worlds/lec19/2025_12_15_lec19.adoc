@@ -71,11 +71,14 @@ By removing useless structures we can have a smaller model with similar performa
 * connections
 * weights
 
-Some caveats:
+[IMPORTANT]
+====
+.Some caveats:
 
 * GPUs prefer pruning larger structures to keep things even
 * Entire channels/filters can be pruned from CNNs
 * Entire MLP blocks/heads can be pruned from transformers
+====
 
 === Optimal Brain Damage method (1989)
 

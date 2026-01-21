@@ -194,7 +194,7 @@ Uses FFCNN
 
 . predicts *part confidence maps*
 * measure of the belief that a part is located at a given pixel
-** "I'm 90% sure that the elbow is at pixel (5325, 1441)"
+** "I'm 90% sure that pixel (5325, 1441) is part of the elbow"
 * stem:[S = (s_1, s_2, \dots, s_J)  \subset [  0, 1  \]^{HW} ]
 ** stem:[s_J] is a 2D array representing the confidence map of part stem:[j]
 *** each element is between 0 and 1 (0 = not confident at all, 1 = perfectly confident)

@@ -147,7 +147,7 @@ Instead of focusing on single point features DGCNN performs convolutions on grap
 
 == Point Transformer (2021)
 
-Transforers work on sets/sequences of data so they are bound to work well on point clouds
+Transformers work on sets/sequences of data so they are bound to work well on point clouds
 
 * self attention is a set operator
 * permutation invariance for free

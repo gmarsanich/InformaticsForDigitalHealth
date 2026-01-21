@@ -130,7 +130,7 @@ Made of 3 components
 Comes from modeling
 
 * surface reconstruction
-* 3D moeling
+* 3D modeling
 
 .Pros
 * efficient rendering
