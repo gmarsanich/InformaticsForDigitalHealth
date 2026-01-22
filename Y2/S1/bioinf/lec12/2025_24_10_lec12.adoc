@@ -42,6 +42,91 @@ Used for known sequences
 
 ATAGCAC and such
 
+FASTA has a sibling type called fastq which is formatted like this:
+
+[source,python]
+----
+@FORJUSP02AJWD1
+CCGTCAATTCATTTAAGTTTT
++
+AAAAAAAAAAAA::99@::::
+----
+
+* the first line is a sequence label
+* the second is the raw sequence
+* the `+` sign to act as separator
+* quality values for each element of the raw sequence
+
+The quality values correspond to ASCII values of their character
+
+
+CAUTION: the first 33 ASCII characters are unprintable. Offset the ASCII code by 33 to get the correct score
+
+WARNING: offset older (no explanation as to what older means) by 64 instead
+
+
+[source,python]
+----
+q = "AAAAAAAAAAAA::99@::::"
+
+q_converted = " ".join(ord(c) - 33 for c in q)
+----
+
+For each character in the quality string we can compute the *Base Quality score* (or Phred score)
+
+* indicates the probability that a given base is incorrectly called by the sequencer
+** sequencer says `C` is at index `10` when it's really `A`
+** what are the odds of that?
+
+==== BQ/Phred score
+
+Higher is better
+
+.Formula (that gets you `Q`)
+[stem]
+++++
+Q = -10 \log_{10}(e)
+++++
+
+Where:
+
+* stem:[e] is the estimated probability of that base call being wrong
+** not sure why they used stem:[e] instead of stem:[p] to denote probability but whatever
+
+If you have `Q` (which you do from the FASTQ file) you use this to get Phred:
+
+Lower is better
+
+[stem]
+++++
+P = 10^{\frac{-Q} {10}}
+++++
+
+and you could use something like this to get the probability:
+
+[source,python]
+----
+def phred(q: str) -> float:
+    q = ord(q) - 33
+    return pow(10, (-q / 10))
+
+p = phred("A") # ~0.0006
+----
+
+There are 3 main quality levels (but there are more):
+
+* stem:[10 \rightarrow (Q10)]
+** 1 in 10 chance of base call being wrong
+** 90% inferred base call accuracy
+
+* stem:[20 \rightarrow (Q20)]
+** 1 in in 10 chance of base call being wrong
+** 99% inferred base call accuracy
+
+* stem:[30 \rightarrow (Q30)]
+** 1 in 1000 chance of base call being wrong
+** 99.9% inferred base call accuracy
+
 === Transcript Annotation Files
 
 Used to encode transcripts
