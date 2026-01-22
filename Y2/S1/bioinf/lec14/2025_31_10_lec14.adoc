@@ -100,9 +100,15 @@ String processing tool
 
 Uses short perfectly matching substrings to increase the size of the local alignment
 
+* this means that any alignment will have a short series of perfectly matching substrings
+* we can expand the local alignment using those substring as a basis
+* this should give us longer alignments
+
 Uses the following parameters:
 
-
+* stem:[w]: length of target words
+* stem:[T]: local alignment score threshold
+** store all words (substrings) with score stem:[ \gt T]
 
 Returns a lot of possible matches
 
@@ -119,17 +125,72 @@ Not all results are significant:
 
 More specific and optimized versions exist
 
+=== BLAST steps (generic)
+
+. Remove low complexity regions
+* usually sequence repeats
+* like `AAAAAAAA`
+* or nonsense `ATCGGAGAGTAGGCATGAGT`
+
+. Obtain all words with length stem:[w] that occur in the sequence
+* overlapping words
+* break the larger sequence into appropriately sized chunks (stem:[w])
+* stem:[w=3] for proteins
+* stem:[w=11] for nucleotides
+
+. For each word compile a list of all possible words with length stem:[w] that can be defined in the allowed alphabet
+* `ATGC` for DNA
+* `AUGC` for RNA
+* these are called *neighbors*
+** they are words that could plausibly be used to replace the current word and still get a nice score
+* keep those whose local alignment is stem:[\gt T]
+** stem:[T] is obtained by the chosen substitution matrix
+
+. Find those words in the database
+* the database is indexed by all possible words of length stem:[w]
+** it's really a hash table/dictionary
+* retrieved positions are called *seed hits*
+** or *HSP seeds*
+* the neighborhood words are used as a key
+** used to retrieve occurrences of that word in the target sequences
+
+. Extend hits in both directions
+* no gaps
+* pairwise alignment with substitution matrix
+
+. Get the highest score from the previous step
+* each alignment is given a raw score
+* which is converted to a *bit score* and an *E value*
+** the bit score is a normalized raw score
+** the E value is the expected number of the number of random hits with equal or higher score
+*** lower is better
+
 === BLASTN
 
 Specifically for nucleotides
 
 Optimized for highly similar sequences
 
+Parameters:
+
+* stem:[w=11]
+* match score stem:[=2]
+* mismatch penalty stem:[-3]
+* gap opening stem:[=-5]
+* gap extension stem:[-2]
+
 === BLASTP
 
 Optimized for proteins
 
 * prefers highly different sequences
+
+Default parameters (can be modified)
+
+* stem:[w=6]
+* substitution matrix is `BLOSUM62`
+* gap opening stem:[=-11]
+* gap extension stem:[=-1]
 
 === BLASTX
 
@@ -143,7 +204,7 @@ Finds potential protein products encoded by the query
 
 Inverse of BLASTX
 
-* given a protein it finds DNA that likely encodes
+* given a protein it finds DNA that likely encodes it
 ** translate DNA with all possible starting points
 ** perform match with against translated DNASubsection 2
 
@@ -162,3 +223,30 @@ Given a DNA query:
 Again using all 6 RF
 
 * results in 36 comparisons
+* finds nucleotides with similar coding potential to the query
+
+== FASTA
+
+Can also do alignments using diagonals
+
+* finds good diagonals
+* extend local matches using them
+
+.Steps
+
+. Identify short matches between the 2 sequences
+* matches of length `ktup`
+** length of matches
+** large `ktup` values will be faster but less accurate
+*** will increase false positives
+
+. Identify diagonals with high short match density
+* find local areas where there are lots of short matches
+
+. Extend these along their diagonal
+* expands the matches
+
+. Join ungapped regions using gaps
+
+. Realign the area
+* use Smith-Waterman for local alignment
