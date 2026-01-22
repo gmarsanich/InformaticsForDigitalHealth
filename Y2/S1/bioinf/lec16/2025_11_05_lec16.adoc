@@ -1,13 +1,266 @@
-= BSB
+= BSB - Multiple Sequence Alignment
 :toc:
 :toc-title: Contents
 :nofooter:
 :stem: latexmath
 
-== Section 1
+== Why MSA?
 
-=== Subsection 1
+Sometimes we have more than 2 string we want to align
 
-== Section 2
+* different organisms
+* different strands
 
-=== Subsection 2
+Generalizes pairwise sequence alignment
+
+* local and global
+** local for motif search
+** global for more general search tasks
+
+Extremely complex computationally
+
+* NP hard
+* dynamic programming solutions become exponential
+** the number of sequences becomes the exponent
+* pairwise alignment requires a matrix
+* you'd need a hypercube for this
+
+So how do we do it with:
+
+* additive objective functions
+** like the sum of pairs
+* substitution matrices
+* gap penalties?
+
+.Sum of pairs
+
+[stem]
+++++
+\text{Score} = 𝑠𝑚(𝐴, 𝐴) + 𝑔) + 3 ⋅ 𝑠𝑚(𝑅, 𝑅) + (𝑠𝑚(𝐴, 𝐶) + 𝑔) + 3 ⋅ 𝑠𝑚(𝐷,𝐷)+ 2 ⋅ 𝑔 + 2 ⋅ 𝑠𝑚(𝑆, 𝐴) + 𝑠𝑚(𝐴, 𝐴)
+++++
+
+== Heuristic Algorithms
+
+We drop the idea of a perfectly accurate solution and we embrace heuristic algorithms
+
+* may not be exact but it exists
+
+3 types of heuristic algorithms:
+
+. progressive
+* align 2 sequences
+* add the rest iteratively
+
+. iterative
+* take an initial alignment
+* improve it iteratively by adding/removing gaps
+
+. hybrid
+* combine different strategies
+* use additional information
+** protein structure
+** known good alignments
+
+== Progressive algorithms
+
+=== CLUSTAL
+
+Uses a *guide tree* to guide the analysis
+
+* early decisions influence future steps
+* which means early errors propagate
+
+First estimates similarity of all pairs
+
+* fast heuristic algorithm to do it
+* returns a distance/similarity matrix
+
+The guide tree is based off the similarity matrix
+
+* UPGMA
+* neighbor-joining
+* the tree determines the order in which sequences will be aligned
+** closest first
+** farthest last
+
+Progressive alignment works like this:
+
+. perform a global alignment between leaf pairs
+
+. replace pair with a *profile*
+* position specific summary
+* column-wise frequency table
+** every column has a frequency vector
+** each entry is a fraction of sequences that contain a given symbol in column stem:[c]
+
+. Move up the tree
+.. align sequence/profile or profile/profile pairs
+* using dynamic programming
+
+. When profiles are aligned columns are merged
+* early gaps are not re-optimized
+
+. Frequency estimates become more accurate with the number of new sequences you add
+
+=== CLUSTALW
+
+More robust version of CLUSTAL that reduce error propagation
+
+. Uses sequence weighing
+* weighs sequences according to their representation
+* down weighs overrepresented and closely related sequences
+** avoids them dominating the scores
+
+. Applies different penalties to gaps near the edges or the center of the sequence
+* low complexity/hydrophilic regions have lower penalties
+* areas that resemble secondary structures and conserved motifs have higher penalties
+
+. Can choose specific substitution matrices
+* BLOSUM
+* PAM
+
+. Can iterate on subtrees as well
+* to clean up local problems
+
+Despite all these modifications it's not really used anymore
+
+=== CLUSTAL Omega
+
+Newer version (2011 lol) that scales better to large datasets
+
+* it's also more accurate
+
+Uses *k-mer* based distances and *mBed* embeddings to avoid computing all stem:[N^2] pairwise sequences explicitly
+
+How?
+
+. Count frequency of k-mer in each sequence
+* produces a k-mer count vector
+
+. We can compare 2 sequences by comparing their vectors
+* cosine distance, Jaccard index, correlation, some kind of scoring function
+* quick similarity approximation without full dynamic programming
+
+. mBed maps sequences into coordinate vectors and places them in a space
+* this makes comparisons much faster than normal guide trees
+** normal guide trees need all pairwise distances
+** which is about stem:[\frac{N(N-1)}{2}] comparisons
+** which is quadratic
+
+. Guide trees are built from these embedded distances
+
+Omega also uses *Hidden Markov Models* to run profile-profile alignments
+
+* more sensitive than raw scores
+* more accurate than raw scores
+
+This still has that same cascading error problem
+
+== Iterative algorithms
+
+Here we start with an early MSA (can be progressive too)
+
+* iteratively modify and re-align parts of it
+* keep changes that improve an objective score
+** SP
+** expected accuracy
+** consistency scores
+
+This lets us undo early mistakes
+
+* leads to better alignments down the line
+
+=== Core refinement patterns
+
+3 types:
+
+. Tree-edge (or profile-profile) refinement
+. Posterior/MEA refinement
+. Stochastic/global re-optimization
+
+==== Tree-edge
+
+. Build a guide tree from current MSA
+. Pick an edge and split the MSA into 2 profiles A and B
+. Realign A and B using DP
+. If score improves -> accept
+. Else try again
+. Repeat over many edges
+. Do multiple rounds
+
+Used in MUSCLE (stage 3) and some MAFFT
+
+==== Posterior/MEA refinement (no consistency)
+
+Computes pairwise posterior match probabilities using pair HMM
+
+Realigns blocks/columns to maximize expected accuracy
+
+* also accept if better than before
+* else reject and try again
+
+==== Stochastic/global re-optimization
+
+Uses stochastic methods:
+
+* random perturbations
+** randomly modifies the sequences
+* simulated annealing
+* genetic algorithms
+** like evolutionary simulations
+* repeatedly align altered regions
+** also keep if better and reject if worse or the same
+
+== Hybrid methods
+
+=== Pairwise constraints
+
+Technique used in consistency based methods
+
+Constraints are claims about the alignments
+
+* "residue `i` of sequence `X` should align with residue `j` of sequence `Y` "
+
+This claim can be written formally as:
+
+* stem:[(X, i) \leftrightarrow (Y, j)]
+
+These are stored with weights
+
+* how confident we are that the claim is true
+
+=== Library
+
+A *library* is the union of all weighted residue-pair constraints collected from every sequence pair
+
+=== Consistency-based + iteration
+
+Builds a library of *pairwise constraints*
+
+* from pairwise alignments
+* or posteriors
+
+Scores MSAs according to how consistent they are with the *library*
+
+Iteratively realigns subprofiles to maximize consistency
+
+Methods like T-Coffee, Expresso, M-Coffee, etc.
+
+=== Posterior probability/MEA refinement
+
+Also computes pairwise posterior match probabilities using pair HMM
+
+Realigns blocks/columns to maximize expected accuracy
+
+* often focusing on low confidence regions
+
+Tools like ProbCons, MSAProbs, MAFFT
+
+== AlphaFold
+
+AlphaFold is a deep learning system by Google that predicts protein structures
+
+It uses MSA to identify pairs of amino acids that evolve together (co-evolving)
+
+* helps it infer the spatial proximity of the residues
+* helps predict 3D shape
