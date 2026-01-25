@@ -57,7 +57,7 @@ EGF =  epidermial growth factor
 Signaling pathways use receptors that capture signals
 
 * when protein binds to its receptor it stimulates something
-* in this case the growth of something
+* in this case skin cell growth
 
 Dysregulation in this pathway can often result in *cancer*
 
@@ -65,32 +65,137 @@ Dysregulation in this pathway can often result in *cancer*
 
 Using mathematical models of these reactions we can implement algorithms to simulate them
 
-.Definitions
-* chemical reactions *transform* molecules
-** reactants are transformed into products
-* Molecules are represented with symbols
-* Assume molecules float in some fluid
-** water
-** cytoplasm
-** some other fluid(s)
-* quantity is expresed in concentration/density
-** not 317236871 A molecules
-** 15 mols per liter (stem:[\frac{\text{mols}}{\text{l}}]) of A molecules
-** stem:[[A\]] denotes the concentration
-* there can be multiple instances of each molecule in a given reaction
-** denoted with coefficient stem:[l] or stem:[l']
-** called *stoichiometric coefficients*
-* the *kinetic constant* stem:[k] is a parameter used to compute the frequency of reaction
-** how many times the reaction takes place in the solution
-** stem:[k \simeq \text{rate of reaction}]
-** stem:[k_{-1}] represents the kinetic constant of the reverse of the reaction
+=== Chemical reactions
+
+Chemical reactions *transform* molecules
+
+* reactants are transformed into products
+
+Usually represented with this notation:
+
+[stem]
+++++
+\ell_1 S_1 + \dots + \ell_p S_p \overset{k}{\rightarrow} \ell'_1 P_1 + \dots + \ell'_\gamma S_\gamma
+++++
+
+where: 
+
+* stem:[Si , Pi] are molecules (reactants and products, respectively)
+* stem:[\ell_i , \ell_i′ \in \mathbb{N}] are stoichiometric coefficients
+* stem:[k \in \mathbb{R} \geq 0] is the kinetic constant
+
+For example:
+
+.Hydrosynthesis (probably wrong name but whatever)
+[stem]
+++++
+2H_2 + O_2 \overset{5}{\rightarrow} 2H_2O
+++++
+
+Reactions can also be reversible
+
+* reactants can become products
+* the original reactants can be reobtained by reversing the reaction
+
+Represented with this notation:
+
+[stem]
+++++
+\ell_{1} S_{1} + \dots + \ell_{p} S_{p}
+\underset{k_{-1}}{\overset{k}{\rightleftharpoons}}
+\ell'_{1} P_{1} + \dots + \ell'_{\gamma} S_{\gamma}
+++++
+
+For example:
+
+.Hydrolisis (also probably wrong)
+[stem]
+++++
+2H_2 + O_2
+\underset{0.5}{ \overset{5} {\rightleftharpoons} }
+2H_2O
+++++
+
+Molecules are represented with symbols
+
+* stem:[H]
+* stem:[H_2]
+* stem:[F]
+
+Assume molecules float in some fluid
+
+* water
+* cytoplasm
+* some other fluid(s)
+
+Quantity is expresed in concentration/density
+
+* not 317236871 A molecules
+* 15 mols per liter (stem:[\frac{\text{mols}}{\text{l}}]) of A molecules
+* stem:[[A\]] denotes the concentration
+
+There can be multiple instances of each molecule in a given reaction
+
+* denoted with coefficient stem:[l] or stem:[l']
+* called *stoichiometric coefficients*
+
+The *kinetic constant* stem:[k] is a parameter used to compute the frequency of reaction
+
+* how many times the reaction takes place in the solution
+* stem:[k \simeq \text{rate of reaction}]
+* stem:[k_{-1}] represents the kinetic constant of the reverse of the reaction
 * the rate of reaction stem:[r = k \cdot \text{concentration of the reactant(s)}]
 
 === Types of chemical reactions
 
-WARNING: slides
+Many types, this is a pretty complete set
 
-=== Mass action kinetics
+.1. Synthesis
+[stem]
+++++
+\overset{k}{\rightarrow} P
+++++
+* (a) new molecule(s) is/are created
+
+.2. Degradation
+[stem]
+++++
+S\overset{k}{\rightarrow}
+++++
+* a molecule is degraded (disappears in some way)
+
+.3. Transformation
+[stem]
+++++
+S \overset{k}{\rightarrow} P
+++++
+* a molecule is transformed into a new molecule
+
+.4. Binding
+[stem]
+++++
+S_1 + S_2 \overset{k}{\rightarrow} P
+++++
+* multiple molecules are combined into a new molecule
+** like the hydrosynthesis example earlier
+
+.5. Unbinding
+[stem]
+++++
+S \overset{k}{\rightarrow} P_1 + P_2
+++++
+* a single molecule is split into its constituent molecules
+** like glycolisis
+
+.6. Catalysis
+[stem]
+++++
+E + S \overset{k}{\rightarrow} E + P
+++++
+* a reactant is transformed into a product with the help of an enzyme
+* the enzyme is not consumed by the reaction so it stays
+
+== Mass action kinetics
 
 Assuming the solution is well mixed
 
@@ -102,20 +207,173 @@ Meeting molecules *may or may not* react
 
 * the more reactants there are -> the more often the reaction takes place
 ** rate of reaction increases with reactant presence
-** k * product of concentration
+** stem:[k] * product of concentration
 
 The unit of measurement of the rate of reaction depends on the number of reactants
 
-=== Dynamic Equilibrium
+The rate of a reaction expresses the number of occurrences of these reactions in a given solution within some time frame (in a time unit)
+
+=== Law of mass action
+
+The rate of a chemical reaction is proportional to the product of the concentrations of its reactants
+
+[stem]
+++++
+r \propto \prod_i k \cdot [S_i]
+++++
+
+Using hydrosynthesis/hydrolisis from earlier:
+
+* the rate of the left -> right direction is: stem:[5 \cdot [H_2\]^2 \cdot [O_2 \] ]
+* the rate of the right -> left direction is: stem:[0.5 \cdot [H_2 O\]^2]
+
+With the following concentrations:
+
+* stem:[10] mol/L of stem:[H_2] => stem:[ [H_2\] = 10 ]
+* stem:[16] mol/L of stem:[O_2] => stem:[ [O_2\] = 16 ]
+* stem:[30] mol/L of stem:[H_2O] => stem:[ [H_20\] = 30 ]
+
+We can fill in the values:
+
+* left to right:
+** stem:[ 5 \cdot 10^2 \cdot 16 = 8000 ]
+
+* and right to left:
+** stem:[0.5 \cdot 30^2 = 450]
+
+The higher the number => the faster the reaction is
+
+* hydrosynthesis is faster than hydrolisis
+
+==== Measure units of kinetic constants
+
+This is all well and good but what unit does stem:[k] use?
+
+It depends on the number of reactants (lol?)
+
+* sometimes you have to change it if you use a different concentration unit or if you use a different time unit
+
+Usually we measure concentrations in mols per liter
+
+* the unit of the reaction rate is moles per Liters per second
+** stem:[ \frac{\text{mol}}{(L \cdot \text{sec})}]
+** the concentration of each product produced in one unit of time
+
+For a single transformation:
+
+* stem:[A \overset{k}{\rightarrow} B]
+** the rate is stem:[r = k[ A \]]
+** therefore the constant must be stem:[k = \frac{r}{[ A\]}]
+** and therefore the measure unit of stem:[k] is stem:[ \frac{\text{mol}}{(L \cdot \text{sec})} / \frac{\text{mol}}{L} = \frac{1}{\text{sec}}]
+
+For a binding reaction:
+
+* stem:[A + B \overset{k}{\rightarrow} C]
+** the rate is stem:[r = k[ A\] [ B\]]
+** therefore the constant must be stem:[k = \frac{r}{[A\][B\]}]
+** and therefore the measure unit of stem:[k] is stem:[ \frac{\text{mol}}{(L \cdot \text{sec})} / (\frac{\text{mol}}{L})^2 = \frac{L}{\text{sec} \cdot \text{mol}}]
+
+== Dynamic Equilibrium
 
 A reversible reaction is in dynamic equilibrium when both directions have the same rate
+
+.Dynamic equilibrium idea
+[stem]
+++++
+k[S_1]^{\ell_1} \cdots [S_p]^{\ell_p} = k_{-1}[P_1]^{\ell'_1} \cdots [P_\gamma]^{l'_\gamma}
+++++
+
+Which can be expressed as:
+
+.Dynamic equilibrium formula
+[stem]
+++++
+\frac{k}{k_1} = 
+\frac{[P_1]^{\ell'_1} \cdots [P_\gamma]^{\ell'_\gamma}}
+{[S_1]^{\ell_1} \cdots [S_p]^{\ell_p}}
+++++
 
 Reactions at equilibrium look static
 
 * in reality reactions are happening constantly
 * reactions in opposite directions compensate each other
 
-=== Reactions -> Ordinary Differential Equations
+=== Dynamic equilibrium example
+
+Given the following binding reaction:
+
+[stem]
+++++
+A + B \underset{2.6}{ \overset{0.2} {\rightleftharpoons} } C
+++++
+
+With these initial concentrations:
+
+* stem:[ [A\]_0 = 10 \text{ mol/L} ]
+* stem:[ [B\]_0 = 15 \text{ mol/L} ]
+* stem:[ [C\]_0 = 2 \text{ mol/L} ]
+
+We get the rates:
+
+* Forward rate = stem:[0.2 \cdot 10 \cdot 15 = 30]
+* Backward rate = stem:[2.6 \cdot 2 = 5.2]
+
+The concentrations of stem:[A] and stem:[B] decrease in the beginning while the concentration of stem:[C] increases
+
+* which means the forward rate decreases as the backward rate increases until they stabilize (reach equilibrium)
+* this happens when stem:[0.2[A\][B\] = 2.6[C\]]
+
+How do we determine the concentrations at equilibrium?
+
+* by exploiting *conservation properties*
+
+.Conservation properties
+Since stem:[A] and stem:[B] are transformed into stem:[C] (and vice versa) we can say that:
+
+* stem:[[A\] + [C\]] is always constant, i.e. equal to stem:[[A\]_0 + [C\]_0 = 12]
+* stem:[[B\] + [C\]] is also always constant, i.e. equal to stem:[[B\]_0 + [C\]_0 = 17]
+
+If we plug the values into the dynamic equilibrium formula:
+
+[stem]
+++++
+\frac{0.2}{2.6} = \frac{[C]}{[A][C]} \Longrightarrow 
+
+\frac{1}{13} = \frac{[C]}{(12 - [C])(17-[C])} \Longrightarrow
+
+[C]^2 - 42[C] + 204 = 0 \Longrightarrow
+
+[C] \simeq 36.395 \text{ or } [C] \simeq 5.605
+++++
+
+We know that the concentrations of the reactants can be expressed in terms of their initial concentration minus th product's concentration:
+
+* stem:[[A\] = 12 - [C\]]
+* stem:[[B\] = 17 - [C\]]
+
+We can plug in the values of stem:[[C\]] we found earlier
+
+[stem]
+++++
+[A] = 12 - 36.395 = -24.395, [B] = 17 - 36.395 = -7.395 \\
+[A] = 12 - 5.605 = 6.395, [B] = 17 - 5.605 = 11.395 
+++++
+
+The first produces negative solutions so we can discard it (how can you have a negative concentration of something???)
+
+The second one must be the steady state
+
+We can verify by plugging the values into this expression: 
+
+* stem:[0.2[A\][B\] = 2.6[C\]]
+
+[stem]
+++++
+0.2[A][B] = 0.2 \cdot 6.395 \cdot 11.395 \simeq 14.574 \\
+2.6[C] = 2.6 \cdot 5.605 \simeq 14.574
+++++
+
+== Reactions -> Ordinary Differential Equations
 
 ODEs are just equations with derivatives
 
@@ -125,4 +383,114 @@ ODEs are just equations with derivatives
 
 Each individual sub reaction in a larger reaction produces its own ODE
 
-Numerically integrating the ODEs returns the reaction dynamics
+Integrating the ODEs returns the reaction dynamics
+
+We often need to compute the solutions *numerically* instead of *analytically*
+
+* using numerical solvers to solve the *initial value problem*/*Cauchy problem*
+
+.Initial value problem
+IMPORTANT: The initial value problem states that given an ODE stem:[N(t) = f(N(t))] and an initial value stem:[N_0] such that stem:[N(0) = N_0], compute a function stem:[F(t)] that is a solution of the ODE such that stem:[F(0) = N_0]
+
+Basically we need to find a function that returns the first value when given the first time step, i.e. the value of our variable at time 0
+
+=== Explicit Euler Method
+
+Very simple numerical simulation method
+
+* discretizes the dynamics into constant length time steps stem:[\tau]
+* approximates the solution at every step by using the derivative computed at the beginning of the interval
+
+Given an ODE:
+
+[stem]
+++++
+\dot{N}(t) = f(N(t))
+++++
+
+* we are basically approximating the solution with a *recurrence relation*
+
+[stem]
+++++
+N_{k+1} = N_k + \tau f(N_k)
+++++
+
+Where stem:[N_k] approximates stem:[N_{k\tau}]
+
+Since we are approximating there are obviously going to be errors:
+
+* Local discretization/truncation error: stem:[|N(\tau) - N_1|]
+** in the order of stem:[O(\tau^2)] (quadratic, reduces error faster)
+* Global discretization/truncation error: stem:[|N(k\tau) - N_k|]
+** happens when local errors accumulate
+** in the order of stem:[O(k \tau^2) = O(\tau)] (linear, reduces error slower) because stem:[k\tau = t] is constant
+** implies many steps
+** which implies slow computation
+
+=== Other explicit methods
+
+Some other methods have a higher order global discretization error: stem:[O(t^p)] for some stem:[p]
+
+* only better if stem:[\tau \rightarrow 0] (as stem:[\tau] tends to stem:[0])
+** i.e. only if stem:[\tau \lt 1]
+
+These methods include:
+
+* Runge-Kutta methods
+* Multistep/Adams methods
+** they extrapolate the value of the next step from the values of the previous stem:[k] steps
+** stem:[p \approx k]
+
+Other state of the art methods can:
+
+* self determine the size of stem:[\tau]
+* adjust stem:[\tau] during execution
+
+=== Implicit Euler method
+
+The solution is appoximated at the end of the interval instead of at the beginning
+
+Using the same ODE as the explicit method
+
+Corresponds to approximating the solution with this equation:
+
+[stem]
+++++
+N_{k+1} = N_k + \tau f (N_{k+1})
+++++
+
+stem:[N_{k+1}] is not *explicitly* expressed in terms of stem:[N_k]
+
+* it is *implicitly* expressed through an equation
+** this equation could be difficult to solve
+* single steps are more computationally intensive
+* overall error is lower
+** you can use higher stem:[\tau]
+
+=== Other Implicit Methods
+
+There are implicit versions of other explicit methods like:
+
+* implicit Runge-Kutta methods
+* implicit multistep methods (like BDF)
+
+Implicit models often require the developer to provide the Jacobian matrix of the function stem:[f]
+
+Self determining and dynamic adjustment methods also exist
+
+There are also methods that can switch between explicit and implicit
+
+* LSODE
+* CVOE
+
+== Instability and Stiff systems
+
+Explicit methods can become unstable if stem:[\tau] is too large
+
+* using very small stem:[\tau] slows computation down dramatically
+
+The systems in which this happens are called *stiff systems*
+
+* no precise definition of stiffness
+* often these systems have some term that changes faster than stem:[\tau]
+* the combination of slow and fast terms can make explicit methods unstable
