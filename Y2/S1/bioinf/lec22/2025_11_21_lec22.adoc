@@ -46,6 +46,13 @@ Measures the effect of single parameters on the output
 * numerically or analytically
 ** through partial derivatives
 
+Most useful when:
+
+* the model is ~linear near default parameters
+* you need quick insight
+* you trust your parameter estimates
+** you're sure your estimates are decent enough
+
 === Global SA
 
 Explores the entire parameter space
@@ -55,6 +62,15 @@ Explores the entire parameter space
 Many methods for global SA
 
 * typically you want to reduce the number of combinations to reduce computational cost
+
+Most useful when:
+
+* parameters are uncertain or cover large ranges
+** stem:[X] is between 10 and 10,000,000,000
+* the model is nonlinear
+* the model exhibits thresholds/switches
+* you suspect parameter interactions
+** stem:[f(x, y): \rightarrow x \cdot y]
 
 ==== Morris method
 
@@ -67,6 +83,15 @@ Tries random combinations of parameters
 * take the mean -> overall influence of parameter
 
 Requires few simulations
+
+Best used for:
+
+* qualitative analysis/screening
+* cheap to run
+* detects interactions
+** uses standard deviation of EE
+* returns rank of parameter importance
+* use when there are many uncertain parameters
 
 ==== Sobol Method
 
@@ -82,11 +107,62 @@ Also returns total effect
 
 * effect of all group parameters
 
+Best used for:
+
+* quantitative/variance-based analysis
+* expensive to run
+* detects interactions
+** uses stem:[S_{Ti}] indices
+* returns fraction of output variance
+** "these parameters account for 50% of output variance"
+* use when you need precise analysis of a few parameters
+** can be used to refine top Morris method output
+
 == Knockout+mutation analysis
 
-You can simulate models with structural/kinetic perturbations
+Studying how systems change w.r.p to structural/kinetic perturbations
 
 * knockout: loss of gene
 * mutation: partial loss/gain of some function
 
 Used to predict effects of genetic mutations
+
+Can be used to:
+
+* predict effects of genetic mutations
+** "if this gene mutates body hair becomes 1% longer"
+* explore disease mechanisms
+** "how does malaria cause its specific symptoms?"
+* test pathway robustness hypotheses
+
+=== Example: EGFR and cancer
+
+EGFR (epidermal growth factor receptor) is a receptor that signals skin cell production
+
+* often over-activated in cancer
+* due to mutations
+* leads to excessive phosphorylation of ERK
+
+.Analysis plan:
+
+. Simulate EGFR pathway
+* normal EGFR activation
+
+. Simulate *mutation*
+* increase EGFR binding reaction constant by some amount (e.g. 3 times)
+
+. Compare steady-state and dynamics of target proteins
+
+We expect mutated EGFR to cause sustained high target proteins even with low EGF stimulus
+
+* basically signals to produce tons of skin cells even its ligand isn't bound
+
+We could *knock out* MEK (set it to 0)
+
+* which should prevent ERK phosphorylation
+
+Simply set stem:[k=0] for stem:[\text{MEK} \overset{k}{\rightarrow} \text{ERK}]
+
+and compare with normal function
+
+If this causes ERK to not be activated at all we can say that MEK is an essential node
