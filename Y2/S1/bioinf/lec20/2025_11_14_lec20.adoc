@@ -9,14 +9,29 @@
 Models with more complex functions than number of reactant * reactant
 
 * stem:[kx] no longer applies
+* less low level than mass action kinetics
+** i.e. more abstract
+
+These include models like:
+
+* Michaelis-Menten + Hill kinetics
+** for enzyme catalyzed reactions
+* logistic functions
+** for autocatalytic reactions
 
 == Michaelis-Menten kinetics
 
 Describes irreversible enzyme catalyzed reactions
 
-makes 2 assumptions:
+[stem]
+++++
+E + S \underset{k_{-1}}{ \overset{k} {\rightleftharpoons} } ES \overset{k_2}{\rightarrow} E + P
+++++
+
+It makes 2 assumptions:
 
 * the whole reaction is irreversible
+** the second forward only reaction has a very small kinetic constant that we can ignore
 * the left side of the reactions are faster than the right
 ** enzyme concentrations are assumed to be at equilibrium
 
@@ -30,29 +45,124 @@ stem:[V_{max}] is also easy to compute/estimate in the lab
 * the asymptote is == stem:[V_{max}] because we hit the maximum number of enzymes
 * stem:[\frac{V_{max}} {2} = K_m] (the substrate concentration)
 
+More formally:
+
+* using the dynamic equilibrium assumption we have: stem:[k_1[E\][S\] = (k_{-1}+k_2)[ES\]]
+** the product of the forward reaction and the reagents is equal to the difference between the sum of the backward reaction and the second forward reaction times the concentration of the enzymed compound
+
+* and since the enzyme is not consumed we have: stem:[[E\]_{tot} = [E\] + [ES\]]
+** the total concentration of the enzyme is equal to the concentration of the enzyme alone plus the concentration of the enzymed compound
+** this is constant because the enzyme is not consumed so the concentration never changes
+
+* we can reformulate the initial statement: stem:[k_1([E\]_{tot} - [ES\])[S\] = (k_{-1} + k_2)[ES\]]
+
+* and again: stem:[k_1[E\]_{tot}[S\] = (k_{-1} + k_2)[ES\] + k_1[ES\][S\]]
+
+* and again: stem:[[E\]_{tot}[S\] = \frac{k_{-1} + k_2}{k_1} [ES\] + [ES\][S\] = [ES\] \biggl(\frac{k_{-1} + k_2}{k_1} + [S\] \biggr)]
+
+* finally we get the concentration of the complex stem:[ES] at equilibrium: stem:[[ES\] = \frac{ [E\]_{tot}[S\] }{ \biggl(\frac{(k_{-1} + k_2)} {k_1} + [S\] \biggr) }]
+** which is the product of the total enzyme concentration and the reactant concentration
+** divided by the ratio of the sum of the second forward reaction and the backward reaction and the first forward reaction plus the concentration of the reactant
+
+* we can make it even more compact by setting the second denominator to: stem:[K_M = \frac{k_{-1} + k_2}{k_1}]
+** this is the *Michaelis-Menten constant*
+** which gives us stem:[[ES\] = \frac{[E\]_{tot}[S\]}{K_M + [S\]}]
+
+* we know that stem:[\frac{d[P\]}{dt} = k_2[ES\]]
+** so we can express it as stem:[\frac{d[P\]}{dt} = \frac{k_2[E\]_{tot}[S\]}{K_M + [S\]}]
+
+* let stem:[V_{\text{max}} = k_2[E\]_{tot}]
+** this gives us stem:[\frac{d[P\]}{dt} = \frac{V_\text{max} [S\]}{K_M + [S\]}]
+** the rate of change of the concentration of the product is equal to the maximum production speed of P divided by the KM constant + the concentration of the substrate
+** stem:[V_{\text{max}}] is the asymptote for the production speed vs substrate concentration curve
+
+which is the *Michaelis-Menten equation*
+
+This results in fewer ODEs which are quicker to solve and produce extremely similar results to mass action kinetic models
+
+=== What is stem:[V_{\text{max}}] really?
+
+The maximum reaction rate that can be reached by the system
+
+Corresponds to the rate reached when all the active sites on all the enzymes involved are occupied
+
+[stem]
+++++
+[ES] = [E]_{tot}\cdot
+++++
+
+which in this case means that stem:[v=k_2[E\]_{tot} = V_{\text{max}}]
+
+=== What is stem:[K_M] really?
+
+stem:[K_M] is the substrate concentration at which the reaction rate is half the maximum value
+
+* stem:[0.5 \cdot V_{\text{max}}]
+
+It can be used to measure the enzyme's affinity for the substrate
+
+* how well the enzyme combines with the substrate
+* smaller = higher affinity
+
 == Hill Kinetics
 
 Generalization of MM kinetics
 
-* additional term stem:[h] used as an exponent (Hill coefficient)
-** represents *binding cooperativity*
-*** *binding cooperativity* is a value that represents how much faster subsequent bindings happen
-*** affects reaction rate over time
-** stem:[h \gt 1] => more cooperative => accelerates
-** stem:[h \lt 1] => less cooperative => decelerates
-** stem:[h = 1] => no effect => does nothing
-** reaction curve still has asymptote at stem:[V_{max}]
-** shape of the curve changes
+Uses an additional term stem:[h] used as an exponent (Hill coefficient)
+
+* represents *binding cooperativity*
+** *binding cooperativity* is a value that represents how much faster subsequent bindings happen
+** affects reaction rate over time
+* stem:[h \gt 1] => more cooperative => accelerates
+* stem:[h \lt 1] => less cooperative => decelerates
+* stem:[h = 1] => no effect => does nothing
+* reaction curve still has asymptote at stem:[V_{max}]
+* shape of the curve changes
+
+Binding of a molecule to another can change the cooperativity
+
+* for example in hemoglobin
+** binding an oxygen molecule increases affinity for additional oxygens
+** stem:[h \approx 2.8]
 
 == Logistic Function
 
 Comes from ecology
 
-* environment with a population
+* environment with a population and limited resources
 * environment provides resources for stem:[k] individuals
 ** if pop < stem:[k] => pop grows
 ** if pop > stem:[k] => pop shrinks
 ** pop will eventually stabilize around stem:[k]
+
+Logistic functions can be used in differential equations like this one:
+
+[stem]
+++++
+\frac{dP}{dt} = \alpha P \biggl( 1 - \frac{P}{K} \biggr)
+++++
+
+where:
+
+* stem:[\alpha] is the growth rate
+* stem:[K] is the carrying capacity
+** the maximum sustainable population size
+
+The logistic function is used to describe the dynamics of a system:
+
+* that grows exponentially
+* that can saturate
+
+Autocatalytic reactions fit this description:
+
+[stem]
+++++
+A + B \overset{k}{\rightarrow} 2B
+++++
+
+where:
+
+* product stem:[B] catalyzes its own production
 
 == SBLM
 
