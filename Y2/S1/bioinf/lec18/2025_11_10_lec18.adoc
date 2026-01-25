@@ -4,12 +4,325 @@
 :nofooter:
 :stem: latexmath
 
-== Phylogenetic Analysis Algorithms
+== Phylogenetics
 
-A lot of phylogenetic tree construction problems become NP hard
+Studies the evolutionary history and relationships between individuals
 
-* require a lot of sequence alignments
-** they become intractable after ~10 sequences
+* species too
+* represented using *phylogenetic* trees
+
+Molecular similarities suggest that organisms have common ancestors
+
+* they are thus related to each other in some way
+* relationships are hierarchical
+** leaf: organism/sequence
+** internal nodes are common ancestors
+** the height of the edges (branches) is proportional to the evolutionary distance
+** more evolutionarily distant -> longer branch
+
+== Phylogenetic trees
+
+Trees can have different entities
+
+* i.e. trees can grow out of other trees
+** like a fractal?
+* leaves can be taxa or species
+** inferred from conserved genomic regions (RNA)
+** basically if many species/members have similar genomic regions they're likely related
+
+=== Gene homology
+
+*Homologous* genes are genes that correspond in different species
+
+* mice have hemoglobin
+* humans have hemoglobin
+
+2 types:
+
+.1. *Orthologous genes*
+Products of *speciation*
+
+* population splits into distinct species that can no longer interbreed
+** i.e. genetic makeup becomes distinct
+* genes are carried into new species
+* genes maintain similar functions
+
+.2. *Paralogous genes*
+Products of *gene duplication* within the same species
+
+* 2 or more copies of the same gene in the same organism
+** not separated like orthologs
+* original copy maintains function
+* new copy can evolve new functions
+** different binding affinity
+** different expressions
+
+== Building Phylogenetic trees
+
+Traditionally done using morphological characteristics
+
+* shape
+* appearance
+* anatomical features
+
+Modern techniques involve more specific characteristics
+
+* RNA
+* protein sequences
+* biochemical pathways
+
+Computationally it is an optimization problem
+
+* we need to find the best possible tree given an input of related sequences
+** we assume they have a common ancestor
+* there can be multiple competing trees for the same sequence
+
+
+The number of possible trees increases massivel as the size of the sequence grows
+
+it is an *NP-hard* problem
+
+We need to find a suitable objective function to make it tractable
+
+=== Algorithmic classes
+
+3 main classes:
+
+. Distance based algorithms
+* conver sequence differences into pairwise differences
+** kind of like sequence analysis
+* build the tree using neighbor-joining/minimum evolution
+
+. Maximum parsimony
+* choose the tree that explains the data with the fewest total evolutionary changes across characters
+** fewer mutations = better
+
+. Statistical/bayesian methods
+* use explicit sequence evolution models to estimate trees
+** maximum likelihood -> find tree with highest likelihood
+** Bayesian inference -> sample the posterior probability over trees
+*** quantifies uncertainty
+
+== Example: distance based methods
+
+The general steps are:
+
+. Align sequences using MSA
+. Compute the distance matrix
+. Build the tree based off distance matrix
+. Define objective function
+. Evaluate tree 
+
+Determining the distance between sequences has many definition
+
+* a simple method is to calculate the percentage of gaps or mismatches
+* stem:[F_{ij} = \frac{g}{n}]
+** where stem:[i] and stem:[j] are the sequences, stem:[g] is the number of gaps or mismatches, and stem:[n] is the length of the sequences
+
+This is very simple and very naive
+
+A more complex method is the *Jukes-Cantor* distance
+
+.Jukes-Cantor distance
+[stem]
+++++
+d_{ij} = \frac{-3}{4} \cdot \ln \biggl(1 - \frac{4}{3p} \biggr) 
+++++
+
+Where:
+
+* stem:[p] is the Hamming distance of the 2 sequences
+* stem:[d_{ij}] is the JC corrected distance between sequences stem:[i] and stem:[j]
+
+Basically a corrected Hamming distance method
+
+It's better than the normal Hamming distance but it also makes a number of assumptions
+
+* there are 4 nucleotides with equal base frequencies
+** each makes up 1/4 of the sequence
+
+* all substitution have the same rate
+** A substitutes C and C substitutes A at the same rate
+** applied to all substitutions
+
+* sites evolve independently of each other
+** assumes continuous-time Markov process
+
+=== Objective function
+
+Can be defined as an error function
+
+* if we minimize the error we maximize the closeness to (one of) the ideal tree(s)
+
+We can use the sum of square errors:
+
+[stem]
+++++
+\text{score}(T) = \sum_{i, j \in S} (d_{i, j}(T) - D_{i, j})^2
+++++
+
+where:
+
+* stem:[d] are the distances in the tree
+* stem:[D] are the distances in the distance matrix
+
+=== Building the tree
+
+Use hierarchical clustering algorithms
+
+* UPGMA
+* neighbor-joining
+
+The distances between the clusters defines the length of the edges
+
+==== UPGMA
+
+Bottom up technique
+
+* join closest clusters sequentially
+
+Makes some assumptions
+
+* constant evolutionary rate
+** apparently often false
+* produces ultrametric tree
+
+The resulting leaves will all be on the same level
+
+* i.e. the tips will be the same distance from the root
+** branch lengths will represent time
+** ultrametric inequality holds for any 3 taxa
+*** for any 3 sequences, at least 2 of the distances are equal
+*** if 2 are equal the last must be smaller
+
+Use other methods if these aren't met
+
+* neighbor-joining
+
+Steps:
+
+. Assign each sequence to its own cluster
+* stem:[s_i \in S \rightarrow C_i]
+
+. Compute the pairwise distance between clusters
+* analogous to pairwise distance between sequences
+* stem:[\text{PD}(C_i, C_j)]
+
+. Place one tree leaf for each sequence at height 0
+* initialize sequence leaves
+
+. While there are more than 1 cluster:
+.. Select the 2 closest (stem:[c_i, c_j])
+... join them into a single cluster stem:[k]
+.. Add a parent node to stem:[i] and stem:[j] at height stem:[\frac{d_{ij}} {2}]
+... the halfway point between the nodes
+.. Compute the distance between the new cluster stem:[k] and the rest as the average of the pairwise distance of all sequences
+* collapse pair columns into single column by taking mean of all values in column
+
+For example:
+
+[source,python]
+----
+
+# dmatrix initially looks like this:
+
+#       |  s1 |  s2 |  s3 |  s4 |
+# ------|-----|-----|---- |---- |
+#   s2  |  2  |  0  |  0  |  0  |
+#   s3  |  5  |  4  |  0  |  0  |
+#   s4  |  7  |  6  |  4  |  0  |
+#   s5  |  9  |  7  |  6  |  3  |
+
+dmatrix["s1"] = [2, 5, 7, 9]
+dmatrix["s2"] = [0, 4, 6, 7]
+
+# we join s1 and s2 at 1 -> distance(s1, s2) = 2 -> 2/2 = 1
+# remove first 2 elements (first row of the 2 columns)
+# collapse column 
+
+dmatrix["s1, s2"] = [(5 + 4) / 2, (7 + 6) / 2, (9 + 7) / 2]
+dmatrix["s1, s2"] = [4.5, 6.5, 8]
+
+# rows this time
+# or columns if we transpose
+dmatrix.T["s4"] = [6.5, 4, 0]
+dmatrix.T["s5"] = [8, 6, 3]
+
+# join s4 and s5 at 1.5 -> distance(s4, s5) = 3 -> 3/2 = 1.5
+# this time we do the mean of the column up to the rows we use
+
+dmatrix["s4, s5"] = [(6.5 + 8) / 2, (4 + 6) / 2]
+dmatrix["s4, s5"] = [7.25, 5]
+
+# right now dmatrix looks like
+
+#       | s1,s2 | s3 |
+# ------|-------|----|
+#   s3  |  4.50 |  0 |
+# s4,s5 |  7.25 |  5 |
+
+# now we join s1,s2 with s3 at 2.25 -> distance((s1, s2), s3) = 4.5 -> 4.5/2 = 2.25
+# we merge s1, s2 and s3 columns and drop s3 row
+
+dmatrix["s1, s2, s3"]["s4, s5"] = [(7.25 + 5) / 2]
+dmatrix["s1, s2, s3"]["s4, s5"] = [6.5]
+
+# and we join s1, s2, s3 with s4, s5 at 3.25 -> distance((s1, s2, s3), (s4, s5)) = 6.5 -> 6.5/2 = 3.25
+----
+
+This produces a tree with well defined edge heights/lengths
+
+* they increase over time
+* we always select the closest cluster
+
+==== Neighbor-joining
+
+Shortest pairwise distance is not enough to identify 2 neighbors
+
+* we also want to find cluster pairs where the nodes are apart from the others
+** like `o o o o oo` <- this is a cluster (the last `oo`)
+
+We can define a new distance metric stem:[Q_{ij}] based on stem:[D_{ij}] (the distance matrix)
+
+* subtract the average distance of stem:[s_i] and stem:[s_j] with all other leaves from stem:[D_{ij}]
+
+[stem]
+++++
+Q_{i, j} = (n-2)D_{i, j} - \sum_{k=1}^{n} D_{i, k} - \sum_{k=1}^n D_{j, k}
+++++
+
+Minimizing stem:[Q_{ij}] yields true neighbors
+
+stem:[D] is updated with each step
+
+If we define stem:[u] as the new cluster
+
+* i.e. the new node in the tree
+* created by joining 2 nodes
+
+we can calculate the new distances using this:
+
+[stem]
+++++
+D_{ui} = 1/2 (D_{ai} + D_{bi} - D_{ab})
+++++
+
+Which yields a new stem:[Q], and so on until stem:[Q] is minimized
+
+== Example: maximum parsimony methods
+
+General steps:
+
+. Align sequences using MSA
+. Define informative columns
+* decide which columns of the matrix give us the most information
+. Build the tree that requires the fewest mutations
+
+The simplest solution would be to enumerate all possible trees with theri costs
+
+* this becomes *NP hard* very quickly
+** intractable after ~10 sequences (not that many)
+* requires a lot of sequence alignments
 * naive/trivial solutions aren't good enough
 
 Have to use more specialized algorithms
@@ -24,15 +337,99 @@ Instead of building all trees and picking the best:
 
 Good for up to 20 sequences
 
+3 main ways of expanding the tree:
+
+. Branch
+* grow alternatives
+** add the next taxon in every possible location
+** builds partial trees
+*** copies of the original tree with new leaves
+
+. Bound
+* for each partial tree compute the best case minimum number of steps it could ever achieve when finished
+** for parsimony we want a lower bound
+*** lower is better -> fewer mutations
+
+. Prune
+* stop exploring that branch if the best case score is lower than the current best full-tree score
+
+.Steps
+
+. get a base score
+* use a heuristic tree
+
+. then make a small tree
+* 3/4 taxa should be enough
+
+. Add a new taxon to every possible edge of every partial tree
+* for each edge: copy the tree, split edge, add leaf to edge
+
+. Estimate the lowest possible number of steps each partial tree could end with
+* the lower bound
+* what is the minimum number of steps this partial tree is forced to have regardless of how we place the taxa?
+
+. Discard the new lower bound if it is higher than the current best score
+* prune
+
+. If it's lower keep growing the tree
+
+. When the partial tree is full check the length
+* if it's shorter it becomes the best score
+
+. Continue while all branches are either visited or pruned
+* you will end up with the most parsimonious trees
+
+[source,python]
+----
+best_tree = heuristic_tree()          
+best_score = score(best_tree)          
+
+# start with a trivial partial tree containing the first two taxa
+open_set = [partial_tree_from([taxa[0], taxa[1]])]
+
+while open_set:
+    ptree = open_set.pop()
+    
+    # first we bound    
+    lower_bound = parsimony_lower_bound(ptree)   
+
+    if lower_bound >= best_score:               
+        continue                                
+
+    # then we branch
+    next_taxon = choose_next_unplaced_taxon(ptree)   
+    for edge in ptree.edges():
+        new_ptree = ptree.clone()
+        new_ptree.insert_taxon(next_taxon, edge)
+
+        if new_ptree.is_full():                     
+            full_score = score(new_ptree)           
+            if full_score < best_score:
+                best_score = full_score
+                best_tree  = new_ptree
+        else:
+            open_set.append(new_ptree)              
+----
+
+Basically this searches for the best solution to the problem in a tree-like problem space
+
+Candidates are checked against the bounds
+
+If better then keep, else prune
+
 === Maximum likelihood
 
 Probabilistic approach
 
 Estimates the likelihood of possible trees
 
+* multiplies the estimated probability of each event in the tree
+
 Still computationally intensive
 
 * NP hard
+
+Uses evolutionary models
 
 Use a pruning algorithm to reduce complexity
 
@@ -41,5 +438,26 @@ Use a pruning algorithm to reduce complexity
 Non-trivial patterns shared across multiple sequences
 
 * meaningful functions
+* minimum relevant length
+** `AA` can't be a motif because it's literally everywhere
 
 Motifs can be indicators of similar/same functions
+
+* 2 sequences have the same motif in about the same place
+** sequence `S1` has `ATGCA` at index `155`
+** sequence `S2` has `ATGCA` at index `157`
+
+That region could be the source of a common feature
+
+=== Motif Classes
+
+2 main classes
+
+. Deterministic
+* the motif either is or isn't in a sequence
+* like those found in the Prosite database
+
+. Probabilistic
+* the motif model is less defined
+** more variable
+** protein `P` has probability `p` of containing motif `m`
