@@ -19,14 +19,17 @@ A billion things to do
 
 . Gene expression
 * how is this gene expressed?
+
 . Finding new transcripts
 * how is this bit of DNA translated?
+* what proteins are transcribed from it?
+
 . Fusion transcript detection
 * common when sequencing tumors
 * genes fuse together and are moved
 ** the chromosome can be rearranged in some tumors
 
-== DEG Analysis
+== DEG/DEA Analysis
 
 *Differential expression analysis*
 
@@ -43,13 +46,20 @@ Highly duplicated regions will tend to have low quality annotations
 
 More data = better
 
-=== DEG Analysis process
+== DEG Analysis process
 
 3 main ways to split DEG methods
 
 . Parametric approaches
+* they assume a specific distribution
+
 . Non parametric approaches
+* they do not assume a specific distribution
+
 . Hybrid approaches
+* you can consider multiple approaches at the same time
+
+The steps are pretty similar regardless of method
 
 === 1. Quality assessment & sequence trimming
 
@@ -63,6 +73,49 @@ Trimming removes sequences from adapters
 * we don't want to sequence adapters typically
 * use similarity search to find and remove
 * *FASTQC* generates RNA sequence quality reports
+
+There are a whole bunch of tools
+
+. Btrim
+
+. Cutadapt
+* mature and well supported
+* very accurate
+* slow
+* very high control over adapter trimming logic
+
+. Trimmomatic
+* faster than Cutadapt
+* pipeline-style trimming
+* also well supported
+* still relatively slow
+* less flexible than Cutadapt
+** less control
+
+. AdapterRemoval v2
+* especially good for overlapping paired-end reads
+* really good at dealing with multiple adapter pairs
+* very fast
+** but not the fastest
+* barebones toolset
+
+. Atropos
+* high accuracy
+* very fast
+* Forked from cutadapt so it's very flexible
+** and new features
+* less well supported
+* Python install
+** annoying
+
+. Fastp
+* does many steps in a single pass
+* very fast
+* built in QC reports
+** HTML/JSON
+* single executable
+* less control than Cutadapt/Atropos
+* easy to screw yourself
 
 === 2. Removing batch effects
 
@@ -78,7 +131,6 @@ There is a feature in the dataset that changes across groups
 * svaseq
 * combat-seq
 
-
 WARNING: batch removal is tricky. All batches need to have the same conditions (group balance, number of variables, etc.)
 
 === 3. Alignment
@@ -88,31 +140,11 @@ Identifies how many reads align with the genome region
 2 main challenges
 
 * processing time
-* computational complexity
+* computational complexity/cost
 
 Sometimes a transcript can fit in multiple locations within the genome
 
-* there are algorithms/tools that can deal with this
-** *tophat2*
-
-Sometimes you don't have a genome to alignt to
-
-* run *pseudoalignment*
-** *Salmon* (returns a probability) + *Kallisto* (also returns a probability)
-** others exist
-
-Alignment outputs can be of 2 types:
-
-* SAM
-** tab delimited
-** sequence reads aligned to genome
-*** contains sequence and metadata
-*** contains CIGAR string that describes the alignment (insertion here, deletion here, etc.)
-** very large
-* BAM
-** compressed binary file
-** contains results of alignment sequences
-** machine readable version of SAM
+There are algorithms/tools that can deal with this
 
 ==== Burrows-Wheeler transform
 
@@ -122,6 +154,249 @@ Reversible rearrangement of a string
 * simplifies compression
 
 Makes processing faster/more efficient
+
+Steps:
+
+. Take a string
+
+. Append a special end symbol (usually `$`)
+* whatever it is it needs to be lexicographically smaller than any real character
+** i.e. it needs to come earlier in the alphabet
+
+. Build all cyclic rotations of that string
+* i.e. put the first character in last place over and over again
+
+. Sort the rotations alphabetically
+
+. Store them in a matrix
+
+. The last column of the matrix is the BWT of the string
+
+. The original string can be reconstructed with the end symbol and the BWT
+
+.Example:
+
+. Starting string is `GATTA`
+
+. Append the end symbol -> `GATTA$`
+
+. Rotate the string
+* `GATTA$`
+* `ATTA$G`
+* `TTA$GA`
+* `TA$GAT`
+* `A$GATT`
+* `$GATTA`
+
+. Sort the rotations alphabetically
+* `$GATTA`
+* `A$GATT`
+* `ATTA$G`
+* `GATTA$`
+* `TA$GAT`
+* `TTA$GA`
+
+. The last character of these strings is the BWT
+
+* `ATG$TA`
+
+.Toy BWT example
+[source,python]
+----
+s = "GATTA"
+s += "$"
+
+# take first letter s[0] -> remove it -> append it
+
+rotations = []
+
+for _ in range(len(s)):
+    s = s[1:] + s[0]
+    rotations.append(s)
+
+rotations = sorted(rotations)
+bwt = "".join(s[-1] for s in rotations)
+
+print(f"The BWT for DNA string {s} is: {bwt}")
+----
+
+==== Bowtie 2
+
+Basically rearranges the reference genome into its BWT
+
+* really fast searchable structure
+* stores it with additional labels
+
+Uses FM indices to walk leftwards through the BWT
+
+For each read:
+
+. extracts seeds and their reverse complement
+* snippets of the sequences
+
+. aligns the seeds to the reference genome
+* produces BWT alignment bands
+** ranges of positions in the reference genome where the seed could occur
+
+. Repeatedly and randomly selects these bands (weighted by priority)
+.. starting from the seed's position (i.e. the start of the band)
+... walks left using the backwards search from FM index
+... tries to extend the alignment
+
+. When all full read alignments are produced (there can be several)
+* they are scored
+* the best is kept
+** ties are possible
+
+==== STAR
+
+Addresses many of the challenges of mapping RNA-seq data
+
+* junction detection
+* characterization
+* mapping sequences derived from incontiguous genomic regions
+** a sequence derived from `DNA[14:58]` and `DNA[60:75]`
+
+2 steps:
+
+. seed search
+* uses a sequential search for a *Maximum Mappable Prefix*
+
+. clustering
+* builds alignments of the entire read sequence
+* joins all aligned seeds from step 1
+
+==== tophat2
+
+Deals with multiple alignments in junction reads
+
+* a read whose 2 halves belong to different exons separated by an intron
+
+Uses Bowtie2 internally for some steps
+
+. Reads aligned to more than one exon are treated as unmapped
+* they are fragmented
+* aligned to the genome
+
+. Assumes that the alignment distance between fragments could indicate possible splice regions
+
+.. Concatenates genomic sequences around these junction sites
+.. the resulting spliced sequences are treated as a set of potential transcription fragments
+
+. Unmapped/poorly mapped reads are realigned using Bowtie2 against the new transcript
+
+==== HISAT2
+
+Graph based search
+
+. Generate a linear graph of the reference genome
+. Adds mutations/insertions/deletions as alternative paths
+
+This makes it (allegedly) more efficient
+
+* lower memory usage
+* higher alignment speed
+
+==== Referenceless analyses
+
+Sometimes you don't have a genome to align to
+
+* run *pseudoalignment*
+** *Salmon* (returns a probability) + *Kallisto* (also returns a probability)
+** others exist
+
+Instead of aligning reads to sequences exactly (base per base) they determine whether a read is compabile with a sequence (or transcript)
+
+Alignment outputs can be of 2 types:
+
+. SAM
+* tab delimited
+* sequence reads aligned to genome
+** contains sequence and metadata
+** contains CIGAR string that describes the alignment (insertion here, deletion here, etc.)
+** very large
+
+. BAM
+* compressed binary file
+* contains results of alignment sequences
+* machine readable version of SAM
+
+==== Salmon pseudoalignment
+
+Builds a probabilistic model based on sequencing data
+
+* improves conditional probability that a fragment is part of a transcript
+
+IMPORTANT: transcript identification/quantification return normalized values, not counts of mapped reads. Use an appropriate DEA tool 
+
+Uses a quasimapping strategy
+
+* requires one of:
+** a set of transcripts
+*** can be a reference assembly
+*** can also be new transcripts
+** reads only
+*** used to quantify the transcripts
+
+The steps are:
+
+. makes a simplified mapping model
+. estimates initial expression level and model parameters
+. refines expression estimation
+
+Quantifies expression from RNA-seq reads given a transcriptome
+
+* quickly maps reads to transcripts
+** directly from reads (quasi-mapping mode)
+** or from pre-computed genome alignments (alignment-based mode)
+
+* uses bias correction methods
+** big focus on bias correction
+** improves accuracy
+
+* uses expectation-maximization/variational Bayes optimization to refine abundances
+
+.Pros
+* very fast
+* strong bias correction improves accuracy
+* flexible input modes
+* rich outputs
+** lots of information
+* widely supported
+
+.Cons
+* more moving parts = more opportunities to screw yourself
+* bloated?
+
+==== Kallisto pseudoalignment
+
+Uses a FASTA format transcriptome + some RNA-seq reads
+
+* estimates how many reads came from each transcript
+
+Steps:
+
+. Builds *k-mer* index of all transcripts
+. For each transcript:
+.. finds where its k-mers occur in the transcriptome
+.. determines compatible transcripts without using base-by-base alignment
+. uses expectation-maximization to probabilistically assign reads to transcripts
+* this read is very likely to come from this transcript
+* this read is less likely to come from this transcript
+* estimates abundances as well
+
+.Pros
+* also very fast
+** faster than Salmon usually
+* low memory usage
+* simple workflow
+* also well supported
+
+.Cons
+* Weaker bias correction
+* transcriptome only
+* less rich output
+** less detailed ouput
 
 === 4. Counting methods
 
@@ -135,19 +410,44 @@ Many types of operations need to be accounted for
 * full alignment
 * partial alignment
 * junction alignment
-* exon alignment
+** read is aligned to an intron and an exon
+* exon junction alignment
+** read is only aligned to exon
 * double partial alignment
 * double alignment
 
 Counting methods include:
 
-* HTSeq-count
-* BEDTools
-* featureCounts
+.HTSeq-count
+* Python tool
+* takes BAM/SAM + GTF/GFF -> returns counts per feature
+* simple and flexible but very slow and very specific to annotation-based counting
+
+.BEDTools
+* General genomic intervals
+* also very flexible
+* very composable
+** can easily chain different operations
+* very well supported
+* not specific to RNA-seq
+** lacks a lot of RNA-seq specific knowledge by default
+* pretty much barebones
+** no bloat btw
+* faster than HTSeq-count but not _that_ fast
+
+.featureCounts
+* Counts reads/fragments to genomic features
+* extremely fast
+* deals with RNA-seq very well
+** lots of options
+* well supported
+* less general than BEDTools
+* many CLI flags
+** RTFM
+* algorithm is difficult to understand
 
 Pick the method based on the data
 
-* right tool for the right job
 * when in doubt try a few
 ** benchmark most and least restrictive modes
 ** decide based on that
