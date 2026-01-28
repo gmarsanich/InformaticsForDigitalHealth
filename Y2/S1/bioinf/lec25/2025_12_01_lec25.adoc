@@ -35,7 +35,11 @@ Using a *network science* approach allows us to:
 Fundamental numerical representation of a graph stem:[G = (V, E)]
 
 * square matrix of size stem:[N \cdot N]
-** if the graph is directed stem:[A] is symmetric (stem:[A_{ij} = A_{ji}])
+** stem:[N] is the number of nodes
+** if the graph is undirected stem:[A] is symmetric (stem:[A_{ij} = A_{ji}])
+** if the graph is directed stem:[A] is asymmetric (stem:[A_{ij} \neq A_{ji}])
+*** not necessarily if the 2 nodes influence each other but generally they're different
+
 ** if the graph is weighted stem:[A] contains the weight (stem:[w_{ij}]) of the interaction -> the strength of the connection
 
 [stem]
@@ -45,9 +49,13 @@ A_{ij} \{ w_{ij} \text{ if edge } (i, j) \in E\text{, else } 0
 
 Matrix multiplications can be used to count the number of paths between 2 nodes of a specific length
 
+This is called the *matrix power*
+
 * stem:[(A^k)_{ij}] -> number of paths of length stem:[k] between nodes stem:[(i, j)] 
 ** proteins with common interactors indicates that they are somewhat involved with each other
 ** summing the 1s of every cell of every matrix gives us the connectivity of the graph
+*** summing the 1s of every row tells us how many nodes are connected to the node of the corresponding number
+*** e.g. if row 3 has 3 1s then node 3 has 3 connections
 
 .Example (stem:[k = 2]:)
 if stem:[(A^2)_{ij} \gt 0]:
@@ -99,6 +107,14 @@ for k in range(5):
 total = sum(matrix[A_1k : A_k4] for k in range(5))
 ----
 
+It's simply the sum of the products of the distances between nodes:
+
+* in the first step we count the number of edges between stem:[A_1] and stem:[A_k] (at step 1 stem:[k=1])
+** there are no edges between stem:[A_1] and stem:[A_1] so the distance is 0
+* in the same step we count the number of edges between stem:[A_k] and stem:[A_4]
+** still for stem:[k=1]
+** there are no direct edges between stem:[A_1] and stem:[A_4] so it's also 0
+* and so on and so forth
 
 === The degree matrix (*D*)
 
@@ -119,17 +135,26 @@ stem:[D] by itself doesn't do much
 
 It can be used to compute the Laplacian matrix
 
-* stem:[L = D - A]
+.Laplacian matrix
+[stem]
+++++
+L = D - A
+++++
 
-* which can be used to compute the *spectral properties*
-** separate subnetworks in the graph
-** equal to the number of stem:[\lambda = 0]
-* can also be used to compute information diffusion
-** how concentrations of some molecules diffuse throughout a network
-** how certain proteins are involved in a disease
+* cell-wise subtraction of elements
+* the rows and columns must sum to 0
 
-.Diffusion operator example
+It can be used to compute the *spectral properties*
 
+* separate subnetworks in the graph
+* equal to the number of stem:[\lambda = 0]
+
+It can also be used to compute information diffusion
+
+* how concentrations of some molecules diffuse throughout a network
+* how certain proteins are involved in a disease
+
+==== Diffusion operator example
 
 Consider the same graph stem:[G] with annotated concentrations:
 
@@ -149,10 +174,14 @@ We can build a vector stem:[\mathbf{c}] where nodes stem:[(1, 2)] act as sources
 
 The product of stem:[\mathbf{L} \cdot \mathbf{c}] is a vector stem:[\mathbf{u}]
 
+* dot product of the Laplacian matrix stem:[L] with the concentration vector stem:[c]
+
 * positive values
 ** net outflow, will lose signal
+** e.g. if stem:[u[1\] \gt 0] means they are giving more than they are receiving 
 * negative values
 ** net inflow, will receive signal
+** e.g. if stem:[u[1\] \lt 0] means they are giving more than they are receiving
 
 == Sparsity and Computational Implications
 
@@ -165,6 +194,13 @@ Biological networks are very sparse
 ++++
 \text{Density } \rho = \frac{2M}{N(N-1)} \ll 1
 ++++
+
+Where:
+
+* stem:[N] is the size of the human proteome
+** stem:[N \approx 20,000]
+* stem:[M] is the number of known interactions between elements of the proteome
+** a small fraction of all possible interactions
 
 More efficient data structures are used instead 
 
@@ -204,15 +240,14 @@ However they are vulnerable to targeted attacks
 
 Biological networks exhibit this property
 
-Biological networks have high average clustering
-
+. High average clustering
 * neighbors of a node are highly connected to each other as well
-** all nodes are close to each other
+* all nodes are close to each other
+** indicates presence of localized functional modules
 
-Information transfer takes very few steps
-
-* short average path length
-** the shortest path between each pair of nodes is short relative to the size of the network
+. Short average path length
+* information transfer takes very few steps
+* the average shortest path between each pair of nodes is short relative to the size of the network
 
 Nodes have a clustering coefficient stem:[C_i] that measures the size of the node's cluster
 
@@ -226,13 +261,38 @@ where:
 * stem:[e_i] is the number of existing edges between neighbors of stem:[i]
 * stem:[k_i] is the maximum number of edges between neighbors of stem:[i]
 
+==== Centrality example
+
+Using graph stem:[G] from earlier
+
+For node 1:
+
+* it has degree stem:[k_1=2]
+* it has neighbors stem:[\{ 2, 3 \}]
+** they have 1 edge between them
+** thus stem:[e_1 = 1]
+* fill in the values: stem:[C_1 = \frac{2 \cdot 1}{2(2-1)} = 1]
+
+While for node 3:
+
+* it has degree stem:[k_3=3]
+* it has neighbors stem:[\{ 1, 2, 4 \}]
+** 1 edge between stem:[\{1, 2 \}]
+** no edges between stem:[\{1, 4 \}]
+** no edges between stem:[\{2, 4 \}]
+** thus stem:[e_3 = 1]
+* fill in the values: stem:[C_1 = \frac{2 \cdot 1}{3(3-1)} = \frac{2}{6} \approx 0.333]
+
 === Centrality
 
 Importance is determined by centrality -> how central a node is within a network -> how well connected it is
 
-Multiple ways to determine centrality
+Multiple ways to determine centrality depending on context and what we want to measure
 
 ==== Degree Centrality (stem:[C_D])
+
+Measures number of direct connections and signals local essentiality and binding promiscuity
+
 [stem]
 ++++
 C_D(v) = k_v
@@ -241,7 +301,12 @@ C_D(v) = k_v
 
 High stem:[C_D] indicates high interactivity but ignores global structure
 
+* a node might have lots of local connections but can do little to influence the network
+
 ==== Closeness Centrality (stem:[C_C])
+
+Measures average distance to all other nodes, which indicates metabolic efficiency and speed of influence
+
 [stem]
 ++++
 C_C(v) = \frac{N-1}{\sum_u d(v, u)}
@@ -252,11 +317,13 @@ C_C(v) = \frac{N-1}{\sum_u d(v, u)}
 High stem:[C_C] indicates high speed information transfer
 
 ==== Betweeness Centrality (stem:[C_B])
+
+Counts the presence of target node between the shortest path between 2 other nodes
+
 [stem]
 ++++
 C_B(v) = \sum_{s \neq v \neq t} \frac{\sigma_{st} (v)}{\sigma_{st}}
 ++++
-* counts the presence of target node between the shortest path between 2 other nodes
 
 where:
 
@@ -269,6 +336,9 @@ Low degree but high betweenness is a sign that the node may be a bottleneck/brid
 * kinase connecting 2 pathways
 
 ==== Spectral Centrality (eigenvector/pagerank)
+
+Measures global influence/hierarchy
+
 The general idea is that a node is important if it's connected to other important nodes
 
 * quality > quantity
@@ -292,7 +362,14 @@ where:
 
 Based on Google's old search result ranking algorithm
 
-Not required but good to know it exists
+More robust version of eigenvector centrality
+
+* uses a teleportation factor (stem:[\alpha \approx 0.85])
+* simulates a random walk with restart on the network
+
+Used to rank genes/proteins based on the *quality* of their connections/influence
+
+* not just the *quantity*
 
 == Community/module detection
 
@@ -334,7 +411,7 @@ Q = \frac{1}{2M}
 
 Where:
 
-* stem:[A_{ij}] is the number of observed edges betwenn stem:[i, j]
+* stem:[A_{ij}] is the number of observed edges between stem:[i, j]
 * stem:[\frac{k_i k_j}{2M}] is the number of expected edges between stem:[i, j] if edges are distributed randomly
 * stem:[\delta (c_i, c_j)] is 1 if stem:[i, j] are in the same community, otherwise 0
 
@@ -351,6 +428,16 @@ General approach (not heuristic)
 . compute modularity (M)
 . evaluate changes in the partitioning scheme that could increase M
 
+For example:
+
+. Louvain algorithm
+* hierarchical and greedy
+
+. Infomap
+* based on information theory
+* performs random walks
+* modules are the regions where the walker spends the most time
+
 == Generative Network Models
 
 How are networks generated?
@@ -358,8 +445,25 @@ How are networks generated?
 3 main ways:
 
 . Random Model
+* every edge forms with a random fixed probability
+* results in homogenous degree distribution
+** Poisson
+* fails in biological applications
+
 . Scale-free model
+* Uses growth+preferential attachment
+** new nodes will likely be connected to existing hubs
+* results in power law distribution
+** because of hubs
+* usable in biological applications
+** also because of hubs
+
 . Evolutionary model
+* imitates evolution
+* nodes are duplicated and mutated
+* results in scale free+small world distribution
+** high clustering
+* very faithful to biology
 
 == Network Propagation
 
