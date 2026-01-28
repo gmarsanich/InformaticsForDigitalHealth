@@ -12,7 +12,7 @@ Certain genes are (de)activated to change the expressed proteins -> change the f
 
 DNA is transcribed into RNA which is then translated into proteins
 
-Inhibition can happen in 3 places:
+*Inhibition* can happen in 3 places:
 
 . stopping transcription
 . stopping translation
@@ -60,8 +60,10 @@ Gene I -> lac repressor
 
 When no lactose:
 
+* cannot bind to lactose so it stays where it is
 * blocks DNA polymerase
-** blocks transcription
+** blocks transcription of lactose degradation RNA
+** target genes are not produced
 
 When lactose:
 
@@ -88,12 +90,20 @@ Need to model in a more abstract way
 ** positive influence (promotion)
 ** negative influence (inhibition)
 
+GRNs are *inferred* from data about gene expression
+
+* like by looking for correlation between 2 genes being expressed in differnt conditions
+** can infer influence of one on the other
+* need to identify *transcription factors*
+** what causes specific RNA to be transcribed
+
 == Boolean modeling
 
 Each node has a boolean value `Active = True`, `Inactive = False`
 
 Represent interactions as boolean functions
 
+.Lac operon example
 [source,python]
 ----
 LACT = LACT
@@ -150,7 +160,6 @@ at every discrete time step stem:[t]
 
 Each gene has an update rule given by:
 
-
 [stem]
 ++++
 x_i(t+1) = f_i(x_1(t), x_2(t), \dots, x_n(t))
@@ -158,12 +167,14 @@ x_i(t+1) = f_i(x_1(t), x_2(t), \dots, x_n(t))
 
 There are 2 update strategies:
 
-* *synchronous update*: all genes are updated at a time
+* *synchronous update*: all genes are updated at the same time
 ** preferred for simulations
-* *asynchronous update*: one gene is updated at a time
+* *asynchronous update*: one gene/subset of nodes is updated at a time
 ** more realistic
 *** gene A might take a while to influence gene B
 *** gene C might be able to influence gene D instantly
+
+The description of all possible steps in a graph is called the *State Transition Graph*
 
 Synchronous BNs are *deterministic*
 
@@ -196,6 +207,23 @@ The set of states leading to the same attractor is called *the basin of attracti
 
 * set stem:[A] and stem:[B] lead to attractor stem:[AC]
 
+Attractor analysis is used to:
+
+* determine the attractors
+* determine their basins of attraction
+* determine/infer their biological meaning
+
+=== Attractors in Synchronous Dynamics
+
+They're pretty trivial in this case
+
+Attractors are just a set of states that the system iterates on
+
+Synchronous basins are disjoint from each other
+
+* meaning that each basin is unique
+** one state cannot appear in more than one basin
+
 === Attractors in Asynchronous Dynamics
 
 Since the state of the system is not deterministic things become more complicated
@@ -205,7 +233,11 @@ The system can be represented as a *state transition graph* where:
 * nodes = all possible states -> stem:[\mathbf{x} \in \{0, 1\}^n]
 * edges = allowed transitions obtained by updating a single variable -> stem:[\mathbf{x} \rightarrow \mathbf{y}]
 
-.Formal definition
+Asynchronous basins may overlap depending on nondeterminism
+
+* which means that there may be states that appear in more than one basin
+
+==== Formal definition
 
 An _asynchronous_ attractor is a non empty set of states:
 
@@ -237,12 +269,14 @@ In addition, each attractor stem:[A] has a basin of attraction:
 
 Meaning that for each state stem:[\mathbf{x}] there exists a reachable state stem:[\mathbf{y}] in attractor stem:[A] 
 
-==== Example
+=== Attractor example
 
 Given the following boolean network
 
 * `A = not B`
 * `B = not A`
+
+image::attractor.png[attractor graph, 320, 240, align="center"]
 
 .Using the synchronous update rule
 
@@ -260,11 +294,13 @@ We end up with an attractor of size 4: stem:[\{ (0, 0), (1, 1), (1, 0), (0, 1) \
 
 .Using the asynchronous update rule
 
-Depends on the STG
-
 We will end up with 2 fixed point attractors: 
 
 . stem:[\{ (0, 1) \}]
 . stem:[\{ (1, 0) \}]
 
+* i.e. we end up with 2 attractors of size 1
 
+How we get to them depends on the STG
+
+* because they are nondeterministic
