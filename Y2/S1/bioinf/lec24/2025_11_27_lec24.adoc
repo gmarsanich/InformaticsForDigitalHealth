@@ -32,6 +32,17 @@ Some genes can self activate
 * if the weighted sum == 0 -> become active
 * otherwise inactive
 
+They're somewhat similar to neural networks
+
+* genes are neurons
+* weights are synaptic strengths
+** i.e. parameter weights
+* the threshold function is equivalent to a Heaviside activation function
+** a step function
+** like a discrete reLU
+*** 0 if negative
+*** 1 if positive
+
 === Why threshold networks?
 
 More specific than vanilla boolean networks
