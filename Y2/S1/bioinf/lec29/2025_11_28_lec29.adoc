@@ -1,0 +1,409 @@
+= BSB: GRN Inference
+:toc:
+:toc-title: Contents
+:nofooter:
+:stem: latexmath
+
+== What is GRN Inference?
+
+GRN inference involves the inference (lol) of gene regulatory networks
+
+* figuring out the structure of these networks
+* typically from high-throughput data
+
+== Wet-lab sources
+
+A lot of *gene expression data* comes from wet-lab situations
+
+* people with test tubes and petri dishes and such doing experiments
+* like in the lac operon example
+** when lactose is present these 4 genes are co-expressed
+** when lactose is not preset they are not co-expressed
+
+*Gene expression data* quantifies the number of transcripts across samples or conditions
+
+* how many different transcriptions of this gene are there?
+** in this sample?
+** in the same sample under different conditions?
+
+2 types of GED:
+
+. Steady state
+* measured using RNA-seq or microarrays
+* snapshot of regulatory activity
+
+. Time series
+* measured at multiple timepoints
+* detects causal delays
+* more complete image
+
+There are other types of data that help:
+
+. *chromatin accessibility*
+* chromatin is a DNA-protein complex
+** it packages long DNA molecules into more compact structures
+* tests whether TF binding regions are physically reachable
+** due to closed/open chromatin conformations
+
+. *perturbation assays*
+* altering a gene and seeing how it changes its expression
+** knockdown/knockout
+** CRISPRi/a
+
+=== Repositories
+
+Many public repositories exist:
+
+* Gene Expression Ominbus (GEO)
+** raw reads and expression matrices from bulk and single-cell studies.
+** https://www.ncbi.nlm.nih.gov/geo/
+
+* ENCODE
+** TF binding (ChIP-Seq), chromatin marks, accessibility maps.
+** https://www.encodeproject.org/
+
+* ReMap, ChEA, JASPAR:
+** (JASPAR) curated TF motifs, PWMs, TF–target annotations from literature.
+** https://jaspar.elixir.no/
+
+* DREAM Challenges
+** community benchmarks with gold-standard networks and evaluation frameworks.
+** https://gnw.sourceforge.net/dreamchallenge.html
+
+=== Transcription Factors
+
+We can measure network structure using classic correlation/relation measures
+
+* by using gene expression matrices
+* other techniques
+
+This is not enough information to infer *causality*
+
+* almost impossible to tell whether a regulation is direct or not from a steady state
+** if activation of a gene is *mediated*
+* timeseries are slightly better
+** we can infer directionality
+** typically quality is too low to do this reliably
+
+Most interactions are mediated by *Transcription Factors*
+
+* proteins that bind to specific DNA motifs
+* they modulate the transcription of target genes
+** act as switches and controllers
+
+=== ChIP-Seq
+
+*Chromatin Immunoprecipitation + sequencing* is a technique used to map TF binding sites across a genome
+
+It works like this:
+
+. Cells are fixed to preserve TF-DNA interactions
+. chromatin is fragmented
+.. antibody pulls a specific TF down
+. bound DNA fragments are sequenced
+. algined reads form peaks in sequencing output
+* these correspond to likely binding sites
+
+In the Lac operon example the Lac Repressor could be a TF
+
+* its binding region is next to the target genes
+
+=== DREAM Network Inference Challenge
+
+*Dialogue for Reverse Engineering Assessments and Methods*
+
+International challenges to evaluate GRN inference algorithms using real data and modern techniques
+
+* synthetic simulations
+* real biological systems
+* strict evaluation metrics
+* non-linear ensemble methods are better than classic statistical methods
+
+Even with these techniques gene expression data by itself does not provide enough information
+
+We need to know how the genes interact
+
+== Expression matrices to GRNs
+
+Expression matrices are the main input to GRN inference tools
+
+* data is typically log transformed
+** or variance stabilized
+* columns are samples/conditions
+* rows are genes
+* uniform variance across samples is crucial
+
+There are many algorithmic families for GRN influence:
+
+* correlation/coexpression
+** based on Pearson correlation
+** or Spearman correlation
+
+* Bayesian models
+
+* Information-theoretic
+* Mutual Information based
+** ARACNE
+** CLR
+** MRNET
+
+* Tree-based ML
+** GENIE3
+** GRNBoost
+** Extra-Trees
+** GBM based approaches
+*** gradient boosting?
+
+=== EM preprocessing
+
+4 main steps:
+
+. Sample QC
+* remove garbage
+
+. Normalization
+* apply log transform
+* remove batch effects
+
+. Gene filtering
+* keep 3k-10k highest variance genes
+
+. Define candidate regulators
+* pick some genes that seem like good TF candidates
+
+== Correlation networks and Bayesian networks
+
+=== Coexpression networks
+
+Simplest inference model
+
+* represent coexpression correlations between genes
+** Pearson
+** Spearman
+** linear regressions
+
+* useful as a baseline
+** identifies clusters
+** identifies hubs
+** identifies functional modules
+
+* not useful for understanding causality
+** not relationships
+** nor dynamics
+
+=== Bayesian networks
+
+Model gene interactions using a directed acyclic graph
+
+* genes = random variables
+* edges = conditional dependencies
+
+They try to find the directed structure that best explains the joint distribution of the gene expressions
+
+_(We saw this with Bacciu but I did really bad at that exam so here it is again)_
+
+BNs define this factorization: 
+
+[stem]
+++++
+P(X_1, \dots, X_M) = \prod_i P(X_i | \text{Pa}(X_i))
+++++
+
+Where:
+
+* stem:[X_i] are nodes
+* stem:[\text{Pa}(X_i)] are the parents of node stem:[X_i]
+** in this case they are the node's regulators
+
+Find the DAG that best fits the chosen scoring function
+
+.Pros
+* explicit directed edges
+** low ambiguity
+* probabilistic interpretation
+** more realistic
+** regulation might be stochastic
+* integrates prior knowledge
+** can use a starting DAG
+
+.Cons
+* Difficult to scale
+* Has to be acyclic
+** some genes are self regulating
+
+== ARACNE
+
+ARACNE stands for: Algorithm for the Reconstruction of Accurate Networks of Embedded Components
+
+Retains direct dependencies from gene expression data
+
+3 main steps:
+
+. measures statistical dependency using Mutual Information
+. builds a FCG of MI weighted edges
+. prunes indirect edges using the *Data Processing Inequality*
+
+=== Mutual Information
+
+ARACNE uses *mutual information*
+
+* by how much does my knowledge of stem:[X] reduce my uncertainty about stem:[Y]?
+* captures any statistical dependency
+** linear or otherwise
+
+.Mutual Information
+[stem]
+++++
+I(X;Y) = \sum_{x, y} p(x, y) \log \frac{p(x, y)}{p(x), p(y)} 
+++++
+
+Where:
+
+* stem:[X] is a random variable
+** stem:[x] is a possible value of stem:[X]
+* stem:[Y] is another random variable
+** stem:[y] is a possible value of stem:[Y]
+* stem:[p(x, y)] is the probability of stem:[x] and stem:[y]
+** this has to be estimated somehow
+** which is not trivial
+* stem:[p(x)] is the probability of stem:[X] having value stem:[x]
+* stem:[p(y)] is the probability of stem:[Y] having value stem:[y]
+
+stem:[I(X;Y)] will be greater or equal to 0 if stem:[X] and stem:[Y] are not independent
+
+* if stem:[X] and stem:[Y] are independent stem:[I(X;Y)] will be 0
+** this is because stem:[p(x, y) = p(x)p(y)]
+
+It can also be expressed in terms of entropy:
+
+.Entropic formulation
+
+[stem]
+++++
+I(X;Y) = H(X) + H(Y) - H(X, Y) = H(X) - H(X | Y)
+++++
+
+* where stem:[H] is uncertainty
+
+This basically means that the information of stem:[X] and stem:[Y] is given by the difference between the uncertainty of stem:[X] and the uncertainty of stem:[X] given stem:[Y]
+
+MI is good and all but it can't tell direct relationships from indirect relationships
+
+=== Data Processing Inequality
+
+If the path stem:[A \rightarrow C \rightarrow B] explains the dependency between stem:[A] and stem:[B] then this inequality holds:
+
+* if we know stem:[C] then stem:[A] tells us nothing more about stem:[B]
+
+.DPI
+[stem]
+++++
+\text{MI}(A, B) \leq \min \{ \text{MI}(A, C), \text{MI}(C, B) \}
+++++
+
+* which means that the mutual information between stem:[A] and stem:[B] is less than or equal to the lowest mutual information between the other RV pairs
+** in this case stem:[\text{MI}(A, C)] and stem:[\text{MI}(C, B)]
+
+This produces a non directed graph that approximates direct statistical interaction between genes
+
+* this cannot produce causal direction (because the graph is undirected (duh))
+
+== GENIE3
+
+Decomposes GRN inference into independent regression problems
+
+* predict the expression of each single gene from the expression of its potential regulators
+
+Steps:
+
+. Fit a random forest regression for each target gene stem:[g]
+* stem:[X] = candidate regulators
+* stem:[y] = expression of stem:[g]
+. Extract feature importance
+* measure how much each regulator contributes to the regression
+** these weights are also used to define the strength of the directed edges
+. rank edges by importance
+. aggregate rankings into weighted directed network
+
+This produces a directed graph
+
+* still does not guarantee causality
+
+=== Why Random Forests?
+
+They capture nonlinear and combinatorial relationships for free
+
+* good for complex regulatory networks
+
+*Variable importance* reflects the average gain in predictive performance when the it splits on that regulator
+
+* if it chooses the regulator and the performance increases then the regulator's importance increases
+* correlated predictors might have the same performance
+
+This importance can be established by:
+
+* bootstrapping
+* using consensus networks
+
+[stem]
+++++
+w_{r, g} \propto \text{importance} (X_r \Rightarrow y_g)
+++++
+
+Where:
+
+* stem:[w] is the weight of the edge stem:[r \rightarrow g]
+
+So the weight of the edge stem:[r \rightarrow g] is proportional to how important regulator stem:[X_r] is in predicting stem:[y_g]
+
+This can be quite expensive:
+
+.Complexity
+[stem]
+++++
+O(p \cdot K \cdot T \cdot N \log N)
+++++
+
+Where:
+
+* stem:[p] = number of genes
+** can be reduced by keeping those with the highest variance
+* stem:[K] = number of regulators
+** can be reduced by identifying TFs
+* stem:[T] = number of trees in each forest
+** simply use threading LOL
+* stem:[N] = number of samples
+
+== Inference with known TFs
+
+If we know TFs the whole inference process is simpler
+
+* we still need ChIPseq data
+
+GRNs are bipartite
+
+* made of
+** TFs
+** target genes
+
+Influences are directed:
+
+* TFs influence genes
+* TFs influence other TFs (and/or themselves)
+
+We can avoid looking for target gene -> target gene influences
+
+=== Matching TFs with their genes
+
+How do we know which TFs regulate which genes?
+
+Use the methods from earlier to compute scores and filter out weak regulation edges in networks built on TFs
+
+TF information can be used:
+
+* a posteriori
+** filters edges
+** makes them directed
+
+* a priori
+** reduces score computations
