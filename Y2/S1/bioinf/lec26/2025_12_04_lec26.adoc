@@ -8,7 +8,7 @@
 
 Like GRNs but nodes are proteins and edges are interactions
 
-* nodes can also signify *functional association* instead of direct connection
+* edges can also signify *functional association* instead of direct connection
 * knowing the source of an interaction can give additional information
 ** if we know that 2 proteins are translated together then they are likely functionally related
 
@@ -22,15 +22,19 @@ PPI graphs are:
 
 * undirected
 ** the direction of the interaction doesn't matter
+** "there is an interaction between proteins stem:[\{ P_1, P_2 \}]"
 * unweighted
 ** binary
-* weighted
+** "protein stem:[P_1] interacts with protein stem:[P_2]"
+* can also be weighted
 ** confidence scores
+** "there is an 80% probability that there is an interaction between proteins stem:[\{ P_1, P_2 \}]"
 
 === Interactome
 
 20,000 proteins generate about 650,000 interactions
 
+* this is 20-30% of all possible interactions
 * well known proteins have more known interactions because researchers look for them
 * interactions may only happen in certain conditions
 ** database lump them all together instead
@@ -52,24 +56,31 @@ PPI networks are highly modular
 
 They can be detected by:
 
-* community detection methods
-** Louvain
-** MCL
-* clustering methods on *node embeddings* (embedding node information as vectors)
-** DBSCAN
-** k-means
+. community detection methods
+* Louvain
+* MCL
+
+. clustering methods on *node embeddings* (embedding node information as vectors)
+* DBSCAN
+* k-means
+
+Node embeddings take local network topology and edge confidence scores into account
+
+* they use message-passing to do this
 
 == Network Medicine
 
 Barabasi says that diseases and therapies can be studied using network information
 
-If known disease proteins are connected to other proteins then those proteins somehow affect the disease
+If known disease proteins are connected to other proteins then those proteins somehow affect the disease and vice versa
+
+Neighborhoods of genes associated with a single disease are called *disease modules*
 
 === Network Separation of Diseases
 
 When relating multiple diseases you can compute distances between modules related to those diseases
 
-* if 2 diseases are very close or overlap then they are likely functionallvery close
+* if 2 diseases are very close or overlap then they are likely functionally very close
 ** may be variants of each other
 
 Distance is computed with the network separation matrix
@@ -82,29 +93,183 @@ Negative separation means the 2 diseases are not independent
 
 Positive separation means they are very likely independent
 
+* separation index is high
+
+Formally:
+
+.Average shortest path distance
+[stem]
+++++
+\langle d_{xy} \rangle = \frac{1}{|M_X| \cdot |M_Y|} \sum_{i \in M_X} \sum_{j \in M_Y} d_{ij}
+++++
+
+where:
+
+* stem:[|M_X|, |M_Y|] are the number of nodes in modules stem:[X, Y]
+* stem:[d_{ij}] is the length of the shortest path between stem:[i] and stem:[j]
+
+Network separation stem:[S_{AB}]:
+
+[stem]
+++++
+S_{AB} = \langle d_{AB} \rangle - \frac{\langle d_{AA} \rangle + \langle d_{BB} \rangle }{2}
+++++
+
+where:
+
+* stem:[\langle d_{AB} \rangle] is the average distance between the 2 modules
+** average distance between 2 areas of the graph
+
+* stem:[\langle d_{AA} \rangle, \langle d_{BB} \rangle] are the average distances within those modules
+** average distance within that area of the graph
+** i.e. average distance between the nodes within that area
+
 === Drug/therapeutic module
 
-Starting from the drug's target proteins:
+Drugs cannot target single proteins
 
+* like how would you even go about that
+
+So they target sets of proteins
+
+* let's call them stem:[T]
+
+A drug module is a subgraph induced by stem:[T]
+
+The *network based drug repurposing hypothesis* states that:
+
+* a drug will be effective against a disease if its module stem:[T] is sufficiently close to the disease module stem:[S]
 * compare the distance between the drug module and the disease module
 ** closer -> likely effective drug
 
 2 types of distances:
 
-* average shortest path distance
-* average closest path distance stem:[d_c]
+. average shortest path distance stem:[d_{avg}]
+* average of all distances stem:[d(s, t)] between stem:[T] and stem:[S]
+* simple but too sensitive to hubs
+
+. average closest path distance stem:[d_c]
+* for each target protein stem:[t \in T] find the closest node stem:[s \in S] and get the average 
 ** for every node in the drug module: find the shortest path to the closest node of the disease
-** normalizing the distance using the z-score reduces randomness and preserves degree
+* much more robust than average shortest path distance
+
+.Average closest path distance
+[stem]
+++++
+d_c(S, T) = \frac{1}{|T|} \sum_{t \in T, s \in S} \min d(t, s)
+++++
+
+However the distance could be random if stem:[T] has many hubs
+
+* normalizing the distance using the z-score reduces randomness and preserves degree
+
+.Z-score normalization
+[stem]
+++++
+Z_c = \frac{d_c^{\text{obs}} - \mu_{\text{rand}}}{\sigma_{\text{rand}}}
+++++
+
+where:
+
+* stem:[d_c^{\text{obs}}] is the observed closest path distance between stem:[T, S]
+* stem:[\mu_{\text{rand}}, \sigma_{\text{rand}}] are the mean and stdev from ~1000 random target sets with identical degree distribution as our target stem:[T]
+
+== Drug repurposing
 
 If we know a drug is effective for a disease we can try it on a different but similar disease
 
 * this is called *drug repurposing*
+
+This is cheaper and quicker than developing a whole new drug from scratch
+
+.Steps:
+
+. Input: 
+* curated PPI networks
+* set of disease genes stem:[S]
+* set of drug targets stem:[T]
+
+. Get the closest average distance
+
+. Sample ~1000 random stem:[ST] nodes
+* sample nodes with the same degree sequence as the real modules
+
+. Normalize with the Z score
 * if the Z score is < 2 then the drug could be repurposed
 
-Diffusion and random walks are more commonly because PPIs are sparse
+However distance methods are not super robust
 
+* diffusion and random walks are more commonly used because PPIs are sparse
 * a missing node can really screw with the distance metrics
 * mutual distance is also good
+
+=== Random Walk with Restart
+
+Common method used in diffusion techniques
+
+* walker randomly moves from a node to one of its neighbors
+** with a certain probability
+* walker can also end up back at the starting node stem:[p_0]
+
+Formally:
+
+[stem]
+++++
+p_{t+1} = (1 - \alpha) W_{p_t} + \alpha_{p_0}
+++++
+
+Where:
+
+* stem:[p_t] is the probability vector after stem:[t] steps
+* stem:[W] is the column-normalized adjacency matrix
+* stem:[\alpha] is the probability to restart
+** usually stem:[\alpha \in [ 0.5, 0.7 \]]
+
+RWR has a number of advantages over shortest/closest paths:
+
+* it accounts for all paths and their lengths
+* less sensitive to missing edges
+* good for global prioritization
+
+==== The influence vector
+
+Random walking should converge to a steady state (stem:[p_\infty])
+
+* represents the global influence of the source nodes on all network nodes
+* linear system
+* solved analytically
+
+.Like this:
+[stem]
+++++
+p_\infty = \alpha(I - (1 - \alpha) W)^{-1} p_0
+++++
+
+where:
+
+* stem:[p_\infty] is the steady state
+* stem:[\alpha] is the restart probability
+* stem:[K = \alpha(I - (1 - \alpha) W)^{-1}] which is the diffusion kernel
+** each position in the matrix (stem:[K_{ij}]) quantifies the probability that a particle started at stem:[i] ends up at stem:[j]
+** inverting this matrix is typically unfeasible
+** that's why we use random walks
+
+The positions of the vector indicate the long term probability of being at that node
+
+i.e.:
+
+[source,python]
+----
+inf_vec = [0.5, 0.01, 0.15, 0.54, 0.7]
+
+for node, p in enumerate(inf_vec):
+    print(f"The probability of randomly walking to node {node} is {p}")
+----
+
+If we do this process for drug targets stem:[T] and disease genes stem:[S] we can obtain steady probability states for both
+
+* we can then measure the similarity between them
+* if similarity is high => good chance the drug will work
 
 == New approaches 
 
@@ -121,12 +286,21 @@ Certain interactions may happen under specific circumstances
 
 * during events
 * in specific places
+** liver PPI != large intestine PPI
 
 === Combination therapy
 
 Complex diseases often require multiple drugs
 
-* maximize the effect of each drug on the disease
+* Maximize the effect of each drug on the disease
+** find pairs of drugs stem:[(T_1, T_2)] that maximize the effect on the disease module stem:[S] when taken together
+
+* optimize the combined proximity
+** stem:[Z_c(S, T_1 \cup T_2)]
+
+* or measure the change in the number of critical paths
+** if fewer critical paths -> combination is probably working
+
 * combined effect != additive
 ** topologically complementary
 
