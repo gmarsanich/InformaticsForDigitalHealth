@@ -390,8 +390,7 @@ Brute force approaches to finding communities often do not work in practice
 
 * bionets are huge
 
-Modularity stem:[Q]
- measures how strongly a network is modularized
+Modularity stem:[Q] indicatesmeasures how strongly a network is modularized
 
 * how many modules/subgraphs there are
 ** higher -> more modular

@@ -44,7 +44,6 @@ Eventually the cumulative probability will reach 1
 
 * it will reach 1 sooner when stem:[\lambda] is higher
 
-
 The mean of an exponentially distributed variable with parameter stem:[\lambda] is stem:[\frac{\lambda}{2}]
 
 The exponential distribution has no memory
@@ -70,8 +69,6 @@ Given, molecule types, molecule amounts (natural numbers):
 
 [source,python]
 ----
-
-
 x = molecules.init() # vector of molecule counts (initial state)
 t = 0 # initial time (usually 0)
 t_stop = 10_000 # simulation horizon (stop time or max #steps)
@@ -120,6 +117,7 @@ There are other stochastic approaches that are a bit less expensive
 
 * Gibson & Bruck
 ** scans reactions in a tree format (growth is more logarithmic)
+
 * Cao et. al, McCollum et al.
 ** sorts the reaction list in some order
 ** e.g. put highest propensity first -> reaction will likely happen sooner

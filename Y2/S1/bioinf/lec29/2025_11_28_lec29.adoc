@@ -70,7 +70,7 @@ Many public repositories exist:
 ** community benchmarks with gold-standard networks and evaluation frameworks.
 ** https://gnw.sourceforge.net/dreamchallenge.html
 
-=== Transcription Factors
+=== Transcription Factors (TFs)
 
 We can measure network structure using classic correlation/relation measures
 

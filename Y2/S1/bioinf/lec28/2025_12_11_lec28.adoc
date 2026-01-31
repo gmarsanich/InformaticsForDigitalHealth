@@ -1,4 +1,4 @@
-= BSB - Computational Structural Biology
+= BSB - Computational Structural Biology -> Systems Biology
 :toc:
 :toc-title: Contents
 :nofooter:

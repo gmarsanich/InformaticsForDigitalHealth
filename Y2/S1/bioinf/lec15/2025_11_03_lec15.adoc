@@ -36,7 +36,7 @@ So how do we do it with:
 
 [stem]
 ++++
-\text{Score} = 𝑠𝑚(𝐴, 𝐴) + 𝑔) + 3 ⋅ 𝑠𝑚(𝑅, 𝑅) + (𝑠𝑚(𝐴, 𝐶) + 𝑔) + 3 ⋅ 𝑠𝑚(𝐷,𝐷)+ 2 ⋅ 𝑔 + 2 ⋅ 𝑠𝑚(𝑆, 𝐴) + 𝑠𝑚(𝐴, 𝐴)
+\text{Score} = sm(A, A) + g) + 3 ⋅ sm(R, R) + (sm(A, C) + g) + 3 ⋅ sm(D,D)+ 2 ⋅ g + 2 ⋅ sm(S, A) + sm(A, A)
 ++++
 
 == Heuristic Algorithms
