@@ -33,6 +33,11 @@ A billion things to do
 
 *Differential expression analysis*
 
+Measures how genes are expressed
+
+* gene `A` can be expressed as `A1`, `A2`, etc.
+* we need to know how these expressions differ from each other
+
 The pipeline you select affects the output
 
 * sometimes a bit
