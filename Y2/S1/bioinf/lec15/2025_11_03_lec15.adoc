@@ -104,7 +104,7 @@ Progressive alignment works like this:
 
 === CLUSTALW
 
-More robust version of CLUSTAL that reduce error propagation
+More robust version of CLUSTAL that reduces error propagation
 
 . Uses sequence weighing
 * weighs sequences according to their representation
