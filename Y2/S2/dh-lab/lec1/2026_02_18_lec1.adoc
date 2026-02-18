@@ -1,0 +1,20 @@
+= Digital Health Lab
+:toc:
+:toc-title: Contents
+:nofooter:
+:stem: latexmath
+
+== Overview
+
+General lectures about digital health stuff
+
+Practical lab sessions
+
+=== Project
+
+Group project
+
+* 2-4 people
+* Real world projects
+** real world data
+
