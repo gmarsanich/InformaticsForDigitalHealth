@@ -1,0 +1,217 @@
+= NLP for DH
+:toc:
+:toc-title: Contents
+:nofooter:
+:stem: latexmath
+
+== Overview
+
+. Foundational theory
+* techniques
+* algorithms
+
+. Architectural design
+* understanding language applications
+* understanding development libraries
+
+. Health contextualization
+* how to implement NLP in healthcare systems
+** EHRs
+** automated diagnosis
+
+=== Pillars and methodology
+
+. Language components
+* morphology
+* syntax
+* PoS
+
+. Evolution of techniques and methods
+* old techniques
+** n-grams
+** PoS tagging
+* new techniques
+** LLMs
+
+. Implementation
+
+== DH Applications
+
+. Information extraction
+* understanding that tokens have meaning
+* representing information efficiently
+** graphs
+** embeddings
+
+. Classification
+* clustering documents
+** find <documents> from <corpus> that match <attributes>
+
+. Advanced agents
+. Generation
+
+== Assessment
+
+Still to be finalized
+
+. Midterms
+* simple app
+
+. Software project
+* long term app project
+
+. Oral exam
+* project discussion
+
+== What is NLP?
+
+Subfield of AI and linguistics
+
+* uses computers to analyze linguistic material
+* mostly linked to linguistics
+** can be applied to written text
+** also spoken word
+
+Enables mathematical reasoning on nautral language
+
+== Language processing levels
+
+=== Phonetics/phonology
+
+Most basic level
+
+* sound has meaning
+** not always but mostly
+* sequence of sounds represented by an alphabet
+** assuming we have an alhabet and not ideograms
+* so simple that old computers could generate correct sounding gibberish
+* used for:
+** speech to text
+** text to speech
+
+Typical problem is matching when something starts and something ends
+
+Health application:
+
+* recognize which words become less controlled in people with Parkinson's
+
+=== Morphology
+
+Deals with the forms of words
+
+* literally how words are formed
+** suffixes, affixes, desinations, cases, etc.
+* lemmas
+** the bit that has meaning
+** bits that have meaning on their own (so not LLM tokens)
+* stems
+** stuff you staple onto lemmas to affect the meaning
+
+Health application:
+
+* codifying medical terms into standard codes
+
+=== Syntax
+
+Studies sentence structure/grammar
+
+* requires grammar
+** set of rules that generates a language
+
+Used for dependency parsing
+
+* which words are/aren't linked
+** dead end problem
+** solved by LLMs and GPTs and such
+* tackles hierarchical problem of language
+** language is hierarchical
+** represented linearly
+*** one word/lemma always comes after another
+
+Health application:
+
+* relation extraction in medication-dosage documents
+** administer [amt][unit] of [drg] to patient [pz]
+
+=== Semantics
+
+Studies literal meaning of language
+
+* maps linguistic expression to denotations in a knowledge base and such
+** need to find a function that does this
+* used for word sense disambiguation
+** e.g. fish as a noun vs fish as a verb
+
+
+Health application:
+
+* entity linking and disambiguation
+** "I feel cold" -> temperature
+** "I have a cold" -> illness
+
+=== Pragmatics
+
+Studies language in context
+
+* what happens in real language
+* i.e. contextual intent
+** we don't always communicate literally
+** i.e. metaphors, allegories, similes, etc.
+
+Also deals with who/what/when/why
+
+Health application:
+
+* health chatbots
+** Meaning changes with context
+** "Shortness of breath" 
+*** could be temporarily out of breath from running to the bus stop
+*** could be having a heart attack
+
+== History of NLP
+
+NLP is an old field (1950s and earlier - now)
+
+=== Symbolic wave (1950s - 1990s)
+
+Handcrafted set of rules to formalize language
+
+* this is valid [language]
+* this is not valid [language]
+* basically formal logic
+** TFL/FOL
+
+You can combine words from different sets and produce language
+
+* only in specific ways
+
+Deterministic system
+
+* big if else chain
+** good for programming
+** bad for natural language
+
+Brittle system
+
+* any time a new word is codified the system breaks
+
+Shallow system
+
+* doesn't understand meaning
+* only manipulates strings
+
+=== Statistical wave (1990s - 2010s)
+
+Uses HMMs and probability
+
+* predict next word/letter/character given the previous word/letter/character
+
+=== Neural (2010s - now)
+
+Based on deep learning
+
+* dense representations
+** vector embeddings
+** language highlights points in a space
+
+Uses attention to determine importance
