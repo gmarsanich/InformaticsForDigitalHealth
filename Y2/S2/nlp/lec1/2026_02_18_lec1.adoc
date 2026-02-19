@@ -200,11 +200,50 @@ Shallow system
 * doesn't understand meaning
 * only manipulates strings
 
+==== Rule-based stemming
+
+You can use rules to extract the stem of a word
+
+* a tool that does that is called a *stemmer*
+
+i.e. get "run" from "running"
+
+* simple rules are decently accurate
+** ~70% success rate
+
+Impractical and hard to maintain
+
 === Statistical wave (1990s - 2010s)
 
 Uses HMMs and probability
 
 * predict next word/letter/character given the previous word/letter/character
+
+Models language as a stochastic process
+
+* rules still exist
+** grammars and such
+* rules apply to lots of language contexts
+** not always (theater, music, poetry, etc.)
+
+More robust than simple rule based systems
+
+* a rule may apply rarely but it won't mess with your whole learning process
+* still inherits all the weakness that comes out of simple Markovian processes
+
+Sequences can be ranked in terms of likelihood
+
+* context dependent
+* in a medical context the word "attack" in the sentence "heart attack" is much more likely to mean myocardial infarction than being beaten with a heart
+
+This can be used to *tag* parts of sentences (token sequences)
+
+* models joint/conditional prob of tag given text
+* i.e. classifies part of text (negation, problem, medication, etc.)
+
+Algorithms like TF-IDF and bag of words can be used to classify documents into categories
+
+* still using statistics
 
 === Neural (2010s - now)
 
@@ -215,3 +254,35 @@ Based on deep learning
 ** language highlights points in a space
 
 Uses attention to determine importance
+
+* BERT/BERT-like
+* GPTs
+
+Extremely powerful and tackles classical NLP problems (long range dependencies, polysemy)
+
+However:
+
+* they are mostly black boxes
+** we don't really know how/why models return specific answers
+** answers are also non-deterministic
+* high computational cost
+** training and running LLMs requires lots of GPU memory
+
+Can be used to summarize clinical notes
+
+* integrating EHR records
+* patient history
+
+Pretrained LLMs can be further trained by prompting
+
+* e.g. asking OLLama 10,000 questions about bees will cause OLLama to learn about bees
+** maybe
+** no guarantee of success
+
+LLMs can be used to retrieve content from reliable sources to reduce hallucinations
+
+* can provide source for answer
+* second component can look for content supporint hallucinated output from the first component
+** not great
+** prone to chicanery
+* better to find content related to the output
