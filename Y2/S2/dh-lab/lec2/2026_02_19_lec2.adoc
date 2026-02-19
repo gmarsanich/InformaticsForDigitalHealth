@@ -1,0 +1,83 @@
+= Digital Health Lab
+:toc:
+:toc-title: Contents
+:nofooter:
+:stem: latexmath
+
+== Terminology + brief history
+
+=== System
+
+Set of integrated+interacting components
+
+Typically defined limits
+
+* this thing is in the system
+* that thing is not in the system
+
+Systems can be hierarchical
+
+* a system can be a component of another system
+
+Many types of systems:
+
+. complex (linear)
+* systems whose behavior cannot be determined/inferred from the behaviors of its components
+* interactions between components generate complexity
+
+. dynamical
+* systems where fixed rules define time dependencies
+** geometrical space
+* i.e. systems that change over time
+
+=== Digital Health
+
+Complex interaction of different industries and stakeholders
+
+* in this case interaction between computer science/AI/IT/data processing and healthcare
+
+== Ideal pipeline for working with large biomedical data
+
+=== 1. Knowledge extraction
+
+Read literature
+
+Acquire data
+
+Acquire information from data
+
+=== 2. Data integration
+
+Integrate data from sources
+
+* build dataset
+* clean dataset
+
+=== 3. Biomarker identification
+
+Identify some kind of marker of a disease/condition
+
+* people with MS have overactivation of some gene
+* people with hemiplegia have asymmetric accelerometer signals
+
+=== 4. Pathway analysis
+
+Zoom into subset of biomarker information
+
+* find subnetwork
+
+=== 5. Modeling and simulation
+
+Perturb the network to understand how it changes
+
+* what happens when I increase dosage by x units?
+* what happens if I increase the dosage from 2x a week to 3x a week?
+
+Need to tune the network elements
+
+* concentrations
+* etc
+
+Simulations are stochastic
+
+* need to account for Brownian motion of molecules
