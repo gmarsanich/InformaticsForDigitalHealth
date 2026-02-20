@@ -1,0 +1,278 @@
+= Assistive Technologies - Internet of Things
+:toc:
+:toc-title: Contents
+:nofooter:
+:stem: latexmath
+
+== Cyberphysical systems
+
+Systems that exist in 2 worlds:
+
+. virtual
+* processing
+* communication
+. physical
+* sensors
+* actuators
+
+Physical part brings information to virtual world
+
+* smartphone touch screen is actuator
+
+== Smart environments
+
+Environment where smart objects live
+
+* smart objects are necesarily physical and/or cyber objects
+* i.e. cyberphysical objects
+
+They are subjected to physical experiences/constraints
+
+* damage
+* theft
+* tampering
+
+Need to design them with these in mind
+
+=== Cyberphysical system design
+
+Take into account environment conditions
+
+. Free placement
+* size
+* material
+* material properties
+* weight
+
+. Mobility
+* wires/wireless
+* batteries/wall outlet
+* position awareness
+** GPS
+** using WiFi displacement
+
+. Physical exposure
+* redundancy
+** fault tolerant
+** robust
+* security
+** encryption
+** physical security
+* cost
+** cheaper -> less valuable for thieves
+** cheaper -> less damaging if lost/broken
+
+=== What does smart even mean?
+
+No real definition
+
+* depends on characteristics
+
+Typically related to human interaction
+
+* seamless
+* unobtrusive
+** smart parts of environment are blended in
+** shouldn't feel like interacting with a machine
+
+Objects/environments that are reactive to the user's actions
+
+* also not necessarily relative to users
+* can be other systems
+** e.g. multiple thermostats that communicate to their respective controllers
+** if one breaks then pairing is lost (really?)
+*** we could say that this is not smart because it requires some expertise to set up the system
+
+=== What is a sensor?
+
+*Transducer* would be a better term
+
+* sensors are used to mean the entire device
+* in reality a sensor uses a transducer
+
+A device/tool/something that:
+
+. intercepts a signal
+. transforms the physical signal into and analog signal
+. transforms the analog signal to digital using ADC
+. processes digital signal
+. converts processed into analog
+. sends to next step through radio (if wireless)
+
+=== What is an actuator?
+
+Similar to a sensor
+
+* converts a digital signal to a phyisical reaction
+
+== What is IoT?
+
+Last evolution of internet infrastructure
+
+. IT
+* Information technology
+* for nerds by nerds
+. OT
+* operational technology
+* industry, healthcare
+. PT
+* personal technology
+* PCs, phones
+. Sensors
+* IoT kind of
+
+Independent/autonomous devices that interact with each other and possibly with humans
+
+* specific characteristics depend on use case
+** wired/wireless
+** wearable
+** etc.
+
+Can be cheap/low power devices (essentially refurbished old tech)
+
+* Arduino
+* RPi
+
+Or higher power devices
+
+* HD surveillance camera
+** Image processing
+* Motion sensors
+
+ITU-T definition takes into account Internet and Things
+
+* mostly focuses on Internet
+
+== IoT Architecture
+
+Internet uses layers and interfaces to manage complexity
+
+* networking layer
+* operational layer
+* whatever
+
+IoT layers are not as well defined/agreed upon as the normal internet layers
+
+There are general categories:
+
+. Perception
+* physical objects
+* sensors
+
+. Communication
+* i.e. the entire internet + all its layers
+
+. Device/resource/service management
+* device discovery and management
+** zeroconf
+** discoverability
+** interactions
+* services
+
+. Data and knowledge management
+* data processing etc.
+
+Security should be a continuous strip that goes through all layers
+
+=== Networking
+
+We moved from IPv4 to IPv6 (did we? subnetting and NAT exists)
+
+Using IPv6 we can connect:
+
+* 655,571 billions of billions of devices
+* per square meter of the *entire* surface of the Earth
+
+But why?
+
+* no real answer
+* there are more devices on the internet than people on earth
+* the number of mobile devices grows exponentially
+** in 2014 there were already more mobile devices than people on earth
+
+We unknowingly (kind of) intreact with more computers than we can see
+
+* PC
+* WiFi access points
+* routers
+* cloud servers
+** reverse proxies
+** load balancers
+** content delivery networks
+
+Humans cannot control all these computers manually
+
+* they have to interact with each other
+* they are effectively sensors
+** load balancers see that the load on a node of a distributed system is too hight and it reacts accordingly
+
+=== IoT databases
+
+Classical relational databases don't work well for IoT
+
+* predefined database structures are fast but not flexible
+* if you get a new sensor the data might change in some way
+** the data in the database might be different
+
+NoSQL databases are used more often
+
+* PostGres
+* InfluxDB
+* MongoDB
+
+Less performant and more flexible
+
+==== MongoDB
+
+MongoDB uses documents instead of fields
+
+* each document is like a JSON structure
+* fields in the documents may be arrays
+
+These documents correspond to general programming data structures
+
+* arrays
+* tuples
+* etc.
+
+A relation is represented as a collection of documents
+
+* the documents don't need to have the same structure
+
+== IoT and the cloud
+
+Sensors/actuators are at the edge
+
+The biggest players provide data/knowledge management
+
+* Azure
+* Google cloud
+* Amazon Web Services
+
+=== IoT platforms
+
+Services that 
+
+* deploy
+* run
+. manage
+* identification
+** IP address assignment
+** MAC address
+** device information
+
+IoT solutions
+
+The usual suspects own these (to no-one's suprise)
+
+==== Device/resource management
+
+. identification
+* hostname, IP, function advertising
+. Discovery
+* advertising again
+. Device management
+. Service composition
+* integrating between simple services
+* building complex services from simple services
+
