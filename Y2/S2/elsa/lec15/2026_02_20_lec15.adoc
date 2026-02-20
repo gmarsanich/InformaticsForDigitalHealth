@@ -1,0 +1,228 @@
+= ELSA - Introduction to Responsible AI
+:toc:
+:toc-title: Contents
+:nofooter:
+:stem: latexmath
+
+== Digital Traces
+
+We leave data traces with everything we do
+
+* including medical data
+** perscriptions
+** medical history
+** EHR
+
+Models built on these data have to be:
+
+* accurate
+* usable
+* explainable
+* ethically sound
+
+However we can't easily assign responsibility
+
+* who is responsible for the model's predictions?
+* who is responsible for how the model's predictions are used?
+
+Using human generated data has social/ethical/legal impacts
+
+* we have to be aware of this
+* we have to do something about this
+
+=== Confidence intervals and other metrics
+
+Models that return binary values are not that explainable or medically applicable
+
+* model says yes you have a tumor
+** it could be very unconfident
+** the decision could be different tomorrow
+
+Better to return some sort of confidence metric
+
+* I'm unsure whether this is a tumor or not (confidence = 51%)
+** better for doctors to make decision
+
+Legal responsibility is iffy
+
+* if a patient dies is the doctor to blame? is the machine to blame? both?
+new class
+This is especially important for human based AI
+
+* processing logs from industrial processes has no ethical considerations really
+* diagnosing tumors does
+
+== Human-Centric AI
+
+European Commission formed group of experts to define imortant aspects of ethical/trustworthy AI
+
+Human centric AI is AI that is built around the impact it has on people
+
+They found 3 main pillars:
+
+. Lawful
+* complies with applicable laws/regulation
+
+. Ethical
+* sticks to defined ethical frameworks
+
+. Robust
+* perform reliably
+* perform securely
+* perform safely
+** during training and inference
+
+One does not guarantee the others
+
+* a model can be robust but unethical
+* a model can be etihcal but not legal
+* a model can be legal but not robust
+* and so on
+
+=== Human-Centric AI requirements
+
+==== Human agency and oversight
+
+All AI systems must have humans at the helm
+
+* there must be someone that oversees AI usage
+
+For example:
+
+* systems that learn to reject/defer
+** low confidence, doctor should make decision
+* explainable systems
+** this is a tumor and this is why
+
+Fundamental human rights must be upheld
+
+==== Technical robustness
+
+Data and other infrastructure must be:
+
+* resilient
+** fault tolerant
+* safe
+** does not cause physical harm
+* secure
+** does not cause digital harm
+* accurate
+* auditable
+
+==== Privacy and data governance
+
+Use only relevant data for the task
+
+Respect all applicable privacy regulations
+
+* even at the cost of some accuracy loss
+
+==== Diversity, non-discrimination and fairness
+
+Diversity is everywhere
+
+* even in things like product recommendations
+** even if you like a specific brand
+** models should propose alternatives for example
+** need to find a balance
+* politics too
+** bot farms post AI generated slop to astroturf a certain view point
+
+==== Societal and environmental wellbeing
+
+Very important with LLMs nowadays
+
+* they are overused for even simple tasks
+
+LLMs are extremely energy intensive to train
+
+* like nuclear power plant level of energy
+
+Cooling the datacenters also takes a lot of water
+
+* like draining cities lot
+
+==== Accountability
+
+Who is held accountable if a self driving car kills someone?
+
+How do we determine it?
+
+How do we determine the cause of the event?
+
+* does the cause change the accountability?
+
+== Introduction to Data Privacy
+
+Many definitions that change over time
+
+* 1890: the right to be alone (USA)
+* modern NIST legal definitions (USA (again))
+** several definitions
+** apply to specific cases and such
+* modern ISO standards (world?)
+
+There are several types of privacy
+
+* Political
+* Consumer
+* Medical
+* Private property
+* Information/data privacy
+
+//slides
+
+=== Why privacy?
+
+Basically to avoid improper use of personal information
+
+* name
+* age
+* phone number
+* etc
+
+There are also *sensitive data* that need to be kept even more secure
+
+* biometrics
+* sex life/orientation
+* health information
+* trade union membership
+* racial/ethnic origin
+* political opinion
+* religious/philosophical beliefs
+
+These can potentially be used to compromise fairness and discrimination:
+
+* racism
+* religious bias
+* etc.
+
+There are also *personal data*
+
+* name
+* age
+* fiscal code
+* hair color
+* eye color
+
+These are considered personal even if they can't be used to identify someone directly
+
+* they can be used indirectly
+
+== Responsibility
+
+There is an entity known as a controller
+
+* a person or people that is wholly responsible for deciding *how* and *why* personal data is processed
+** responsible for determining purposes and means
+** responsible for ensuring compliance
+
+These are overlayed onto data processors
+
+* the people that actually process the data as given by the controller
+
+If the instructions given by the controller cause a leak or something they are responsible
+
+If the processor does not follow their instructions and that causes a leak or something then the chain breaks and they are responsible
+
+In case of a leak you must demonstrate that you took all possible precautions to avoid the event
