@@ -1,0 +1,129 @@
+= Assistive Technologies
+:toc:
+:toc-title: Contents
+:nofooter:
+:stem: latexmath
+
+== Overview of computer aids
+
+Many ways/tools/techniques to use computers with visual impairments
+
+* screen readers
+* magnifiers
+* audio feedback
+
+Tools for most OSs
+
+* Windows
+* MacOS
+* Linux/BSD
+
+== Using the computer with visual impairments
+
+It's definitely possible with the right help
+
+=== Software aids
+
+Various types of software aids
+
+. screen readers
+* blind users
+. magnifiers
+* low vision users
+
+These work best when software is designed with accessibility in mind
+
+* accessible versions
+** high contrast versions
+** reader friendly versions
+*** hierarchical page structures to figure out where you are
+* APIs that interact with AT
+** telling SRs what is/isn't important
+** telling SRs what is/isn't interactive
+
+Software magnifiers include:
+
+. Supernova (Windows, commercial)
+* high res zoom
+* contrast modes
+* TTS
+* interaction hints
+** bright boxes around selected elements
+
+Zooming is not enough by itself
+
+* complementary features are more important
+** adjustable contrast
+*** black on white vs white/yellow on black
+
+Some of these can be implemented straight into applications/websites
+
+* changing colors
+* zooming
+* changing font
+** family
+** size
+** weight
+
+Reading long text can be straining even with magnifiers and contrast adjustments
+
+* screen readers exist
+
+Screen readers include:
+
+. JAWS SR (Windows, commercial)
+* advanced screen reader
+** has a lot of features and commands
+
+. NVDA (Windows, FOSS)
+* modular
+** has add-ons
+* made in Python
+* good for reading documents and websites
+* too simple for complex interfaces like Microsoft Office/Teams (Microsoft moment)
+Most TTS have really bad voices
+
+* doesn't really matter but would be nice
+* accuracy and features are more important
+** read line by line/word by word/etc.
+** information about images would also be good
+** active/focused window information using voice commands/keyboard shortcuts
+** active/focused window element should be readable too
+
+=== Hardware aids
+
+Hardware aids also exist:
+
+. special braille keyboards
+. braille displays
+* converts text to braille code
+
+These typically work on top of screen readers
+
+Hardware tools can be used to perceive the real world as well
+
+. Explore 8 magnifier
+* magnifier
+* adjustable contrast
+* near/far viewing modes
+* can take pictures and zoom/pan
+* multiple cameras
+** front
+** straight down
+
+== Mobile devices
+
+=== Mobile screen readers
+
+Magnifiers also exist for mobile devices
+
+* smartphones
+* tablets
+
+Can't use keyboard shortcuts on touch screen only devices
+
+* use gestures instead
+
+== Other assistive technologies
+
+Braille printers
