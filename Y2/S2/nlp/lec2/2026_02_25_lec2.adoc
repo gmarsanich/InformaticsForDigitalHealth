@@ -1,0 +1,253 @@
+= NLP - Information Retrieval and ML 2
+:toc:
+:toc-title: Contents
+:nofooter:
+:stem: latexmath
+
+== What is Information Retrieval?
+
+Finding unstructured material that satisfies an information need from within a collection of similar material
+
+* i.e. find all pictures of crabs from the entire Google images index
+
+Typically using a *query*
+
+CAUTION: data != information. Data is raw text (for example). Information is given by the interpretation of data
+
+=== Standard IR pipeline
+
+. Acquisition
+* getting documents
+. Indexing
+* building inverted index for speed
+. Query Processing
+* expanding keywords
+** e.g. heart -> `heart OR cardiac OR cuore`
+** retrieving documents that may be interesting
+. Ranking
+* score these documents by relevance
+** top k documents to show the user
+. Evaluation
+* evaluate whether the tools work properly
+** check if answer is good
+** can then optimize algorithms to improve system
+
+==== Inverted index
+
+List of terms
+
+For each term:
+
+* add the the ID of every document in which the term appears
+
+Like `idx = {"aspirin": [1, 2, 4, 7], "ibuprofen": [5, 4, 3, 1]}`
+
+* `aspirin & ibuprofen = set.intersection(idx["aspirin"], idx["ibuprofen"])`
+
+Very fast and efficient way of searching document collections
+
+* index has to be built and updated
+
+=== Evauation measures
+
+Usual suspects
+
+Don't trust them by themselves
+
+* always use in combination with others*
+** unless you know the application
+
+==== Precision
+
+Fraction of retrieved documents that are relevant
+
+* contains false positives
+
+==== Recall
+
+Fraction of relevant documents that were retrieved
+
+* contains false negatives
+
+==== F or F1
+
+TRAP: cant remember why
+
+==== Fbeta
+
+TRAP: also a trap idk why
+
+==== Accuracy
+
+Fraction of correct classifications
+
+* in reality very misleading
+
+== IR models
+
+=== Boolean retrieval model 
+
+Developed in 1980s
+
+Very simple
+
+* boolean algebra 
+* set theory
+
+The document is either in the set or not
+
+* i.e. this document contains your keywords or not
+* thus no ranking
+** because sets have no partial ordering
+
+Still used somewhere
+
+* public libraries
+* banks?
+* certain medical paper repositories
+** e.g. PubMed
+
+Very high value data often lives behind boolean query engines
+
+* can't discard them
+
+==== Application example: clinical trial matching
+
+Find the right clinical trial for a specific patient profile
+
+* I have a patient with these characteristics
+* what can I have them do?
+
+E.g. look up hypertension and aspirin and look for trials where those keywords appear somewhere
+
+Recall would be better
+
+* lowers risk of missing useful treatment
+* costs a few minutes of scrolling
+
+=== Vector Space Model
+
+Each document/query is a vector in a high dimensional space
+
+If document and query are aligned the cosine will be low
+
+* means that the document is relevant to the query
+* length doesn't really matter since it contains frequencies
+
+Allows for partial ordering and ranking
+
+=== TF-IDF/term weighting
+
+Term frequency / inverse document frequency
+
+* frequency of term in document times inverse of frequency of term in the whole corpus
+
+Balances frequency vs uniqueness
+
+* "the" is everywhere so it's meaningless
+* rare terms are heavier
+* documents that contain rare terms are more relevant to the query
+
+No theoretical basis for why this works
+
+* based on intuition (it was revealed to me in a dream ahh)
+* lol???
+
+== Challenges in medical IR
+
+Simple query matching is brittle
+
+* synonyms exist
+** n terms 1 meaning
+** heart attack vs myocardial infarction
+* polisemy too
+** 1 term n meanings
+** cold (temperature) vs cold (infection)
+* and hierarchy
+** umbrella terms
+** taxonomies
+*** lung disease contains pneumonia, tuberculosis, bronchitis, etc.
+** hard to solve
+*** multiple layers of inheritance and connections
+
+The big one is *privacy preservation*
+
+* retrieve patient information without revealing personally identifiable information
+
+Tools like *MeSh* and *SnoMed* try to map clinical terms to more informal terms
+
+* these are called *ontologies*
+
+== Semantic search
+
+Sometimes we know the meaning but not the exact term
+
+Sometimes we want to look for meaning instead of exact term occurrences
+
+ML/DL tools like BioBERT
+
+* high dimensional vector space
+* close positions in space = close meaning
+
+Or things like knowledge graphs
+
+* connecting entities with nodes/edges
+** drug -> side effect
+
+== Feature engineering for NLP
+
+How do we turn text into numbers sensibly?
+
+Lots of ways
+
+* bag of words
+** set of pairs
+** `set({word: number_of_occurrences})`
+** no ordering
+
+* n-grams
+** takes first n elements of text
+*** fixed length sliding windows
+** attempts to preserve order
+*** preserves local ordering
+*** loses global ordering
+
+* embeddings
+** Word2Vec
+** BERT
+
+* Clinical markers
+** specific database codes somewhere in the document
+** specific medical terms
+
+=== ML pipeline for NLP
+
+. Data collection
+* same as earlier
+. Preprocessing
+* same as earlier
+* REMOVE ALL PERSONALLY IDENTIFIABLE INFORMATION NOW FOR THE LOVE OF GOD
+** once it goes into the training data it's over you have to retrain the model
+. Feature extraction
+* see earlier
+. Training
+* classic training stuff
+. Evaluation
+* technical evaluation
+* human evaluation as well
+
+== Explainability
+
+Prove that you took all possible precautions to ensure:
+
+* that your system is usually performant
+* that your system is state of the art
+
+Systems need to be:
+
+. interpretable
+* understand why a certain decision was made
+** some token appeared a lot in document related to this patient
+. locally explainable
+* factors oa decision must be localized
+** these 2 features were the most important in deciding whether Berry Boy lives or dies
