@@ -1,0 +1,70 @@
+= Digital Health Lab - Biomarkers
+:toc:
+:toc-title: Contents
+:nofooter:
+:stem: latexmath
+
+== Biomarker identification
+
+Identifying a limited number of variables to distinguish populations or subgroups
+
+* clinical
+* molecular
+
+These are not necessarily causes of diseases/conditions
+
+* can be consequences of conditions
+
+Many techniques depending on domain
+
+For example:
+
+=== Differential Expression Analysis
+
+Used for molecular components in biology
+
+Check if variables change over time or after treatment
+
+Statistical tools:
+
+. log fold change
+* use threshold to make results more robust 
+** keep results if stem:[ |LF_i| \gt \text{threshold} ]
+* not robust to noise
+* not robust to normal variation
+* no indication of statistical significance
+
+. Hypothesis testing
+* T-test, Kolmogorov-Smirnov test
+** take sample at time 0
+** give treatment
+** run stat test to check difference at time N
+* Classic significance correction techniques
+** Benjamin-Hochberg
+** Bonferroni
+
+=== Technology
+
+Depends on domain/task
+
+. Transcriptomics
+* quantitative PCR
+** low noise
+** low number
+** low cost
+* microarray
+** high noise
+** high number
+** high cost
+* RNAseq
+** medium noise
+** high number
+** very high cost
+
+. Proteomics
+* more expensive than transcriptomics
+* very noisy
+* often not worth it
+
+. Metabolomics
+* same here
