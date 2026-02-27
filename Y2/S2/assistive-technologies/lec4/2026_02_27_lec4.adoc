@@ -1,0 +1,201 @@
+= Assistive Technologies - Technical Issues in IoT
+:toc:
+:toc-title: Contents
+:nofooter:
+:stem: latexmath
+
+== Performance and energy efficiency
+
+Devices live in multiple layers
+
+. sensor/actuator layer
+. cloud/processor
+
+Sending data to the cloud and getting it back in a reasonable time frame is hard
+
+Cloud services could be thousands of km away
+
+* high latency
+
+Can cause problems in fields like health
+
+Routing and server issues across the internet can also cause reliability problems
+
+We can use the sensor itself to process the data
+
+* provided it is powerful enough
+** will never be more powerful than a remote server
+* local actuator implements sensor results
+
+Multiple of the same device can come to different conclusions depending on where/how they're placed
+
+=== Cloud, edge and fog
+
+Cloud computing refers to servers in a data center
+
+* few (relatively)
+* powerful
+* well protected
+
+Fog network is a set of low power servers
+
+* a smartphone could be a fog server
+* offer part of cloud server services
+** evaluation
+** formatting
+** expanding/decoding
+* placed close to the access point
+* very low latency
+
+Edge computing refers to smaller devices
+
+* many
+* smartphones
+* laptops
+
+== Data analysis and processing
+
+How do we bring together data producers and consumers?
+
+How do we represent data?
+
+* what formats?
+* what standards?
+** MQTT
+** ZigBee
+** Z-wave
+
+== Interoperability and standards
+
+Making vertical silos is useless (but it will make you a lot of money)
+
+* your solutions will only solve your problems on your devices with your data
+* you cannot apply them to other contexts
+* device A from manufacturer A cannot communicated with device B from manufacturer B
+
+=== Why standards?
+
+Advantage for manufacturers and developers/researchers
+
+Manufacturers develop solutions and sell solutions at high prices
+
+Subsequent manufacturers will attempt to copy/reverse engineer/whatever
+
+* this will cost you in the long run
+* maintaining underlying techonlogies is expensive
+
+Competing manufacturers often congregate in consortiums to maintain/develop underlying tech
+
+* they compete with each other at the service level
+* e.g. HDMI consortium, USB consortium
+
+=== Wireless tech and standards
+
+Use standards to ensure Interoperability
+
+* HTTP
+* REST
+* GSM
+** uses SMS to send/receive messages
+* WiFi
+* etc.
+
+Some standards have trade offs
+
+* high range but low data rate
+* low range but high data rate
+
+Not all standards exist for the same reason
+
+* enforced by law
+* enforced by industry players
+** e.g. big company makes Device that uses some proprietary standard
+** other manufacturers are forced to follow them to ensure interoperability
+
+5G is becoming more used in IoT
+
+* high power efficiency
+* long range
+* high bandwitdh
+* high connection density
+* low latency
+
+== IoT and AI
+
+Using either:
+
+* curated knowledge
+** mimicking how humans reason
+** Prolog does this
+** problem is using large datasets
+
+* machine learning
+** mimicking how humans learn
+
+=== Curated Knowledge
+
+Uses logical methods
+
+* semantic reasoning
+* etc.
+
+Can use sensors to collect data and feed to a curated knowledge system to infer what was happening
+
+Requires abstract information to implement reasoning systems
+
+* IoT data is not abstract at all
+* basically bunch of timeseries
+** noisy
+** redundant
+** can have missing samples
+
+=== Machine Learning
+
+Flexible and robust
+
+* adapts to noise
+* adapts to changes in sensor data
+** can move sensor from x to y and the model could still work well
+
+All the classical advantages of ML
+
+== IoT and other tech
+
+=== Blockchain
+
+Cooperative distributed system
+
+Implements a ledger (i.e. a database)
+
+* can only append
+* cannot change previously entered data
+** unless update is approved by all members
+* permanent registry
+
+Blockchain implementations can be used to run scripts
+
+* transactions are stored in ledger
+
+Can be used to monitor supply chains
+
+* multiple independent actors work on supply chains
+* e.g. drug company makes medicine that has to be stored in a specific condition
+* if the drug arrives at the pharmacy improperly we can't know for sure where the container broke
+* IoT devices can monitor the state of the package
+* the state is certified by sensor data and transactions (e.g. shipping company -> final delivery) are recorded on the ledger
+
+=== Federated learning
+
+Don't have to send raw sensor data which could entail confidentiality/privacy issues
+
+Send local model to orchestrator
+
+* knowledge is combined
+* new models are redeployed to all members of the federation
+
+However this is weak to model poisoning
+
+* device learns improperly
+* bad model is sent to orchestrator
+* bad knowledge is integrated
+* bad knowledge is deployed to other devices
