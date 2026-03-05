@@ -1,0 +1,122 @@
+= DH Lab - Modeling and Simulation
+:toc:
+:toc-title: Contents
+:nofooter:
+:stem: latexmath
+
+== Dynamic Modeling techniques
+
+=== ODEs
+
+Ordinary differential equations were the best way of simulating dynamic models
+
+* easy to implement
+* easy to run
+* very primitive
+
+Results are *deterministic*
+
+* not realistic
+
+Real systems are *stochastic* (we saw this in BSB)
+
+* results come from random interactions in an enclosed space
+
+Still use ODEs first
+
+* fast and cheap
+* simulations are very expensive
+
+=== Networks
+
+Mapping interactions as networks allows for complex static images of dynamic processes
+
+* PPI
+* GRN
+
+Using random walks and such can be used to run simulations
+
+=== Rewriting rules
+
+Use chemical equations (for example) to rewrite ODEs
+
+* no loss of information
+* any ODE can be turned into chemical equations according to some theorem
+
+=== Automata
+
+Rewriting rules can be represented as automata
+
+* finite state or not
+
+Since automata are usually used to parse languages then we could also use some kind of language to represent a biological system
+
+* a program in that language is an instance of that system
+* en execution of that program is a single simulation
+
+More computationally expensive than ODEs
+
+* automata are almost never used in practice
+* extremely expensive for real data
+
+=== Algorithms
+
+Like in automata
+
+* language describes system
+* program is instance of system
+* execution of program is system simulation
+
+These algorithms must have runtime support for *stochastic* behavior
+
+* the rules that the language uses to determine the next instruction are stochastic
+* like Gillespie's SSA
+
+Languages assume that biological components are processing units, interactions between components are like messages between these components
+
+Other languages include:
+
+* stochastic pi-calculus (1995)
+* Beta binders (2004)
+** includes biological information
+** slow runtime
+** more of a proof of concept/toy example
+* BlenX (2008)
+** more optimized runtimes
+** takes hours instead of days
+** still bad if each simulation takes 100 hours
+* L (2012)
+** compiled into C
+** some parts are substituted with specific assembly
+** 20-30% faster than BlenX
+*** still hours but at least not 100
+
+Biologists don't do well with programming languages
+
+* need to write a good program once
+* run it
+* rewrite parts if strictly necessary
+
+=== Graphical languages
+
+Biologists/chemists like drawings
+
+* use symbols to represent actions/components
+
+For example:
+
+. Modify
+. Inhibit
+. Translocate
+
+. proteins
+. nucleic acids
+. 2 other components
+
+Use these to draw graphs (kind of) that can L can interpret and turn into runnable code
+
+* can also turn it into ODEs and chemical equations
+
+Hierarchical modeling is also important
+
+* some reactions cause other reactions for example
