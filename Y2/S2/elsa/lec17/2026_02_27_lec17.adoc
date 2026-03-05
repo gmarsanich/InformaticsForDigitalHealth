@@ -1,0 +1,357 @@
+= ELSA
+:toc:
+:toc-title: Contents
+:nofooter:
+:stem: latexmath
+
+== Pseudonymization
+
+=== Encyrption
+Encrypt identifiers using strong encyrption key (e.g. AES)
+
+* key should only be available to controller
+* encrypt things like fiscal code, name, date of birth, etc.
+
+However:
+
+* if key is compromised then all identifiers are revealed
+* if key is lost identifiers cannot be decrypted
+* keys have to be managed/stored securely
+
+=== Hashing
+
+Can use a hash to anonymize identifiers
+
+* non reversible
+* always maps same input to same output
+
+Don't have to deal with key management
+
+However:
+
+* Vulnerable to dict attacks
+* if guessing space is small then brute force is possible
+
+=== Keyed hashing
+
+Use a hash function that takes a key
+
+* still irreversible
+* more resistant to dict attacks and prevents brute force
+* stronger than simple hashing
+
+== Generating surrogate values
+
+Store correspondence table somewhere _very_ securely
+
+* i.e. <hash1> -> <person1>
+
+=== Tokenization
+
+Use a token to substitute the identifier
+
+* random UUID
+* one way encryption
+* index function
+
+Strong against mathematical derivation
+
+* can be reversible if correspondence table exists
+
+=== Something else
+
+== Managing surrogate values
+
+Can do all in house
+
+* collect data
+* generate pseudonymization
+* separate correspondence table/keys from database
+** if attackers get into database they can't get correspondence table and keys
+
+Or can outsource:
+
+* someone else runs pseudonymization
+* they have the keys and correspondence table
+
+== K-anonymity
+
+Hide identifiers
+
+* use age bins instead of full dob
+* use partial ZIP codes
+
+Suppression vs generalization
+
+* suppression: delete attribute
+* genneralization: bins and discretization
+
+Make sure you keep interesting attributes whole
+
+* makes no sense to anonymize diagnosis if that's the target of your study
+
+Balance protection with utility
+
+* it's useless to discretize everyone into the same bin
+
+K-anonymity is not perfect
+
+* np hard
+
+Categorical data needs to be hierarchical
+
+* transform city into region into country etc.
+* depends on what you want to analyze
+
+If you end up with a few ungeneralized rows it's often better to suppress them to maintain privacy
+
+If sensitive values in an equivalence class are the same then privacy is compromised
+
+* obviously if the attacker has additional knowledge then K-anonymity is vulnerable
+* even if you can't find the exact row belonging to a person you can find a group to which they belong
+
+=== Incognito algorithm
+
+Implementation of K-anonymity
+
+Works hierarchically
+
+Count frequency of identifiers
+
+* if freq > k add new identifier
+
+Systematically explores possible generalizations and stops when it finds one that guarantees K-anonymity with minimum information loss
+
+* chops age to years
+* chops zip numbers to min significance
+
+== L-diversity
+
+Addresses some weaknesses in K-anonymity
+
+Looks at distribution of sensitive attributes
+
+* tries to maintain the probability of identifying someone based on a sensitive attribute at > 1/L
+
+Also np-hard
+
+Vulnerable to similarity attacks
+
+* even if you can't find the exact identifier you can identify some class
+** e.g. you can infer skin condition instead of melanoma/vitiligo/psoriasis
+** can't just generalize up 1 level of hierarchy
+
+== Privacy preserving preprocessing
+
+. I have data
+. I apply some anonymization technique
+. Measure utility
+* is this data still useful with this level of anonymity?
+. Measure utility on original data
+. Compare original utility and anon utility
+
+Algorithm says that at most you can have 1/k sensitive data (what)
+
+Specific methods require different methods
+
+* macro data
+** aggregated data
+** means, variances, etc.
+* micro data
+** data belonging to single samples
+
+=== Perturbation
+
+Add noise to data from some distribution
+
+* gaussian mean 0 smallish std
+* regular between -a and +a
+
+Attackers can approximate the distribution of original data using certain techniques
+
+* eigenvalues and eigenvectors
+
+=== Macrodata processes
+
+For tabular data
+
+Perturbative or non perturbative
+
+==== Cell suppression
+* simply remove high risk cells
+** remove cells strongly correlated to those cells
+Does removing these cells affect the distribution of the data?
+* how much?
+* is this acceptable?
+
+==== Rounding
+* reduce precision of certain values
+** decide randomly whether to round up or down and by how much
+** or apply tools that round such that the range of the values is similar to the raw values
+
+=== Microdata processes
+
+==== Data masking
+
+Generates modified version of data
+
+. perturbative
+* adds noise while preserving characteristics
+** can cause problems with individual relationships
+** can be ok for clustered data
+* microaggregation
+** often just clustering algorithms
+** partitions table into groups
+** take average of group
+* data swapping
+** switch attributes between individuals
+** distribution doesn't change but affects individual relationships
+
+. non perturbative
+* sampling
+** publish a subset of original dataset
+* generalization
+** categorical attributes are combined in more general categories (basically binning)
+* local suppression
+** remove combinations of rare identifiers
+* top/bottom coding
+** bin tails of distribution
+** e.g. 100, 110, 120 => 100+
+** or 1, 2, 3, 4, 5 => lt(3), lt(3), 3, 4, 5 
+
+==== Data synthesis
+
+* generate new dataset with same charactersitics
+** can be prone to distance attacks
+** unique values in original will be unique in synthetic
+** can derive information about said data
+
+== Ex-ante risk analysis
+
+If I know something about the attacker I can take specific measures against them
+
+* I can make my data especially resistant to a specific attack
+
+If you know the *privacy model* you can prepare for it
+
+
+== Ontology of privacy mitigation
+
+Can use:
+
+* randomization based approaches
+* anonymity based approaches
+
+=== Individual Privacy
+
+Objective of GDPR
+
+Protecting identifiable information belonging to real people
+
+* person A's birthdate
+* person B's residence
+
+Privacy issues come from:
+
+* data publishing
+** raw privacy protected datasets
+* knowledge publishing
+** information collected from raw data
+
+Models can be shared if data is private
+
+=== Corporate Privacy
+
+Protecting corporate data
+
+* buying patterns for supermarket A
+* investment reserach for bank B
+
+Models built on PP data need to be kept secret
+
+* can be used to reconstruct the training set with specific techniques
+
+=== Anonymity
+
+Vulnerable to linking attacks
+
+* link 2 databases together when certain attributes are common
+
+We mitigate this by assigning roles to different attributes:
+
+. explicit identifiers (can be pseudonymized)
+* SSN/fiscal code
+* name and last name
+. quasi identifiers
+* can be used to reidentify individuals when combined together
+. sensitive attributes
+* may not exist
+* often object of analysis
+
+Easiest thing to do is:
+
+. find sensitive attributes
+. find explicit identifiers
+. mark all the rest as quasi identifiers
+
+For each individual in the dataset we must have at most some % of risk
+
+* i.e. take `max(risk)`
+* if there are 5 people in class 1 and 2 people in class 2
+** risk of class 1 = 20% if you know class membership
+** risk of class 2 = 50% if you know class membership
+* the measured risk increases with every attribute that the attacker knows
+** i.e. if every person in class A has the same zip code except 1 then that 1 person is very easy to identify
+
+== Differential Privacy
+
+Risk to privacy should not increase if I participate in some database
+
+* i.e. the risk of a person should not depdend on whether they are in the training set
+
+Assume a queryable database
+
+* get freq/mean/median of attribute X
+* how many people have X? -> k
+* how many people have X ignoring Bob? -> k-1
+* therefore we know Bob has X
+
+Add noise such that the results of both queries return similar answers
+
+* use Laplacian with mean 0
+** uses utility of attribute to set noise value
+* the amount of noise depends on the impact that person has on the database on that attribute
+* have to estimate the impact before we know what value to set
+
+This value is determined by checking the ratio between the probability of returning R in dataset where Person is and dataset in which person isn't
+
+* this value is called *epsilon*/*privacy budget*
+* every time you modify the data you eat some epsilon
+
+Epsilon needs to be as small as possible while not 0
+
+=== Global sensitivity of a function
+
+What is the impact that the lack of a person has on the query?
+
+i.e. if Alice has diabetes and I make a copy of the db and remove her the sensitivtity is 1
+
+* get the max of the absolute difference between all records/person in the database
+
+This works for numerical attributes
+
+What about categorical attributes?
+
+* add noise to the distribution of those attributes
+* pick a value from a similar distribution
+
+=== Delta Differential privacy
+
+Guarantees epsilon DP while measuring perturbation of data
+
+* uses tolerance term delta added to the probability
+* delta also has to be small
+** can use delta to clip the noise picked from epsilon? idk anymore
+
+
+
