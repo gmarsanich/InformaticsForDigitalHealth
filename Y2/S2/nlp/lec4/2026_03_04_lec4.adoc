@@ -1,6 +1,7 @@
 = NLP - Part of Speech Tagging
 :toc:
 :toc-title: Contents
+:toclevels: 4
 :nofooter:
 :stem: latexmath
 
@@ -158,5 +159,210 @@ Medical language is full of abbreviations
 There are documents that collect domain specific terms called *gazeteers*
 
 * in this case *medical* gazeteers
+* they aren't always up to date but they exist
 
-They aren't always up to date but they exist
+== Symbolic and statistical tagging
+
+=== Symbolic approaches
+
+Simple rule based programs
+
+* if this then that
+
+Tools like
+
+* Brill tagger (1992)
+** transformation based
+** very brittle
+** adding a new exceptional case may break some other transformation
+* Regex
+** finds patterns and maps them to symbols
+
+=== Probabilistic Approaches
+
+Model the sequence as a sequence of states
+
+Use a Markov chain to determine the tag of the next word
+
+* if tag[2] == adjective then tag[1] == noun
+
+We find the sequence of tags with the highest probabilty for a given sequence of words
+
+==== HMM
+
+Tags are hidden states
+
+Transitions are probabilities of finding a tag given the previous tag
+
+Emissions are the probability of the word wi produced by tag i
+
+HMMs are very interpretable
+
+* trace the matrix
+
+HMMs have a few limitations:
+
+We don't only use words
+
+* lemmas
+* stems
+
+Words change meaning depending on spelling and other structural differences
+
+* uppercase words
+* word forms
+** like in arabic
+
+Other algorithmic limitations include:
+
+* generative constraints
+* independence assumptions
+* label bias problems
+
+==== Generative Markov Models
+
+Use the chain rule and the Markov assumption to do something
+
+CAUTION: the number of probabilties become really small
+
+Emission probabilities are estimated by counting how often a tag is associated with that word in the corpus
+
+* ~n_words * 40 matrix
+* of very small numbers
+
+Transition probabilities are estimated by counting how often a tag ti follows tag ti-1 in the corpus
+
+* ~40x40 matrix
+
+These are only feasible if the corpus is annotated
+
+==== Viterbi Algorithm
+
+The number of possible sequences grows exponentially
+
+* p^n
+** n are number of words
+** p is the number of tags
+
+Viterbi algorithm uses dynamic programming 
+
+* stores the best sub path at each word step
+* np^2 complexity
+
+Requires 2 matrices:
+
+* transition
+* emission
+** estimated from corpus
+
+Requires the set of possible hidden states and the sequence of observations
+
+Uses a special tag to define the initial state
+
+Returns the most probable parth across hidden states
+
+* i.e. sequence of tags with highest probability
+
+==== Conditional Random Fields
+
+CRFs are disciminative and not generative
+
+* they don't compute the probability of tag word pairs from estimations
+
+Pairs are computed by arbitrarily computed rule sets
+
+* features (functions) are typically built manually
+
+Like:
+
+. is the word capitalized and is the previous tag a noun?
+. does the word end in -itis?
+. is the word in a medical dictionary?
+
+CAUTION: functions are not necessarily probabilities. They can be counts or other stuff
+
+== Neural Approaches
+
+=== Bi-LSTMs
+
+LSTMs that analyze a sequence in both directions
+
+* forward context
+* backward context
+
+Works well because languages are inextricably linked to time
+
+* we parse things one after the other
+* not in a matrix format
+
+Often used with CRFs to determine whether certain properties are correct
+
+=== Transformers
+
+Can process long sentences in parallel
+
+* multiple bits are processed at the same time
+* they sample the sentence in multiple points
+* uses attention to determine importance
+
+==== Contextualized tagging
+
+Models like BioBERT and ClinicalBERT take into account domain specific PoS patterns
+
+* they are trained on scientific literature
+
+CAUTION: scientific literature is not the same as real medical notes
+
+Document context is important but very hard to do
+
+* if lead is in toxicology report -> metal poisoning
+* if lead is in HR report -> verb/role
+
+LLMs use windowed attention to resolve this across sentences
+
+
+== Tools
+
+=== NLTK
+
+Old and tested
+
+
+By default uses *averaged perceptron* for tagging
+
+Trained on general news
+
+* won't generalize well to medical terms
+
+=== SpaCY
+
+More modern
+
+Uses either:
+
+* Multitask CNN
+* Transformer
+
+Works well for single strings
+
+* has single exposed method that does everything
+
+==== sciSpaCY
+
+Same model but tuned for biomedical literature
+
+==== medSpaCY
+
+Same model but trained on medical terminology
+
+=== Stanza
+
+Very small
+
+Based on bi-LSTM
+
+Has specific biomedical models
+
+* not very in depth but still
+
+Pipeline based programming
