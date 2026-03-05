@@ -1,0 +1,162 @@
+= NLP - Part of Speech Tagging
+:toc:
+:toc-title: Contents
+:nofooter:
+:stem: latexmath
+
+== PoS Tagging definition
+
+The assignment of a lexical category to a word
+
+* stem:[f(w) \rightarrow L]
+* noun, verb, adverb, etc
+
+The lexical category depends on the context in which the word appears
+
+* a word might act as a noun or verb depending on where it is in a sentence
+
+Categories don't have to come from grammatical rules
+
+* can be medication name, disease name, patient status codes
+* not necessarily nouns/verbs etc
+
+=== Why PoS tagging?
+
+It's the first step of *traditional* syntactic analysis
+
+* we have to know what a sentence is made of before we can move on
+* LLMs don't do this because they have 4138473298 morbillion parameters so they hope to God that they generate something correct
+
+PoS assumes that words work in a certain way and that words in the same category are interchangeable
+
+* substituting a noun with another noun will produce a correct sentence
+* it may be meaningless but the structure will be correct
+
+PoS tagging can also be used for lemmatization
+
+* avoids confusing things like adverbs
+
+== Word classes
+
+Words can be divided into 2 overall classes
+
+=== Closed classes
+
+Fixed words that act as glue
+
+* i.e. words that chain other words together
+* and, but, the, at, this, under, over
+
+. Prepositions
+. Determiners
+. Conjunctions
+. Pronouns
+
+=== Open Classes
+
+Words we actually use in the real world
+
+* no real fixed set
+* new words come out every day
+** *neologisms* and technical jargon especially
+
+=== Tag sets
+
+A tagset is an encoding of word classes
+
+Ideally we have a distinct set of abbreviators
+
+* NN
+* ADJ
+
+==== Penn Treebank
+
+Largest english tag set
+
+* only works for english
+* low granularity for other languages
+
+36 pos tags and 12 other tags
+
+Like:
+
+* DT -> determinants
+* CC -> coordinative conjunctions
+** and, or
+* JJ -> adjective
+** JJR -> comparative adjective
+** JJS -> superlative adjective
+* NN -> noun
+** NNS -> plural noun
+** NNP -> proper noun
+
+=== Universal Dependencies
+
+More modern than tag sets
+
+Works across languages
+
+17 linguistically consistent classes
+
+* they work in English and Western Sumatran etc
+* not all languages are covered but close enough
+* less granular than Penn Treebank
+
+3 classes:
+
+. open words
+* 6 open words
+. closed words
+* 8 open words
+. other
+* 3 types
+** punctuation
+** symbols
+** everything else
+
+==== UD features
+
+To make up for low granularity UD adds new features
+
+* like a dictionary of attribute=value for each tag
+* like verbs and reflexive verbs 
+** VERB(Reflex)
+
+3 classes of features:
+
+* lexical
+* inflectional
+* other
+
+Categories are added if the feature appears in at least 2 different languages
+
+== How PoS?
+
+Many challenges but *lexical ambiguity* is the biggest
+
+=== Lexical ambiguity
+
+The same word can have different meanings depending on the context
+
+Happens constantly and across languages
+
+Finding the right tag is extremely hard
+
+* the tag of a word depends on the tags of surrounding words (*local syntax*)
+* it's like a dog chasing its own tail
+
+=== Medical Domain challenges
+
+Medical language is a form of a technical jargon where words don't always mean what we expect and new words are made constantly
+
+* if you know you are producing language for a doctor you can assume that they are familiar with the jargon
+
+Medical language is full of abbreviations
+
+* extremely hard to parse unless you know the abbreviations too
+
+There are documents that collect domain specific terms called *gazeteers*
+
+* in this case *medical* gazeteers
+
+They aren't always up to date but they exist
