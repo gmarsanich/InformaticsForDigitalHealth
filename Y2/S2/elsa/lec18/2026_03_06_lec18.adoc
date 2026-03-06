@@ -1,0 +1,294 @@
+= ELSA - Data Privacy Techniques
+:toc:
+:toc-title: Contents
+:toclevels: 4
+:nofooter:
+:stem: latexmath
+
+== Privacy aware knowledge sharing
+
+.What is disclosed?
+* intentional knowledge
+
+.What is hidden?
+* the true source data
+
+.Central question
+
+* does releasing the data compromise the privacy of those who own the data?
+
+=== Associative Rules
+
+Does knowing that 1000 people over 50 are prone to disease X create a possible leak?
+
+* no
+* but also yes
+
+How?
+
+* given rule A -> B
+* sup(A) = sup(A u B)/conf(A -> B)
+
+If I know some information about the data I can use trickery to infer things about the data
+
+* usual if I apply enough *rules* I can find specific information
+** how many are A? how many are A and B? 41879853275
+** how many are A B and C? 4
+* see slides because lol
+
+Outputs need to be sanitized to avoid this
+
+=== Problem
+
+Given:
+
+* dataset D
+* slides again
+
+=== Inference channel
+
+If the frequency of 2 rules of a database where one is a subset of another is between 0 and k then I have an inference channel
+
+* if the support is between 1 and k-1 we need to sanitize the output
+
+For every inference channel increase support of the set I by k
+
+== ML and Differential Privacy
+
+We can infer the training set from model behavior
+
+Query-specific attacks can infer the training set
+
+=== MIA attack
+
+Membership Inference Attack
+
+Given a training set and a model
+
+* train model
+* expose the trained model
+
+Attack pipleine:
+
+. attacker knows the structure of the training dataset structure
+* i.e. the features (easy to know just by using the model)
+. attacker creats a fake training set
+* random generation of feature values given known features
+* inference of data distribution to generate features
+* if attacker can access a leak they can live large
+** they can infer a more accurate distribution of data
+. synthetic dataset is unlabeled
+* take model and inject synthetic dataset
+* see how the model behaves
+. train multiple models while splitting the synthetic data into different train/test splits 
+* get probability vector for each predicted class
+. training set is rebuilt
+
+This works on poorly generalized models
+
+* exploits predicted probability peaks
+
+=== Mitigation techniques
+
+==== Input perturbation
+
+Add noise from some distribution
+
+Shuffle records
+
+Etc.
+
+==== In-process mechanism
+
+Balance model utility and data privacy according to chosen evaluation metrics
+
+* k-anonymity
+* DP
+
+Can apply privacy protection to SGD
+
+* SGD can leak information about training samples apparently
+
+Becomes DP-SGD
+
+* differential privacy SGD
+* adds noise somewhere somehow
+** can hide whether some example participated in gradient update
+* clip the gradient
+** limits the influence of each sample
+** lowers sensitivity
+** gradient cannot be higher than C
+** guarantees epsilon-delta DP
+*** delta is permissible loss of protection
+
+How?
+
+. sample mini batch
+* randomly sample batch St of size B
+. compute the gradient of each sample
+. clip the gradient to norm C
+* C is learned or found in model selection or whatever
+* don't clip too hard to maintain privacy (why???)
+. compute mean gradient
+* sensitivity is limited
+. add Gaussian noise
+* perturbs information
+** uses identity matrix I which adds independent noise
+** higher variance = higher privacy = lower accuracy
+. update the parameters
+
+==== Output perturbation
+
+Generally a bad idea for reasons
+
+
+=== DP-k-means
+
+No weights
+
+Only data
+
+Need to DP:
+
+* computing the means
+* finding centroid
+** how does each component of the cluster affect the mean? same as Alice being in/out of data
+
+== Corporate Knowledge Hiding
+
+.What is disclosed?
+* raw data
+
+.What is hidden?
+* sensitive knowledge
+* rules/patterns that give me a competitive advantage
+
+.How?
+* sanitization
+** modify data such that sensitive knowledge cannot be inferred
+** modify the database as little as possible
+
+Given:
+
+* Dataset D
+* association rules R
+** mined from D
+* R_h is a subset of rules that need to be hidden
+
+How do we modify D into D' such that R without R_h can be mined?
+
+=== Machine Unlearning
+
+Removing data from a particular set of information must be able to be removed
+
+* if I don't want Google to keep training Gmaps on my data they must be able to exclude me from the model
+* the easiest way would be retraining the model from scratch without those samples
+** this is obviously impractical
+* can also simply put filters
+** if sample=="dog" remove
+** if you can bypass the filter/access the network directly this is useless
+
+There are ways to access the network directly to make it forget certain patterns
+
+* specifically discriminative patterns
+
+== Distributed PP Learning
+
+Compute a valid mining model from distributed datasets
+
+* i.e. datasets stay where they are
+
+Security maintained using cryptography
+
+Done through:
+
+* secure multiparty computation
+* federated learning
+
+2 paradigms
+
+. cross silos
+* large datasets in different places
+. cross device
+* small datasets in different places
+** i.e. gboard
+
+=== Secure Multiparty Computation
+
+Very secure
+
+* strong encryption
+
+Very computationally expensive
+
+* uses secure versions of common algorithms
+* acts dirctly on encrypted data
+
+Not really used anymore
+
+=== Federated Learning
+
+Data is never sent to the orchestrator/other peers
+
+* only models are exchanged
+
+However we can use MIA to infer the data
+
+So the final model must be epsilon DP
+
+* happens after lots of global/local iterations
+* epsilon should be rather large
+
+Fairness also changes between models
+
+* global fairness might be good
+* local fairness might not
+
+=== Dataset partitioning
+
+==== Horizontal partitioning
+
+Bank 1, 2, 3 use the same features/db columns
+
+* each bank has their own users
+* and data
+
+With a global overview
+
+==== Vertical partitioning
+
+Users can be in multiple databases
+
+Databases are linked by users instead of features
+
+* bank db has ID0
+* hospital db has ID0
+
+Less common than horizontal partitioning
+
+== Privacy Protected Outsourcing
+
+The hospital doesn't want the responsibility of handling all this data
+
+* they outsource this to some other party
+
+This is a problem
+
+* are they allowed to access the data as is?
+* do I trust them to have it?
+
+Data must be protected on the way to the server
+
+* items/objects/services are encrypted
+** fentanyl isn't fentanyl but something like 41348753
+* fake transactions are added to add k-anonymity
+
+Extracted knowledge must also be protected
+
+* server extracts knowledge without decrypting
+* server returns some garbage
+* I get fake transactions
+* difference of support(garbage), faketran
+** if 0 tran is fake
+** else real
+
