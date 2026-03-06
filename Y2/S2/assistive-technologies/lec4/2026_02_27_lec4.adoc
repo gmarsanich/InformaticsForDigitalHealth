@@ -1,6 +1,7 @@
 = Assistive Technologies - Technical Issues in IoT
 :toc:
 :toc-title: Contents
+:toclevels: 4
 :nofooter:
 :stem: latexmath
 
@@ -73,6 +74,12 @@ Making vertical silos is useless (but it will make you a lot of money)
 * you cannot apply them to other contexts
 * device A from manufacturer A cannot communicated with device B from manufacturer B
 
+Proprietary solutions require *secrets*
+
+* security threat
+* fewer eyes
+* bugs can be problematic
+
 === Why standards?
 
 Advantage for manufacturers and developers/researchers
@@ -88,6 +95,44 @@ Competing manufacturers often congregate in consortiums to maintain/develop unde
 
 * they compete with each other at the service level
 * e.g. HDMI consortium, USB consortium
+
+Too many standards cause fragmentation
+
+* new silos are formed
+
+=== Gateways
+
+Translate protocols at the application level instead of translating low level protocols
+
+* map application level behaviors into other application level behaviors
+** or all behaviors above network
+
+==== Service gateways
+
+Act as mediators between different devices
+
+* different vendors with same protocol
+* brings IoT data flow to internet
+
+==== Integration Gateaways
+
+Implements a behavior map
+
+* translates protocols
+** n^2 order of translations
+* allows for interoperability between devices from different manufacturers
+
+Products like Alexa and Google Home
+
+* they force other manufacturers to use their proprietary protocols
+
+Big corporations have the ability to enforce integration gateways
+
+Centralized IGs create single points of failure
+
+* decentralize them
+* parallelize them
+* n order of translations
 
 === Wireless tech and standards
 
@@ -199,3 +244,92 @@ However this is weak to model poisoning
 * bad model is sent to orchestrator
 * bad knowledge is integrated
 * bad knowledge is deployed to other devices
+
+== Security in IoT
+
+IoT conditions are relatively extreme
+
+* low power
+* potentially dangerous locations
+* highly constrained
+** low processing power
+** low memory
+
+Connecting these devices to the internet allows them to access cloud services
+
+* higher power
+* higher storage
+
+Connecting them to the internet also opens them to security vulnerabilities
+
+Manufacturers want to reach the market as fast as possible
+
+* security is sidelined
+
+The largest botnets in the world are powered by unsecured wifi cameras
+
+=== Patching
+
+If a vulnerability is found it should be patched
+
+* very hard to do
+** does the user do it?
+** does the manufacturer do it?
+** does the device even support updates?
+*** firmware updates are sketchy
+
+Bad for sensors
+
+* can steal data
+
+Really bad for actuators
+
+* they can be made to misbehave
+** imagine a wifi enabled pacemaker
+
+=== IoT and Inference
+
+IoT data can be abused to infer new information
+
+* e.g. Strava maps were used to identify military bases and such
+
+=== IoT Vulnerabilities
+
+Many types
+
+These are very common:
+
+. weak hardcoded passwords
+* especially if baked into firmware
+. insecure networks
+* no VLANs firewalls
+. no updates
+. bad update mechanisms
+
+etc.
+
+=== IoT security/privacy requirements
+
+IUT-T (association) recommends certain practices for security
+
+. communication and data management security
+. security management
+* no one size fits all
+** scale down towards low end devices
+. Mutual authentication and authorization
+* devices should be authenticated with some method
+* they should also be authorized to perform actions
+. security audits
+
+=== IoT Gateway security functions
+
+If the physical location is secure then the gateway is the single point of entry
+
+* otherwise you have more problems
+
+Gateways should:
+
+* perform authentication with devices
+* ensure data security during transport/storage
+* deliver updates
+** firmware/software
