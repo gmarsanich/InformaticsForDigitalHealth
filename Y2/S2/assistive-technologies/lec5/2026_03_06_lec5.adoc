@@ -1,0 +1,92 @@
+= Assistive Technologies - Ambient Assisted Living
+:toc:
+:toc-title: Contents
+:nofooter:
+:stem: latexmath
+
+== Why ambient assisted living?
+
+Funded highly by EU
+
+* EU population is aging
+* number of people over 65 is growing
+
+Elderly people should be allowed to live in their own home with proper assistance
+
+* also applicable to people with disabilities
+* people can't always care for elderly relatives
+* if grandma breaks her leg while she's alone she's screwed
+** unless something/someone is there to help
+* quality of life is generally better when living independently
+
+Done using the *Ambient Intelligence paradigm*
+
+== What is ambient assisted living?
+
+=== Users
+
+The users of the system i.e. those that use AAL
+
+* typically elderly/disabled people
+
+Users have their own needs/wants/goals/lifestyles
+
+=== Spaces
+
+People live their lives differently
+
+* they don't always stay home
+
+External spaces could have AAL elements
+
+* support devices
+
+=== Services
+
+These should allow people to live their lives
+
+* autonomously
+* independently
+* while maintaining their lifestyles
+** within reason
+* while protecting their data
+
+== IoT in AAL
+
+Sensors to aid perception
+
+* door sensors
+* object placement sensors
+* body monitoring
+** heart rate estimation
+** blood oxygen level estimation
+
+=== Example: smart meters
+
+Measuring electricity consumption over time
+
+* certain appliances are identifiable
+* only requires one sensor
+* can be noisy
+** multiple appliances working at the same time
+
+Sometimes you have to use multiple sensors
+
+* how do you integrate them?
+
+=== Example: presence sensors
+
+Can be passive IR
+
+* can't count number of people
+
+Cameras are easier
+
+* very high privacy concerns
+
+=== Robotic ecology
+
+Simple robots can be used to bring physical aid to people
+
+* bringing objects
+* cleaning
