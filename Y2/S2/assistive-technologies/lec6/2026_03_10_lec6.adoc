@@ -1,0 +1,180 @@
+= Assistive Technologies - Technology and applications for hearing impaired people
+:toc:
+:toc-title: Contents
+:nofooter:
+:stem: latexmath
+
+== Deafness
+
+Hearing deficit
+
+* partial
+** difficulty hearing
+** deaf in one ear but not the other
+* total
+** can't hear at all in either ear
+
+Not always immediately detectable
+
+* can't always tell if someone is deaf
+** often only apparent when interactions occur
+* easier to tell if someone is blind
+
+Deafness also affects production of language
+
+* spoken or not
+** cochlear implants make speaking weird
+** not everyone knows sign language
+
+Interaction is very difficult
+
+* can cause isolation
+* stereotypes and poor technology exacerbates this (big words today)
+
+== Communication
+
+3 broad categories of communication styles:
+
+. oralists
+* do not use sign language
+* rely on lip reading
+
+. bimodals
+* lip reading
+** using local words
+* supported by signs
+
+. signers
+* rely on sign language only
+** non deaf children with deaf parents
+** deaf children during adolescence
+** interpreters
+
+Generally complex sentences/words are difficult to parse for deaf people
+
+* non deaf people learn by listening
+** usually listening first
+* deaf people cannot learn by listening
+** complex ideas need to be translated into simpler ideas
+** makes reading more difficult as well
+** can't read it out in their mind easily
+
+=== Technological support
+
+* Assistive listening devices
+** simply to enable hearing
+** works on partially deaf people
+
+* Communication apps
+** apps made specifically for deaf people
+
+* Transcription/dictation
+** speech to text
+
+* Subtitles/closed captions/live transcription
+** especially for video calls
+
+These are for spoken communication
+
+* Need to hear environment as well
+** doorbells
+** alarms
+** ambient sounds
+
+==== Limitations
+
+Most technologies are built for general daily life content
+
+* single language
+* generic content
+
+Specialized communications are often not considered:
+
+* math
+* computer science
+* learning other languages
+
+Special software is required
+
+* ComMunico (EU commission)
+* IntendiMe
+** IoT haptics
+
+=== Sign language
+
+Sign language is not universal
+
+* varies country by country
+
+Difficult to understand if untrained
+
+300 sign languages worldwide
+
+* 45 countries recognize sign languages in Europe
+
+Recognizing it as a language -> improves integration
+
+==== Italian Sign Language (LIS)
+
+Signed into law in 2021
+
+Signed communication
+
+* hand
+* body
+
+=== Speech
+
+Speaking louder doesn't help
+
+* especially if totally deaf
+
+Cochlear implants can help in some scenarios
+
+== Hearing assistance
+
+=== Cochlear implants
+
+Electronic device that enables hearing
+
+* not as if they were not deaf but at least they can perceive sound
+* auditory signals are sent straight to the nerves
+** bypasses damaged areas of the ear
+* usable since childhood
+** at least 1 year of age
+
+Difficult to install
+
+* medical device
+* specialist intervention required
+
+Very useful
+
+* can interact with external devices
+** depends on specific brand/model/whatever
+
+=== Hearing aids
+
+Simpler than cochlear implants
+
+* amplifies sounds
+* transmits through normal audotiry channels
+
+== Deafblindness
+
+Combination of deafness and blindness
+
+* severe communication and mobility deficit
+** worse than being deaf or blind
+
+Basically makes all deafness workarounds worthless
+
+* sign language doesn't work
+* lip reading doesn't work
+* subtitles/captions/live transcriptions don't work either
+* audio transcriptions don't work
+
+Haptics are really the only way
+
+* Braille
+* Malossi
