@@ -207,3 +207,347 @@ Sequence composed of sequences of multiple mixed terminal/non terminal symbols, 
 
 * very general
 * basically says anything can be transformed into anything else
+
+== Survey of Grammars
+
+Many types of grammars exist
+
+* Chomsky's hierarchy is pretty abstract
+** says that certain languages can be parsed by automata
+
+=== Phase Structure Grammar (PSG)
+
+Replicates traditional grammar
+
+* transforms into computationally parsable stuff
+
+Introduces lots of *non terminals*
+
+* classes of *clauses*
+** parts of a sentence
+
+==== PSG Classes
+
+. S - sentence
+* represents entire grammatically complete unit
+* arbitrary
+** not necessarily topmost level of hierarchy
+
+. NP - noun phrases
+* group of words centered around a noun
+* ways to denote a single entity (a dog, the elderly patient)
+
+. VP - verb phrase
+* group of words centered around a verb
+** also contains adverbs, nouns, etc
+
+. PP - prepositional phrase
+* a phrase that uses a preposition to provide context
+** the cat is *in* the closet
+
+. ADJP - adjective phrases
+* same but adjective
+
+. ADVP - adverb phrase
+* same but adverb
+* multiple words can count as an adverb
+
+. CP - complementizer phrase
+* used for nested clauses
+** I know that you know that he knows
+
+. QP - quantifier phrase
+* numeric/quantity based expressions
+
+==== PSG productions
+
+. S -> NP VP
+* sentence -> noun phrase + verb phrase
+
+. NP -> (det) (ADJP) N (PP)
+* parentheses are optional
+* like the green dog is in the closet
+
+==== PSG Output
+
+Produces *deep parse trees*
+
+* concrete syntax tree
+** represents structure
+* called deep but can be shallow
+** trees can closely resemble the syntactic surface of a sentence
+* intermediate nodes represent the constituent clauses
+
+==== PSG Parsing complexity
+
+Complexing large amounts of NLP is very complex
+
+* expensive
+* time consuming
+
+Need to do it efficiently
+
+How?
+
+. transform PSG grmamar into Chomsky normal form
+* 2 cases for each production
+** introduce artificial nonterminals to generate tuples of combinations
+. Use CKY algorithm dynamically to parse the thing
+
+The complexity will be stem:[O(G) \cdot n^3]
+
+* *very* expensive
+* result isn't even that practical
+** overall quite cringe
+
+=== Tree Adjoining Grammar (TAG)
+
+Does not fall neatly within Chomsky's hierarchy
+
+* inbetween 2 categories
+
+Works directly on trees
+
+* does not create trees from sequences
+* trees can be manipulated
+
+Defines 2 operations:
+
+. adjunction
+* given a tree alpha with an internal node X and a new tree beta with node X and internal node X
+** take whole subtree and insert it between root tree and subtree
+** joined at internal node X and new node X
+. substitution
+* all nodes are labeled (T/NT)
+** terminals can be replaced with other non terminals (what)
+
+What are alpha and beta?
+
+* alpha trees are the grammar structures of the language
+* beta trees are utilities
+** essentially recusrion helpers
+
+This separates production from recursion
+
+* preserves locality
+** the relationship between the targets of the phrase
+** patient and operation are in the same alpha trees
+** even when beta trees are inserted
+
+TAG can parse all context independent languages
+
+* some context dependent languages as well
+* falls between Type 1 and 2
+
+However it's very complex
+
+* stem:[O(n^6)] (lmao)
+** some versions can get down to stem:[O(n^3)] but you lose most of their power so what's the point
+
+=== Dependency Grammar
+
+Most commonly used outside LLMs
+
+No phrasal nodes
+
+No non terminals
+
+* key part of Chomsky's structure
+* fuck you Chomsky
+
+Only terminals exist
+
+* words, lemmas, morphemes, tokens
+
+Focuses on relationships between these terminals
+
+* one word is the head and the other is the dependent
+** relationship is a *dependency
+** one head can have many dependents
+* edges labeled with the nature of the relationship between the nodes
+
+So this is still a tree
+
+* kind of
+* typically not drawn like a standard tree
+** nodes are all at the same hierarchy in the order in which they appear in the sentence
+** edges arc over them
+
+==== DG and semantics
+
+Other grammars only checks syntax
+
+* if syntax is ok then all good
+
+This preserves dependencies
+
+* better for information extraction
+* relationships between entities are preserved!!!!
+** don't have to wade through 12741984 nodes
+
+==== UG and UD
+
+UD define standard relationships for multiple languages
+
+Many types
+
+. Core arguments (part of all languages parsed by UD)
+* nsubj
+* obj
+* iobj
+
+. Root attribute is a node from nowhere to the main verb of a phrase
+
+Some languages have specific subtypes
+
+* parsing tools aren't always respected by parsing tools
+** passives and most common subtypes are respected
+
+Others in slides
+
+== Dependency Parsing
+
+2 main ways to parse dependencies
+
+=== Transition based methods
+
+Constructs a tree through a sequence of local actions
+
+Very efficient
+
+* only have to look locally before deciding which edges to draw
+* processes tokens linearly onto a stack
+
+==== Transition Mechanism
+
+Special kind of automaton
+
+* *shift reduce* automaton
+
+3 parts:
+
+. parser (oracle)
+* parses stuff
+. stack
+* holds currently processed word(s)
+. input buffer
+* words in the input
+
+The oracle looks at:
+
+* top 2 words in stack
+* first word in buffer
+
+Oracle can:
+
+* manipulate the stack
+* move through the input
+
+Very efficient
+
+* stem:[O(n)]
+** large corpora are processed in reasonable time
+** assuming the oracle is reasonably efficient as well
+
+==== Parsing algorithm (shift +  reduce)
+
+3 parts:
+
+. input word
+. top stack
+. second top stack
+
+3 actions:
+
+. shift
+* take current word in buffer and put into stack
+* point or consume
+
+. left arc
+* creates dependency of given class between top 2 stack items and removes the dependent
+* head <- dependency
+
+. right arc
+* same but reversed
+
+==== Which Oracle?
+
+* Programmable
+** symbolic/rule based
+
+* Statistics
+** frequency based
+
+* ML
+** learnable choices based on training
+
+Regardless of oracle type it should receive:
+
+* words
+* PoS tag of word
+* other UD features too maybe
+* whatever other language specific features
+
+==== Example: Neural Oracle
+
+Standard way is:
+
+. encoder
+* turns words into vectors
+
+. input buffer and vector stack
+
+. get w, s1, s2 and join their vectors
+
+. give that to FFNN
+
+. Apply softmax
+
+. Receive output action
+* trinary classification
+** shift, left arc, right arc
+
+Other ways include:
+
+* MLPs
+* Transformers
+
+=== Graph-based methods
+
+Takes a graph
+
+Builds a fully connected graph
+
+* dense graph
+** complexity at least stem:[O(n^2)]
+* all nodes are connected
+** every word is a potential head for every other word
+* edges are then labeled and weighted
+** weights themselves are not that important
+** differences between weights are more important
+* take subgraph with whatever properties we like
+** e.g. *Maximum Spanning Tree*
+** need each node to have exactly 1 incoming edge (except the root)
+
+==== Finding MST
+
+Using a greedy algorithm is generally a good idea for this task
+
+* for each node find select incoming edge with max weight
+** might have cycles -> not a tree
+
+Using Chu-Liu, Edmonds algorithm
+
+* recursive
+* collapses all nodes in a cycle into single node
+* apply algorithm recursively into collapsed node
+** expand resulting node (should be a tree at this point)
+** resulting nodes might be single nodes
+
+Can have complexity between O(n^2) and O(n^3)
+
+==== Assigning weights
+
+Run feature engineering to get linguistic features
+
+Weights are learned using ML on annotated corpora
