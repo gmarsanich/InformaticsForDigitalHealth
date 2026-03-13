@@ -53,6 +53,16 @@ Linguistics is a hard topic
 * need theoretical background for deep knowledge of language
 * learning by example only takes you so far
 
+=== Roberto Busa
+
+One of the first computational linguists (1940s)
+
+* built index of words written by Saint Thomas
+** written across all his works
+** like 12 million words
+
+Instead of hiring choir boys to annotate books by hand he thought to use machines to do it
+
 === Noam Chomsky
 
 Born in 1928
@@ -61,16 +71,16 @@ Born in 1928
 
 Mostly interested in computational capabilties of language
 
-Invented context free grammars
+Invented *context free grammars*
 
 * used in programming languages
 
-Believed in universal grammar
+Believed in *universal grammar*
 
 * thought that language/grammar learning skills are hardwired in human brains
 * controversial opinion?
 
-==== Chomsky hierarchy
+=== Chomsky hierarchy
 
 Classification of formal languages
 
@@ -190,20 +200,10 @@ stem:[G = (N, \Sigma, P, S)]
 
 * stem:[N]: Set of non terminal symbols (symbols that can produce things)
 * stem:[\Sigma]
-* stem:[S]: productions -> rules that can be used to produce language
+* stem:[P]: productions -> rules that can be used to produce language
 * stem:[S]: initial symbol
 
 Sequence composed of sequences of multiple mixed terminal/non terminal symbols, a non terminal sequence, and another mixed sequence
 
 * very general
 * basically says anything can be transformed into anything else
-
-=== Roberto Busa
-
-One of the first computational linguists (1940s)
-
-* built index of words written by Saint Thomas
-** written across all his works
-** like 12 million words
-
-Instead of hiring choir boys to annotate books by hand he thought to use machines to do it
