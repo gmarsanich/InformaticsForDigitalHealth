@@ -1,0 +1,209 @@
+= NLP - Syntax
+:toc:
+:toc-title: Contents
+:toclevels: 4
+:nofooter:
+:stem: latexmath
+
+== What is syntax?
+
+Rules and principles that govern the structure of sentences
+
+* defines rules for combining words
+** phrases
+** clauses
+** sentences
+
+Syntax must define 3 properties:
+
+. linear order
+* the correct order in which to place these words
+* order is significant in many languages
+** the mouse eats the cat != the cat eats the mouse
+. hierarchical structure
+* groups of words are taken together to express a concept
+** Bob's aunt is named Alice -> Bob's aunt is a hierarchical unit
+* need to reconstruct *constituents*
+. grammatical relations
+* roles that each word/group of words/group of groups of words cover in a grammatical structure
+** and therefore its semantic meaning
+
+=== Language as a sequence of words
+
+The idea of hierarchy has been in linguistics forever
+
+* like 7th century BCE
+
+First computational lingiuists only considered sequences
+
+* i.e. arrays of characters -> strings
+
+Then they woke up and figured out trees
+
+* various forms
+
+With modern tech we are now back to sequences
+
+* using context and memory
+
+== Why theory?
+
+Linguistics is a hard topic
+
+* need theoretical background for deep knowledge of language
+* learning by example only takes you so far
+
+=== Noam Chomsky
+
+Born in 1928
+
+* still alive
+
+Mostly interested in computational capabilties of language
+
+Invented context free grammars
+
+* used in programming languages
+
+Believed in universal grammar
+
+* thought that language/grammar learning skills are hardwired in human brains
+* controversial opinion?
+
+==== Chomsky hierarchy
+
+Classification of formal languages
+
+* less/more formal languages
+
+3 types that fit into each other (0 contains 1 contains 2 contains 3)
+
+. Type 3 (regular, parsed by finite state automata)
+* A -> aB (non terminal produces nonterminal and terminal)
+* A -> a (non terminal produces terminal and stops)
+
+. Type 2 (context free grammars, parsed by push down automata)
+* single nonterminal produces sequence of terminals and non terminals
+* typically used in programming languages
+** except Python apparently?
+
+. Type 1 (context sensitive, linear bounded automata)
+* can use thing only if near other thing
+* context is not modified
+** context doesn't change during production
+** only if A is between alpha and beta can I produce gamma between alpha and beta
+
+. Type 0 (recursively enumerable)
+* meaning that strings produced by this language can be compared to integers???
+** i.e. give me the next thing -> apply next production recursively
+* can do anything, no restrictions
+* futuristic poetry and things like medical notes don't always follow typical grammar rules
+
+Natural languages are somewhere between type 1 and 2
+
+* we can say/write nonsense
+* context isn't always required/lack of context isn't always a big deal
+** mildly context sensitive
+
+===== Type 3 languages
+
+Single non terminal -> terminal or terminal+non terminal on right
+
+If in state A and I read symbol a I go to state B
+
+* if in state A I generate a and go to state B
+* or if in state A I generate a and stop
+
+This mechanism has no memory
+
+* only knows the current state
+
+They cannot recognize languages with the same number of objects
+
+They also cannot parse nested structures
+
+* the patient was seen by the doctor who was in the ICU survived
+** recursion on patient
+
+Useful for pattern matching
+
+* fiscal codes
+* SSN
+* regex
+
+===== Type 2 languages
+
+Adds a memory to type 3
+
+* stack memory
+
+teminal A -> sequence of terminals/non terminals gamma regardless of context
+
+* classically used for programming languages
+
+Can handle recursion but not parallel structures
+
+* the nurse and physician administered the IV and performed the intubation respectively
+* this string causes failure
+
+Also no context sensitivity
+
+* any noun is valid
+* the him wrote an fish
+
+Still useful for extracting information from text
+
+* information extraction instead of language analysis/generation
+
+===== Type 1 languages
+
+Context changes
+
+* information within the context can change
+* uses special characters to denote context
+
+===== Type 0 languages
+
+No constraints
+
+* all productions are possible
+* anything that is computable can be expressed by type 0 languages
+** parsing type 0 languages is impossible
+
+==== Generative grammar
+
+Basic idea:
+
+* rules that generate infinite number of grammatical sentences
+* used in compilers and programming languages
+
+Finite state models are not good enough for infinite productivity of human language
+
+* HMM bad
+** BERT exists so I guess he was wrong
+
+Thought that *recursion* and *recursive grammars* were the only way to represent language
+
+.Formal definition:
+
+stem:[G = (N, \Sigma, P, S)]
+
+* stem:[N]: Set of non terminal symbols (symbols that can produce things)
+* stem:[\Sigma]
+* stem:[S]: productions -> rules that can be used to produce language
+* stem:[S]: initial symbol
+
+Sequence composed of sequences of multiple mixed terminal/non terminal symbols, a non terminal sequence, and another mixed sequence
+
+* very general
+* basically says anything can be transformed into anything else
+
+=== Roberto Busa
+
+One of the first computational linguists (1940s)
+
+* built index of words written by Saint Thomas
+** written across all his works
+** like 12 million words
+
+Instead of hiring choir boys to annotate books by hand he thought to use machines to do it
