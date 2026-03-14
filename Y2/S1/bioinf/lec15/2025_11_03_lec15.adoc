@@ -6,7 +6,7 @@
 
 == Why MSA?
 
-Sometimes we have more than 2 strings we want to align
+Sometimes we want to align more than 2 strings 
 
 * different organisms
 * different strands
