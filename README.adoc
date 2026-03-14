@@ -13,6 +13,8 @@ Please don't redistribute them directly and please don't claim that you wrote th
 
 This script converts .adoc files into .html or .pdf and writes them to a zip archive. Requires https://asciidoctor.org/[Asciidoctor] and https://docs.asciidoctor.org/pdf-converter/latest/install/[Asciidoctor-pdf]
 
+WARNING: Math symbols may not be rendered properly in PDF mode
+
 Arguments:
 
 * `--dirpath (-d)`: path to directory containing .adoc files
