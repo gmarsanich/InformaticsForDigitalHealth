@@ -1,0 +1,57 @@
+= ELSA - Explainability and transparency
+:toc:
+:toc-title: Contents
+:toclevels: 4
+:nofooter:
+:stem: latexmath
+
+== What is explainability?
+
+No fixed definition
+
+Something like the ability to accurately explain something 
+
+* need some kind of understanding of the human brain
+
+*Explainable AI* came about to counter the GDPR requirement for automated predictive decision making
+
+* machines cannot automatically take decisions about individuals without explaining why
+** I can't give you a mortgage because <reason>
+** not all explanations are feasible/realistic
+** need to account for actionable variables
+*** I can't give you a mortgage because you breathe oxygen -> not actionable
+*** I can't give you a mortgage because your credit score is too low -> actionable
+* the outcome of the decision may have catastrophic effects
+
+Contains *explicability*
+
+* mix of *intelligibility*
+** explaining technical processes to laymen/experts
+** domain experts
+** different experts have different explanation preferences
+* and *accountability*
+** defining who is ultimately held responsible
+
+Some models are intrinsically explainable
+
+* decision trees
+** can clearly see splits
+** decisions can be made on biases -> illegal
+** decision trees can't be used for everything
+** most models are black boxes
+
+== What is transparency?
+
+Big container of stuff
+
+* traceability
+** what steps did the model take to come to this conclusion?
+** what steps did the data take to get here?
+
+=== Black Box Models
+
+A black box model is a model whose internals are not interpretable by humans and unknown to the observer
+
+* GenAI
+* LLMs
+
