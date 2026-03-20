@@ -55,3 +55,176 @@ A black box model is a model whose internals are not interpretable by humans and
 * GenAI
 * LLMs
 
+== Interpretability
+
+Interpretability has several components:
+
+. global/local
+* understanding whole/part of model
+. time limits
+* time required for the user to understand
+. user expertise
+* the level of model knowledge changes the type of explanation
+
+Measured with the complexity of the model
+
+* higher complexity -> lower interpretability (I guess)
+
+Interpretability includes *fidelity* and *accuracy*
+
+* fideility -> extent to which the model imitates a black box
+** does an interpretable model agree with the black box model?
+** fidelity is generally more important than accuracy
+* accuracy -> extent to which the model predicts unseen instances (classical evaluation metric)
+** are the results consistent with the black box?
+** accuracy is more relevant if you want to get rid of the black box model
+
+
+Basically you have an MLP (black box) -> make new model that tries to copy its outputs -> should be interpretable version of MLP
+
+=== Interpretable models
+
+4 main aspects:
+
+. fairness
+* the model does not discriminate based on social/political/whatever groups
+. privacy
+* the model does not reveal sensitive info
+. monotonicity
+* lol
+. usability
+* interactive explanation interfaces
+
+Rule based models are inherently interpretable to some degree:
+
+* decision trees
+* linear models
+
+==== xDB - explanation by design
+
+Intrinsically interpretable model
+
+==== BBX - black box eXplanation
+
+Has a black box system and has a subsystem that tries to explain the model
+
+* cannot interact directly with model internals
+* can only make query
+* no knowledge of training dataset
+** only metadata
+** or test set
+* performs reverse engineering based on test set outputs
+
+Can be global:
+
+* find all rules
+
+or local:
+
+* find only relevant rule for query
+* local explanations can be aggregated into global explanation
+** using clustering/SHAP
+
+==== Model Inspection Problem
+
+Based on sensitivity analysis
+
+* set feature to fixed value
+* if model output changes -> important
+* else not important
+
+=== Types of explanations
+
+Many kinds:
+
+* counterfactual explanations
+
+== Complexity
+
+Opposite of interpretability
+
+* related to model
+* estimated with size relative to interpretable model
+
+Interpretable models also have a degree of complexity
+
+* linear models can have different numbers of non zero weights
+* estimating the complexity of a decision tree can be hard
+
+== Categorization
+
+Explainers work differently for different tasks
+
+* i.e. ach specific explainer has its own requirements
+
+These include:
+
+* problem type
+** binary classification, multiclass classification, regression
+* black box type
+** CNN, MLP, GradientBoost
+* data type
+** images, tetx, digital signals, tabular data
+
+There are *model agnostic* explainers
+
+* model agnostic explainers don't care
+
+=== Local explainers
+
+==== LIME
+
+*LIME* is one of the first local explainers
+
+Local explanation -> explain the decision boundary in the neighborhood of a single decision
+
+* less complex than the entire decision boundary
+* becomes more complex when multiclass
+
+Make a small local model that overfits on the neighborhood
+
+* don't want to generalize
+* want to describe where the boundary is and why
+
+==== LORE
+
+Rule based explainer
+
+Uses a *genetic algorithm*
+
+* tries to simulate evolution??? idk 
+
+==== TREPAN
+
+Designed for NNs but works on other model types
+
+* data dependent -> works on tabular data
+
+==== SHAP
+
+Distributes the weight of the output between model features
+
+* assumes that features are uncorrelated
+
+Kind of works like sensitivity analysis+game theory
+
+* if the value of a feature changes the outcome -> relevant
+
+Works off a *base value*
+
+* e.g. the mean value of the target
+
+Easily applied in federated systems
+
+===== Game theory
+
+The game is the prediction task
+
+The gain is the actual prediction-average prediction for all instance
+
+The players are the values of each feature that cooperate to receive the gain
+
+Combinatorial algorithm
+
+* tries all combinations to see what changes where
+
