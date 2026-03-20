@@ -551,3 +551,39 @@ Can have complexity between O(n^2) and O(n^3)
 Run feature engineering to get linguistic features
 
 Weights are learned using ML on annotated corpora
+
+== Tools
+
+Usual suspects
+
+* NLTK
+* spaCY
+** neural parser
+** has domain specific implementations
+* stanza
+** graph based
+** slower but more accurate
+
+=== medspaCy
+
+Has a context layer
+
+* e.g. if sentence has this form then assume it came from oncology/pediatrics/neurology
+** patient has a history of pneumonia -> has pneumonia but not now
+** provides indices of context -> between x and y -> history of penumonia
+
+=== UDPipe
+
+Universal dependency model
+
+* 169 models for 93 languages
+* each with their own tools
+** good for multilingual applications
+
+Desktop/server app
+
+* can't just import (cringe)
+
+Tree-based
+
+* hard to follow representation
