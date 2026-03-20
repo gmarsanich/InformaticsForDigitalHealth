@@ -16,9 +16,221 @@ i.e. finding *real world entities* and classifying them
 
 Finding the start and end of these spans is the first problem
 
-=== Subsection 1
+=== Entity Classes
 
-== Section 2
+*UMLS* is a set of classes for medical use
 
-=== Subsection 2 
+* classes are extremely unbalanced
 
+== Tagging Schemes for NER
+
+Often reuses POS tagging concepts/tools
+
+* tag tokens if part of sequence that's part of a named identity
+** also tag what part of the NE it is
+** not if it's a verb/noun/adjective
+* useful to know position within the entity
+** first, middle, last
+
+Choosing the tagging scheme isn't that big of a deal
+
+* use whatever library you chose gives you
+
+If you have to develop a tool start with BIO
+
+* fewest classes
+* unless you have a lot of training data
+
+If instead you use a transformer:
+
+* the schema doesn't really matter
+* BIOES still more expressive
+
+=== BIO (IOB2) Tagging
+
+Most common format for NER tagging
+
+Tags are:
+
+* 1 letter
+** indicates the role
+** B = beginning of span
+** I = in span
+** O = outside span
+
+* 1 class
+** one of the NER classes
+
+e.g.:
+
+* B-DRUG
+* O-DRUG
+
+=== BIOES (IOBES) Tagging
+
+Very similar to BIO
+
+Has more markers
+
+. E
+* end - last token
+. S
+* single word entity
+
+Increases sparsity
+
+* each category is smaller
+* if corpus is big enough this doesn't matter
+
+=== The problem with structure
+
+NER tagging schemes cannot express nested structures
+
+* spans are limited to subsequences
+* contiguous spans only
+
+For example:
+
+* lung cancer
+** lung cancer -> disease
+** lung -> organ
+** cancer -> disease
+
+Can't have multiple tags
+
+2 solutions:
+
+. Take the longest match and use an ontology to deal with it later
+* doesn't work that well in practice
+. Use multiple NER layers
+* one for each level of hierarchy
+* increases complexity
+* works better in practice
+
+== Beyond tagging
+
+Don't have to use tags to do NER
+
+Can use encodings based directly on spans
+
+* span = index of first token, index of last token, class of span
+
+Spans allow for arbitrarily nested entities
+
+* each token can belong to multiple entities of any class at the same time
+
+== NER Algorithms
+
+=== NER features
+
+Typically some features are:
+
+. word + its neighbors
+* previous and next
+. embeddings
+. PoS for word + neighbors
+. Presence of word in gezeteer
+. Prefixes and suffixes of word
+* usually prefixes >= 4
+. Word shape of word and neighbors
+* encoding of word using cases (upper/lower)
+* useful for stuff like proper nouns and such
+. Short word shape of word and neighbors
+* short shape is same except same sequences are collapsed into single symbol
+. Other gazeteer features
+
+=== Symbolic and statistical techniques
+
+. Symbolic -> brittle, high precision
+* rule based
+** rules are based on regex
+* gazeteers
+** lists of words
+** very high precision, low recall
+
+. Generative techniques
+* HMMs
+** hidden process -> generation of tags
+** visible process -> assignment of tags to words
+* performance on NER is hard to quantify
+** POS tagging is simpler
+** next part of NER is not easy to determine
+* Markov assumption is violated by NER
+
+* Maximum entropy markov model
+** normal Markov model + log reg
+** train MM with corpus
+** train log reg to do something
+* does inverse of HMM -> Y given X
+* can become unstable
+** multiplying lots of very small numbers
+* the normalization is done at each transition
+** a is followed by b = transition
+
+. CRF (discriminative)
+* models the probability directly
+** probabiltiy of tags is X given words are Y
+* normalizes using Z -> ensures all outputs sum to 1
+
+These suffer from the *label bias* problem
+
+* rare classes have few outgoing edges
+* few edges -> high certainty
+* rare classes are predicted more often
+* MEMMs are particularly affected
+
+=== Neural Techniques
+
+Neural techniques work pretty well generally
+
+Named entity sequences have to be recognizable by writers and readers
+
+Morphology hints to meaning of a word:
+
+* words that end in -itis indicate an inflammation
+
+==== Bi-LSTM-CRF Architecture
+
+Bidirectional LSTM with CRF layer
+
+* BILSTM looks at both ends of the sequence
+* accumulates information from both ends
+** works as feature extractor
+* CRF ensures tag consistency
+* guarantees rules generated from tags
+
+Training objective:
+
+* minimize negative log likelihood
+** maximize likelihood of y* given X
+
+At inference time to find y* solve for some function using a clone of the Viterbi algorithm
+
+==== Transformers
+
+Take word -> transform it into proper NE tag
+
+LSTM approach acucmulates everything that it sees
+
+* loses precision/accuracy of far elements
+* this can be fine for many applications but not others
+** e.g. very long patient history text
+
+Transformers use attention
+
+* don't care about position
+* can learn to look far into sequence to find key term
+
+Steps:
+
+. phrase
+. tokenizer
+* tokenizer might break word into multiple tokens
+** take first sub token
+** use pooling over the hidden states of the sub tokens of the same word
+** propagate the gold label to all sub tokens of the same word
+. transformer encoding
+. linear layer
+. encoding of NER tags
+
+Can also put CRF after fully connected layer to ensure correct tags
