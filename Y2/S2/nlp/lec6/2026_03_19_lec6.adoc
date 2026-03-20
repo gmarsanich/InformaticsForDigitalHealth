@@ -1,0 +1,24 @@
+= NLP - named entity recognition
+:toc:
+:toc-title: Contents
+:toclevels: 4
+:nofooter:
+:stem: latexmath
+
+== What is NER?
+
+Defining whether an entity in doc A is the same as the entity in doc B given a name of some kind
+
+* "Mr President" said by Person A refers to President P while Mr President said by person B refres to President R
+* first step towards semantics
+
+i.e. finding *real world entities* and classifying them
+
+Finding the start and end of these spans is the first problem
+
+=== Subsection 1
+
+== Section 2
+
+=== Subsection 2 
+
