@@ -27,7 +27,8 @@ There are a whole bunch of interlinked databases
 ** shows gene location in genome
 ** shows gene isoforms
 ** autologs: same gene different life form
-** paralogs: something else idk
+** paralogs: subset of homologs
+*** product of gene duplication
 ** shows phenotypes: expression of genes (eye color, hair color, pea color, pea texture, etc.)
 
 Most of these have APIs to make automatic interaction easier
