@@ -194,8 +194,15 @@ Can be used to reconstruct genome/gene/protein evolution
 
 Need the right algorithm for the job
 
+.Naive/Brute force
+* parse the sequence
+* parse the search pattern for every character in the sequence
+** extremely high complexity
+** at worst have to parse every charcter in the pattern for every character in the sequence
+*** `O(s * p)` complexity
+
 .Knuth-Morris-Pratt (KMP) algorithm
-. preprocess steps
+. uses preprocessing step to skip some comparisons
 * construct Longest Proper Prefix that is also a Suffix
 ** when a mismatch occurs the word has enough information to guess where the next match could begin
 
@@ -205,6 +212,18 @@ Need the right algorithm for the job
 ** nucleotide IUPAC
 * Amino acids only use IUPAC
 ** no weirdness
+
+=== IUPAC codes
+
+IUPAC tables assign codes to:
+
+* nucleotides
+** some are direct matches
+*** `IUPAC(A) = "Adenine"; nucleotide("Adenine") = "A"`
+** some are not
+*** `IUPAC(B) = "not A"; nucleotide("not A") = {"C", "G", "T"}`
+* amino acids
+** `IUPAC(A) = "Ala"; aacid("Ala") = "Alanine`
 
 === Codons to amino acids
 
