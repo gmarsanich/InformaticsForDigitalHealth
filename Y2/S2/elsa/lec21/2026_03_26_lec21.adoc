@@ -1,0 +1,127 @@
+= ELSA - Explaning non tabular data
+:toc:
+:toc-title: Contents
+:toclevels: 4
+:nofooter:
+:stem: latexmath
+
+== Adversarial AutoEncoders for images
+
+If we don't have access to the model we can generate data with known parameters to try to understand the model's behavior via trial and error
+
+Autoencoders are useful for this
+
+* takes input
+* maps into latent space Z
+** Z contains linear/nonlinear combinations of input features
+** works for images too -> transforms into vector/matrix of features
+* decoder decodes Z to reproduce input
+** using the distribution from Z we can augment/generate data that is *very* similar to the original
+
+We can attach a *discriminator* to determine whether sample from Z is part of the distribution of the original data
+
+The Z image vector is technically a table
+
+* can use tabular techniques for explainability
+
+=== Local Classifier Latent Rule Extraction
+
+Generally works like this:
+
+. take input
+* image
+. give to encoder
+* returns vector Z of uninterpretable variables
+. generate neighborhood of vector Z
+* need to know distribution of classes depending on neighborhood generator
+** to know where to draw boundary
+. feed neighborhood output into discriminator
+* says whether sample is plausibly from the original input
+* if plausible -> keep
+* else -> throw
+. decode the output and feed to black box
+* will give class
+. create buckets of factual/counterfactual rules as records
+
+At the end of the day it builds a saliency maps
+
+* quantifies how much each pixel contributes to the classifier
+* also maps sort of how the image is composed generally
+
+ngl I dont understand anything
+
+== Explanining Time Series
+
+Shapelet based methods are very sensitive
+
+* very user dependent
+
+Can use *autoencoders* again
+
+* generate factual and counterfactual examples using internal rules
+
+How do we generate external rules?
+
+* those shown to the user
+
+Use *shapelet tree classifier*
+
+* builds a tree
+* checks whether shapelet is in timeseries
+** binary array -> 1 if there, 0 if not
+** basically if 1,1,0,0,0,1,1,1,0 -> timeseries has this shape
+
+== Federated explainers
+
+=== FastSHAP++
+
+Federated explainer
+
+* private
+* end to end encrypted
+
+Protects explained behavior in transit
+
+Send explanation to server
+
+* needs aggregation
+* use mean
+* use weighted mean
+** best explained explanation should weigh more
+
+Uses NN to simulate NN trained on data
+
+* gives output to new NN
+
+New NN runs sensitivity analysis on neurons
+
+* blocks certain features
+* checks feature importance
+
+CAUTION: not differential private, not privacy preserving. Data is used to train the mask NN -> put DP somewhere after mask NN training and feature importance
+
+In federated learning settings:
+
+* start explanation only when global model is DP compatible
+* epsilon budget is unique between nodes
+** each node has same epsilon -> total epsilon is max(epsilon)
+** each operation within a node eats a bit of its budget
+
+=== TREPAN/GLOR-FLEX
+
+Everything is distributed
+
+* each node has its own dataset
+* each node has its own explainer
+* each node has a personalized variant of the general model
+
+Proxy nodes merge n nodes into a single node
+
+* e.g. multiple hospital wings are aggregated into overall hospital node which goes to the orchestrator or whoever
+
+Global explanation can be built from individual explainers
+
+* need to merge explanation trees from n nodes
+** combine rules that overlap in the data
+*** need data to measure overlap
+*** rule that has highest probability on synth data wins
