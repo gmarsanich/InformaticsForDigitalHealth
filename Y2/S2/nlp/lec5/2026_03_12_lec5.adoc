@@ -80,6 +80,20 @@ Believed in *universal grammar*
 * thought that language/grammar learning skills are hardwired in human brains
 * controversial opinion?
 
+=== Terminal/nonterminal symbols
+
+In formal languages, terminals and nonterminals are parts of a vocabulary/alphabet under a formal grammar, where vocabulary/alphabet is a finite nonempty set of symbols
+
+*Terminals* are symbols that cannot be substituted by other symbols in the vocabulary, while *nonterminals* can, according to the production rules of the grammar
+
+Basically:
+
+* *terminal* symbols are symbols that cannot be broken down/expanded
+** i.e. the actual words we use, or the terms in a mathematical expression, or instructions in programming languages
+* *nonterminal* symbols are placeholders that can be replaced by other symbols
+** e.g. <art> <adj> <adj> <noun> <verb> <prep> <art> <adj> <noun>
+** the sequence of *nonterminals* above can be expanded into terminals: "the quick brown fox jumps over the lazy dog"
+
 === Chomsky hierarchy
 
 Classification of formal languages
