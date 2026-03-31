@@ -57,7 +57,7 @@ Resolving synonyms and such
 
 A *knowledge base* simply stores knowledge
 
-*Anthologies* have relations between the items it stores and can reason on them
+*Ontologies* have relations between the items it stores and can reason on them
 
 * generally have an *is a* relationship
 
@@ -184,14 +184,14 @@ How?
 
 Inverted index approaches don't really work
 
-* no O(1) lookups
-* stuck with O(m^2) + O(c^2) per entity in the KB
+* no stem:[O(1)] lookups
+* stuck with stem:[O(m^2) + O(c^2)] per entity in the KB
 
-Can instead use vector databases
+Can use vector databases instead
 
 * database of word/concept embeddings
-** represent mention m as a vector v_m
-** represent concept c as vector c_m
+** represent mention m as a vector stem:[v_m]
+** represent concept c as vector stem:[c_m]
 * score overlap using cosine similarity and others
 
 Done with things like SAPBert and other BERTS
@@ -212,9 +212,9 @@ Use *cross-encoders*
 
 Very expensive
 
-* O((m+c)^2) per entity in the KB
-** can map concepts once and cache -> only O(c^2)
-* use on top-k
+* stem:[O((m+c)^2)] per entity in the KB
+** can map concepts once and cache -> only stem:[O(c^2)]
+* use on top-stem:[k]
 
 === Resources
 
