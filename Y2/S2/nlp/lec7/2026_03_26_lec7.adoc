@@ -1,0 +1,435 @@
+= NLP - Entity Linking
+:toc:
+:toc-title: Contents
+:toclevels: 4
+:nofooter:
+:stem: latexmath
+
+== What/why is Entity Linking?
+
+=== Definition
+
+It is the process of matching spans of text that represent real world entities
+to unique identifiers found in some knowledge base
+
+* 2 aspirin derived medications should both point to the concept of Aspirin
+
+NER just says `<thing>` is `<thing>`, EL says `<thing>` is `<this thing exactly>`
+
+=== Motivation
+
+Increases interoperability
+
+* knowledge bases are shared
+* many systems have access to the UMLS database
+
+Integrates knowledge:
+
+* Linking a span to its ID allows for fast lookups of other information (dosage, side effects, etc.)
+* can search for the same thing across multiple databases
+
+Search and analytics:
+
+* can group multiple contents under one query
+** e.g. heart attack + myocardial infarction -> same term
+
+===  Problems
+
+==== Lexical variability
+
+Mapping *surface forms* to concepts
+
+* mapping heart attack, MI, AMI, CI -> C0027051
+* *many to one* mapping
+
+==== Ambiguity
+
+Resolving synonyms and such
+
+* mapping cold to its concept
+** cold could be temperature or illness
+* *one to many* mapping
+* requires context to understand what that token means
+** "I have a cold" -> clearly illness
+** "I feel cold" -> clearly temperature
+
+== Knowledge Bases/Ontologies
+
+A *knowledge base* simply stores knowledge
+
+*Anthologies* have relations between the items it stores and can reason on them
+
+* generally have an *is a* relationship
+
+Generally KBs contain:
+
+* unique identifiers
+* canonical names
+** preferred term to describe that thing
+** preferred by whoever built that KB
+* aliases/synonyms
+** alternative terms for one concept
+** more = better for many to one problems
+* semantic types (disease, drug, etc.)
+** no longer have to recognize them
+* relationships
+** links between terms
+*** drug -> illness
+*** this drug cannot be given to people with this condition
+
+The main KB for DH is *UMLS*
+
+=== Multiple Knowledge Bases
+UMLS
+Linking the same concept across KBs is not trivial
+
+* each KB has its own unique identifier
+
+Some KBs might have unique IDs for other KBs
+
+* not guaranteed
+
+== Standard EL pipeline
+
+. Identify and extract mentions
+* use NER to find mentions of words/terms
+* or use a windowing technique
+
+. Generate candidates
+* NER isn't perfect
+* find as many as required
+** narrow search space by finding all possible entries in the KB
+
+. Disambiguate the candidates
+* find the best candidate for a given context
+* rank in order of lowest ambiguity
+** most likely goes first
+
+=== The NIL problem
+
+What happens when we query the KB and find nothing?
+
+* did we mess up the query?
+* or does the thing not exist in the KB?
+
+Simply return NIL
+
+* not as an error
+* just as a value
+
+WARNING: don't return a close match or some such. It might be worse than nothing
+
+Downstream systems must handle NIL
+
+== Algorithms and Resources
+
+=== IR and EL
+
+IR and EL are quite similar (at a high level)
+
+In IR:
+
+* query + docs -> retrieved docs -> ranked docs
+
+In EL:
+
+* mention + KB -> candidates -> ranked concepts
+
+However:
+
+* EL docs are much shorter than IR docs
+** also extremely specific
+*** TF-IDF doesn't work
+* Queries are very short and ambiguous
+
+Also different success metrics
+
+* EL success is measured by the *accuracy* of the first candidate
+* IR success is measured by the *precision* of the top k candidates
+
+=== Candidate Generation
+
+Many ways
+
+* neural models are not usable off the bat
+** UMLS has 4 million terms -> unfeasible
+
+Need a faster first pass
+
+* needs to be *fast*
+* not necessarily *accurate*
+
+How?
+
+* *dictionary lookup*/inverse index
+** very fast but very brittle
+** based on string comparison
+
+* *n-gram lookup*
+** breaks query term into n-grams
+** search n-grams in KB
+** less brittle (handles typos)
+
+* edit distance algorithms + thresholds
+** find similarly structured words within some tolerance range
+
+* TF-IDF/BM-25
+** using inverted index
+** treat each KB concept as mini document
+** generally not recommended
+*** overlapping concepts may not have common keywords
+*** cannot deal with ambiguity
+
+=== Retrieval (Bi-Encoder)
+
+Inverted index approaches don't really work
+
+* no O(1) lookups
+* stuck with O(m^2) + O(c^2) per entity in the KB
+
+Can instead use vector databases
+
+* database of word/concept embeddings
+** represent mention m as a vector v_m
+** represent concept c as vector c_m
+* score overlap using cosine similarity and others
+
+Done with things like SAPBert and other BERTS
+
+* inputs are encoded independently
+** word level interactions between mention and candidate don't exist
+
+=== Disambiguation (Cross-Encoder)
+
+Need to rank candidates from retrieval
+
+Use *cross-encoders*
+
+* concatenates inputs -> feeds to BERT -> gets score
+* Give the encoder context+mention and candidate description
+** compares context and mention tokens
+** as well as context/mention tokens with themselves
+
+Very expensive
+
+* O((m+c)^2) per entity in the KB
+** can map concepts once and cache -> only O(c^2)
+* use on top-k
+
+=== Resources
+
+3 main resources:
+
+. UMLS
+. SNOMED-CT
+. ICD-10
+
+Can also build specialized KB
+
+* for very specific tasks
+* create knowledge base where no big one exists
+
+Most systems require registration
+
+* cringe
+
+==== UMLS
+
+Meta KB
+
+* compiles 200 source vocabs
+
+Very rich
+
+* 3.4 million concepts
+
+Metathesaurus
+
+* maps concepts and synonyms across languages
+** 17 million names
+
+Semantic network
+
+* high level categories
+** ~130
+* 54 relationship types between these categories
+
+Specialist lexical tools
+
+* NLP specific info
+** stems
+** lemmas
+** etc.
+* 190 vocabularies
+
+==== SNOMED-CT
+
+Systemized nomenclature of medicine
+
+* i.e. clinical terms
+
+Very granular
+
+International + specialized extensions
+
+==== ICD-10
+
+International
+
+* terms for different language
+* recommended by local authority on clinical terminology
+
+Smaller than SNOMED
+
+==== WikiData
+
+More general NLP KB
+
+* often good enough
+* unless doing super specialized work
+
+Basically an ontology of all the things mentioned in wikipedia
+
+* 120 million concepts
+* 1.3 million lexemes
+
+Multilingual
+
+* linked to national wikis
+
+Has its own vector database and MCP client
+
+* LLMs can access WikiData directly and do stuff with it
+
+No registration required
+
+Has its own local databases + GraphQL queries
+
+== Practical Tools
+
+Regardless of the specific tool EL parts are often towards the end of the pipeline
+
+* EL works off the back of features created by earlier parts of the pipeline
+
+=== SciSpacy
+
+SciSpacy provides a linking component for its pipeline
+
+Approximate Nearest Neighbor
+
+* generates 3-grams -> makes vector -> matches vectors with its database
+** using TF-IDF
+* very fast
+* decently robust
+
+Allows other EL tools to be used as well if default is not up to the task
+
+==== UMLS Semantic Types
+
+UMLS has semantic types
+
+* filters to select a specific category
+
+Can select a specific semantic type for the selected pipeline
+
+==== Type Trees
+
+Types are organized in a *taxonomy*
+
+* trees/tree-like structures
+* has 2 branches
+** entity
+** event
+* each mention has multiple types
+** which has parents and children
+
+Trees are good for highly ordered things
+
+* for natural processes not so much
+** see animal taxonomy
+
+e.g. the root Cancer has children:
+
+* skin cancer
+* bone cancer
+* brain cancer
+* and so on
+
+=== Stanza
+
+Stanza does not have EL functionality OOB
+
+* has a hook to attach external EL tools
+
+Not really worth the hassle
+
+=== BioPortal
+
+REST API that queries an endpoint that hits 300 ontologies
+
+* returns result
+* also has a web UI
+
+Best used for when you're unsure of what ontology best fits your case
+
+Doesn't do EL but can be useful to find ontologies to use for it
+
+=== MedCat
+
+Online service
+
+Based on spaCy
+
+Offers many services:
+
+* PII removal
+* annotation services
+* visualization
+
+Requires local UMLS model
+
+Provides annotation tools
+
+* can use to build own KB
+
+=== ReFinED
+
+Built by Amazon Science (cringe)
+
+Uses transformers to do general linking tasks
+
+* treats linking as a classification problem
+** match mention to n categories and rank them
+** weird setup -> 4 million UMLS categories for ~30 mentions in text
+
+Does NER and EL in a single pass
+
+Zero-shot
+
+* links to entities not found in training
+** uses description embeddings
+
+Uses WikiData's 30 million entries for support
+
+Very finicky
+
+* wants very specific versions of stuff
+
+Relies on 10gb of local files
+
+* between RoBERTa
+* linkers
+* ontologies
+* etc.
+
+In practice quite cringe
+
+=== LLM linking
+
+In theory extremely powerful
+
+No installation required, extremely flexible
+
+WARNING: it's going to hallucinate at some point because of course
+
+In practice very cringe
