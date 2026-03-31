@@ -115,7 +115,7 @@ Natural languages are somewhere between type 1 and 2
 * context isn't always required/lack of context isn't always a big deal
 ** mildly context sensitive
 
-===== Type 3 languages
+==== Type 3 languages
 
 Single non terminal -> terminal or terminal+non terminal on right
 
@@ -141,7 +141,7 @@ Useful for pattern matching
 * SSN
 * regex
 
-===== Type 2 languages
+==== Type 2 languages
 
 Adds a memory to type 3
 
@@ -165,14 +165,14 @@ Still useful for extracting information from text
 
 * information extraction instead of language analysis/generation
 
-===== Type 1 languages
+==== Type 1 languages
 
 Context changes
 
 * information within the context can change
 * uses special characters to denote context
 
-===== Type 0 languages
+==== Type 0 languages
 
 No constraints
 
