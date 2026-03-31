@@ -1,0 +1,260 @@
+= NLP for DH - Morphology
+:toc:
+:toc-title: Contents
+:toclevels: 4
+:nofooter:
+:stem: latexmath
+
+== What is morphology?
+
+*Morphology* is the study of the internal structure of words + rules that form words from smaller meaningful units
+
+* parts of complex words
+** like medical terms
+* lemmas, stems, etc
+
+Bridges gap between phonology and syntax
+
+== Morphemes
+
+A morphene is the smallest meaningful unit in a language
+
+* not necessarily a word
+** indivisible unit
+
+There are a few types:
+
+. Free morphemes
+* can be words
+** blood
+** pain
+** heart
+
+. Bound morphemes
+* must be bound to other morphemes -> *affixes*
+** prefixes, suffixes
+** -itis
+** -osis
+** -ly
+** un-
+
+. Allomorphs
+* variations of a morpheme determined by context
+** "a" vs "an"
+
+=== Morphemes in medical context
+
+Medical language is a big hodgepodge of various languages
+
+* <local language> + ancient greek + latin/pseudolatin + numbers + neologisms by doctors who think they're Shakespeare
+** it's a whole mess
+
+Standard NLP tools often fail on medical text
+
+* reasons listed earlier
+* greek/latin roots mean that words follow old morphological rules
+** modern rules != old rules
+** modern tools -> modern rules
+* medical terms are often simply combinations of other terms
+** meaning is the sum of the sub parts and nothing else
+
+For example:
+
+* brady (slow) + cardia (heart/of the heart/related to the heart) = bradycardia
+** slow heart
+* Gast (stomach) + r (for some reason) + itis (inflammation) = Gastritis
+** stomach inflammation
+
+With a few 100 affixes NLP systems can parse many more new terms
+
+== Stemming
+
+Stemming is a heuristic process that chops off the ends of words to hopefully arrive at the root
+
+* quickly -> quick
+** typically a bit more sophisticated than this
+
+Stemming algorithms exist for many western languages
+
+* not all languages are (easily) stemmable
+** declension/conjugations/agglutinatives are very challenging
+
+=== Porter Stemmer
+
+Most common rule-based stemming algorithm
+
+* English only (because of course)
+
+5 cascaded steps
+
+Fast but not very accurate
+
+* over/under stemming is very common
+
+=== Finite State Transducers (FST)
+
+Morphology can be modeled formally using FSTs
+
+* maps 2 strings
+** upper/lexical
+** lower/surface
+
+==== FST Definition
+
+FSTs are:
+
+* compositional
+** rules are expressed as chains of transducers
+* bidirectional
+** can be used to generate and analyze words
+
+Formally an FST is a 6-tuple stem:[Q, \Sigma, \Gamma, I, F, \delta] such that:
+
+* stem:[Q] is a finite set of states
+* stem:[I] is a subset of stem:[Q]
+** contains the set of initial states
+* stem:[F] is a subset of stem:[Q]
+** contains the set of final states
+* stem:[\Sigma] is a finite set containing the input alphabet
+* stem:[\Gamma] is a finite set containing the output alphabet
+* stem:[\delta] is the *transition relation*
+** Written as: stem:[\delta \subseteq Q \cdot (\Sigma \cup \{ \epsilon \}) \cdot (\gamma \cup \{\epsilon\}) \cdot Q]
+*** where stem:[\epsilon] is the empty string
+*** stem:[\delta] is a set of 6 tuples that each represent a possible transition between states based on input and ouput symbols
+*** basically maps transitions between states
+
+==== FSTs for morphology
+
+FSTs map 2 strings
+
+* literal string (i.e. the input tape of the FST)
+* onto the same string annotated with morpheme markers
+
+This process may go through intermediate representations
+
+For example:
+
+. Input string: FOXES
+* raw string
+. Intermediate representation: `FOX^s#`
+* represents root word with plural marker
+. Final mapping: `FOX+N+PL`
+* represents root word again with plural suffix and word type marker
+
+=== Stemming in the medical domain
+
+Symbolic approaches are mostly fine
+
+* predictable
+* interpretable
+* manual egineering so no training and black box models
+
+With a few caveats:
+
+* Hard to maintain (because of manual engineering)
+* Brittle
+* Language specific
+
+== Lemmatization
+
+More sophisticated than stemming
+
+Reduces inflected or derived words to their dictionary form
+
+* i.e. actually gets the root word
+** better -> good
+** running, runs, ran -> run
+
+Uses multiple techniques/tools:
+
+* vocabulary
+* PoS context
+* morphological analysis
+
+Lemmatization is:
+
+* Context aware
+** uses surrounding words to determine intended meaning
+** distinguishes between parts of speech
+* Accurate (I guess??)
+** produces actual valid dictionary words
+** no truncated nonsense
+
+=== Statistical Lemmatization
+
+PoS tagging is required
+
+* disambiguates meaning
+* allows for accurate retrieval
+
+Can use a probabilistic approach
+
+* find lemma stem:[L] given a word stem:[W] and its PoS tag stem:[T]
+** stem:[\hat{L} = \text{argmax}_L P(L | W, T)]
+
+Probabilities are estimated based on *corpus*
+
+* collection of text
+** consisting of `(word, lemma)` pairs
+
+Using techniques like:
+
+* HMMs
+* Conditional Random Fields
+
+This can also be used to predict lemma and PoS given a word + context
+
+* not really used in medical domain
+
+=== Neural Lemmatization
+
+Lemmatization can be viewed as a seq2seq task on tokens
+
+* encoder reads word
+* decoder returns lemma+marker
+
+== Morphology in the modern age
+
+LLMs ignore morphology
+
+* LLMs are entirely token based
+
+This is bad for medical domain
+
+* morphology carries lots of meaning
+** omitting it equals losing a lot of meaning
+** which is bad
+
+=== Subword tokenization
+
+Text is tokenized by *frequent subword units*
+
+* bits of words
+
+This captures morphological units implicitly
+
+HOWEVER:
+
+* the captured units may not be valid morphemes/may be ambiguous
+** `"unhappiness"` -> `["un", "happi", "ness"]`
+*** "un" can be "un" (without) or "un" as in "un-ity"
+
+=== Byte-Pair Encoding (BPE)
+
+BPE is a relatively simple text encoding algorithm
+
+. find most frequent pair `ab`
+. replace `ab` with new value `c`
+. write mapping somewhere that `{"c": "ab"}`
+. repeat until sufficiently compressed
+
+In medical text this naturally finds common medical units because they appear together very frequently:
+
+* itis
+* ology
+* cardi
+
+This works but can be noisy
+
+* can find meaningless units
+* can find false matches
