@@ -120,7 +120,7 @@ Works across languages
 To make up for low granularity UD adds new features
 
 * like a dictionary of attribute=value for each tag
-* like verbs and reflexive verbs 
+* like verbs and reflexive verbs
 ** VERB(Reflex)
 
 3 classes of features:
@@ -184,7 +184,7 @@ Model the sequence as a sequence of states
 
 Use a Markov chain to determine the tag of the next word
 
-* if tag[2] == adjective then tag[1] == noun
+* if `tag[2] == adjective` then `tag[1] == noun`
 
 We find the sequence of tags with the highest probabilty for a given sequence of words
 
@@ -194,7 +194,7 @@ Tags are hidden states
 
 Transitions are probabilities of finding a tag given the previous tag
 
-Emissions are the probability of the word wi produced by tag i
+Emissions are the probability of the word stem:[w_i] produced by tag stem:[i]
 
 HMMs are very interpretable
 
@@ -202,35 +202,32 @@ HMMs are very interpretable
 
 HMMs have a few limitations:
 
-We don't only use words
-
+. We don't only use words
 * lemmas
 * stems
 
-Words change meaning depending on spelling and other structural differences
-
+. Words change meaning depending on spelling and other structural differences
 * uppercase words
 * word forms
 ** like in arabic
 
-Other algorithmic limitations include:
-
+. Other algorithmic limitations include:
 * generative constraints
 * independence assumptions
 * label bias problems
 
 ==== Generative Markov Models
 
-Use the chain rule and the Markov assumption to do something
+Use the chain rule and the Markov assumption to generate tags
 
-CAUTION: the number of probabilties become really small
+CAUTION: the number of probabilties become really small -> likely to collapse numerically
 
 Emission probabilities are estimated by counting how often a tag is associated with that word in the corpus
 
-* ~n_words * 40 matrix
-* of very small numbers
+* `~n_words * 40` matrix
+** of very small numbers
 
-Transition probabilities are estimated by counting how often a tag ti follows tag ti-1 in the corpus
+Transition probabilities are estimated by counting how often a tag stem:[t_i] follows tag stem:[t_{i-1}] in the corpus
 
 * ~40x40 matrix
 
@@ -240,14 +237,14 @@ These are only feasible if the corpus is annotated
 
 The number of possible sequences grows exponentially
 
-* p^n
-** n are number of words
-** p is the number of tags
+* stem:[p^n]
+** stem:[n] are number of words
+** stem:[p] is the number of tags
 
-Viterbi algorithm uses dynamic programming 
+Viterbi algorithm uses dynamic programming
 
 * stores the best sub path at each word step
-* np^2 complexity
+* stem:[O(n \cdot p^2)] complexity
 
 Requires 2 matrices:
 
