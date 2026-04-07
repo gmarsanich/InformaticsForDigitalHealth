@@ -118,7 +118,7 @@ Formally an FST is a 6-tuple stem:[Q, \Sigma, \Gamma, I, F, \delta] such that:
 * stem:[\Sigma] is a finite set containing the input alphabet
 * stem:[\Gamma] is a finite set containing the output alphabet
 * stem:[\delta] is the *transition relation*
-** Written as: stem:[\delta \subseteq Q \cdot (\Sigma \cup \{ \epsilon \}) \cdot (\gamma \cup \{\epsilon\}) \cdot Q]
+** Written as: stem:[\delta \subseteq Q \cdot (\Sigma \cup \{ \epsilon \}) \cdot (\Gamma \cup \{\epsilon\}) \cdot Q]
 *** where stem:[\epsilon] is the empty string
 *** stem:[\delta] is a set of 6 tuples that each represent a possible transition between states based on input and ouput symbols
 *** basically maps transitions between states
