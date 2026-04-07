@@ -100,28 +100,29 @@ Classification of formal languages
 
 * less/more formal languages
 
-3 types that fit into each other (0 contains 1 contains 2 contains 3)
+4 types that fit into each other (0 contains 1 contains 2 contains 3)
 
-. Type 3 (regular, parsed by finite state automata)
-* A -> aB (non terminal produces nonterminal and terminal)
-* A -> a (non terminal produces terminal and stops)
+[start=0]
+. Type 0 (recursively enumerable)
+* meaning that strings produced by this language can be compared to integers???
+** i.e. give me the next thing -> apply next production recursively
+* can do anything, no restrictions
+* futuristic poetry and things like medical notes don't always follow typical grammar rules
+
+. Type 1 (context sensitive, linear bounded automata)
+* can use thing only if near other thing
+* context is not modified
+** context doesn't change during production
+** only if A is between stem:[\alpha] and stem:[\beta] can I produce stem:[\gamma] between stem:[\alpha] and stem:[\beta]
 
 . Type 2 (context free grammars, parsed by push down automata)
 * single nonterminal produces sequence of terminals and non terminals
 * typically used in programming languages
 ** except Python apparently?
 
-. Type 1 (context sensitive, linear bounded automata)
-* can use thing only if near other thing
-* context is not modified
-** context doesn't change during production
-** only if A is between alpha and beta can I produce gamma between alpha and beta
-
-. Type 0 (recursively enumerable)
-* meaning that strings produced by this language can be compared to integers???
-** i.e. give me the next thing -> apply next production recursively
-* can do anything, no restrictions
-* futuristic poetry and things like medical notes don't always follow typical grammar rules
+. Type 3 (regular, parsed by finite state automata)
+* A -> aB (non terminal produces nonterminal and terminal)
+* A -> a (non terminal produces terminal and stops)
 
 Natural languages are somewhere between type 1 and 2
 
@@ -367,7 +368,6 @@ No phrasal nodes
 No non terminals
 
 * key part of Chomsky's structure
-* fuck you Chomsky
 
 Only terminals exist
 
