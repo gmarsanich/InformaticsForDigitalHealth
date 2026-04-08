@@ -71,27 +71,47 @@ Fraction of relevant documents that were retrieved
 
 ==== F or F1
 
-TRAP: cant remember why
+CAUTION: F1 can be a TRAP
+
+F1 is the harmonic mean of precision and recall -> assumes precision and recall have equal importance.
+
+* in some contexts one is more important than the other
+** medical diagnosis: low recall is worse than low precision
+** spam detection: false positives are worse than false negatives
+
+It does not take True Negatives into account
+
+* can be misleading for imbalanced datasets
 
 ==== Fbeta
 
-TRAP: also a trap idk why
+CAUTION: can also be a trap
+
+Generalized form of F1
+
+* assigns weights (stem:[\beta]) to recall and precision
+* stem:[\beta] needs to be chosen carefully
+** also depends on specific task and application
+* also ignores True Negatives
+** can be misleading for imbalanced datasets
 
 ==== Accuracy
 
 Fraction of correct classifications
 
 * in reality very misleading
+** very sensitive to class imbalance
+*** model can just predict the majority class and get it mostly correct -> high accuracy but useless
 
 == IR models
 
-=== Boolean retrieval model 
+=== Boolean retrieval model
 
 Developed in 1980s
 
 Very simple
 
-* boolean algebra 
+* boolean algebra
 * set theory
 
 The document is either in the set or not
