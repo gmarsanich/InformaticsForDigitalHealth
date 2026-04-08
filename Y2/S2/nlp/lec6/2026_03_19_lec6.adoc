@@ -66,6 +66,8 @@ e.g.:
 * B-DRUG
 * O-DRUG
 
+image:iob2.png[wikipedia]
+
 === BIOES (IOBES) Tagging
 
 Very similar to BIO
