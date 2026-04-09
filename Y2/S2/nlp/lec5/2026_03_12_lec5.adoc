@@ -330,9 +330,25 @@ The complexity will be stem:[O(G) \cdot n^3]
 
 === Tree Adjoining Grammar (TAG)
 
+Formally:
+
+* stem:[\text{TAG} = \langle \Sigma, \text{NT}, I, A, S \rangle]
+
+Where:
+
+* stem:[\Sigma]: finite set of terminals
+* stem:[\text{NT}]: finite set of nonterminals
+* stem:[I]: finite set of initial trees (stem:[\alpha])
+** stem:[\alpha] represents the skeleton of the language
+* stem:[A]: finite set of auxiliary trees (stem:[\beta])
+** stem:[\beta] trees allow for recursion
+* stem:[S \in \text{NT}]: start symbol
+
 Does not fall neatly within Chomsky's hierarchy
 
 * inbetween 2 categories
+** can parse all context independent languages
+** can parse some context dependent languages
 
 Works directly on trees
 
@@ -341,31 +357,22 @@ Works directly on trees
 
 Defines 2 operations:
 
-. adjunction
-* given a tree alpha with an internal node X and a new tree beta with node X and internal node X
+. *Adjunction*
+* given a tree stem:[\alpha]  with an internal node stem:[X] and new trees stem:[\beta] with node stem:[X] and internal node stem:[X]
 ** take whole subtree and insert it between root tree and subtree
-** joined at internal node X and new node X
-. substitution
+** joined at internal node stem:[X] and new node stem:[X]
+
+. *Substitution*
 * all nodes are labeled (T/NT)
-** terminals can be replaced with other non terminals (what)
-
-What are alpha and beta?
-
-* alpha trees are the grammar structures of the language
-* beta trees are utilities
-** essentially recusrion helpers
+** terminals can be replaced with non terminals
+*** i.e. terminals are expanded into other symbols
 
 This separates production from recursion
 
 * preserves locality
 ** the relationship between the targets of the phrase
-** patient and operation are in the same alpha trees
-** even when beta trees are inserted
-
-TAG can parse all context independent languages
-
-* some context dependent languages as well
-* falls between Type 1 and 2
+** *patient* and *operation* are in the same stem:[\alpha] trees
+** even when stem:[\beta] trees are inserted
 
 However it's very complex
 
