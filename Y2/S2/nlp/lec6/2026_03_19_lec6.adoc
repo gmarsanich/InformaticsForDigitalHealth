@@ -9,7 +9,7 @@
 
 Defining whether an entity in doc A is the same as the entity in doc B given a name of some kind
 
-* "Mr President" said by Person A refers to President P while Mr President said by person B refres to President R
+* Does the span "Mr President" in doc A and doc B refer to the same entity?
 * first step towards semantics
 
 i.e. finding *real world entities* and classifying them
