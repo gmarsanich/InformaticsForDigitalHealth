@@ -1,0 +1,174 @@
+= Introduction to Fairness and Bias
+:toc:
+:toc-title: Contents
+:toclevels: 4
+:nofooter:
+:stem: latexmath
+
+== Defining Bias
+
+Bias is *a systematic error in data or modeling that leads to distorted representations of reality*
+
+Bias comes from many sources:
+
+* data bias
+** prejudiced/incorrect collection
+* historical bias
+** old outdated policies
+* labeling bias
+** prejudiced/incorrect collection
+
+Bias has a certain structure:
+
+* not random => *systematic*
+** i.e. not noise
+* structured and directional
+* affects some groups more than others
+** errors are not evenly distributed
+** certain populations are consistently misrepresented
+
+=== Formal perspective
+
+Given:
+
+* X: features
+* Y: ground truth
+* Y': predicted outcome
+
+Bias can be seen as:
+
+* Y != Y' systematically for some subgroup
+* or dataset P(X, Y) not matching its corresponding real world distribution for some subgroup
+
+Concerns data and learning
+
+== Defining Fairness
+
+Fairness is the *normative property of a system*
+
+* kind of foggy
+* concerns outcomes and impact
+
+A *fair* system ensures equitable outcomes across sensitive groups
+
+CAUTION: Fairness is not guaranteed even with unbiased data
+
+Fairness is not directly observable
+
+* measured through metrics
+* different metrics measure different aspects
+* can compare model behavior across groups defined by sensitive features
+** e.g. sex, ethnicity
+** requires sensitive features, ground truth, predictions
+
+== Fairness and Bias
+
+If data is biased the model will be biased
+
+Data can be biased for lots of reasons:
+
+* collection methods
+* collection population
+* data handling/preprocessing
+
+Also for socioeconomic reasons
+
+* income differences preventing access to certain resources
+
+...and historical reasons
+
+* inherited inequalities
+* outdated guidelines
+
+...and geographical reasons
+
+* urban vs rural
+* language barriers
+* facilities/resources exist only in other locations
+** have to travel
+
+Fairness is pervasive and very important to consider
+
+* digital systems can very easily inherit all these biases
+** need to design them very carefully
+
+If the training data of a model is heavily unbalanced it will cause poor performance for the underrepresented group
+
+* this performance will be  *systematically* worse
+
+=== Fairness in digital systems
+
+DSs can:
+
+* amplify (not generate) biases
+* formalize inequalities
+* hide biasess/inequalities
+
+Mitigating impact of biases/inequalities needs to be formalized
+
+* what do we need to take into account?
+* how does this algorithm need to be designed?
+** e.g. get similar results for feature parity except bias feature (e.g. detect skin cancer in equal samples with different color)
+* how does this statistical evaluation need to be implemented?
+
+Not mitigating biases/inequalities can cause problems
+
+* bad diagnoses
+* bad treatment recommendations
+* unfair resource allocation
+* bias amplification
+* bias feedback loops
+
+=== Addressing Bias and Fairness
+
+There are legal and ethical implications:
+
+* GDPR/AI act violations
+** GDPR has regulations against discrimination
+* professional liability
+** if a decision made by an algorithm is bad the doctor becomes responsible
+* patient safety
+** if a decision made by an algorithm is bad the patient might suffer
+
+There are also domain specific challenges:
+
+* biological differences
+* biased datasets
+* limited ground truth
+
+Which affect model robustness
+
+* biased models -> poor generalizability -> bad performance
+
+Sometimes bias can be corrected after data correction
+
+* dataset rebalancing
+** performance on some metric (e.g. accuracy) may improve for the underrepresented class
+
+...but that does not necessarily remove *unfairness*
+
+* another metric may still be systematically worse (e.g. False Negative Rate)
+
+== Societal bias to algorithmic bias
+
+Digital systems will inherit any bias found in data collected from society from the usual suspects
+
+* historical bias
+** may even be invisible in the data
+** may be due to some other policies that affect the data generation process
+** or historical/cultural artefacts
+* representation bias
+** collecting data from a specific population only/with an overwhelming majority
+* measurement bias
+** measuring a variable and including it as a feature may cause bias
+
+Bias can come up in modeling as well:
+
+* evaluation bias
+** if eval/benchmark set is biased the results will not be representative of the general population
+* aggregation bias
+** aggregating data without considering the source populations can cause problems
+*** e.g. merging BMI of adults with BMI of children
+* deployment bias
+** end user interpretation can cause perceived bias
+** real world interactions can also cause new biases
