@@ -1,0 +1,130 @@
+= Semantics 1 - Symbolic Semantics and Knowledge Engineering
+:toc:
+:toc-title: Contents
+:toclevels: 4
+:nofooter:
+:stem: latexmath
+
+== What is semantics?
+
+Semantics is the study of meaning in language and logic
+
+* we operate on meanings when we intake a bit of language and have to parse it...
+* ...and reason on it -> apply logical operations and produce more language to express output
+
+.Symbolic semantics
+Represents knowledge by discrete (enumerable) symbols
+
+* UMLS is a set of enumerable symbols
+** it's basically an alphabet
+* meaning is defined by explicit logical relationships
+** each symbol has one or more meanings
+** explaining the meaning may require more symbols/language but not necessarily
+* explainable, verifiable, precise, human readable
+
+.Connectionist semantics
+Represents knowledge as a point in a *continuous* high dimensional vector space
+
+* extremely robust
+** smaller error propagation with smaller differences
+* handles nuance
+** similar but distinct symbols will be increasingly far from each other
+* scales with data
+* largely uninterpretable
+
+=== Types of Symbolic Semantics
+
+3 main types:
+
+. Lexical semantics
+* given a symbol -> get meaning
+* get relation between symbols from meaning
+* works on *base case*
+** semantics of single words
+
+. Compositional semantics
+* composing meanings of single words
+** i.e. builds complete semantics of a sentence from single constituent parts
+* works *recursively*
+** knowing the semantics of these words -> build overall semantics
+
+. Contextual semantics
+* looks outside the span of text
+** "where does this span come from?"
+* the origin of a span of text can change its semantics
+* lives in the *global environment*
+** not part of the sentence/bit of language
+
+== Lexical Semantics
+
+=== WordNet (1985)
+*WordNet* is a structured lexicon/dictionary
+
+* even more structured than normal dictionaries
+* makes pointer structure of dictionaries real
+
+Groups words by *meaning* and establishes *relationships* between these groups
+
+. Constitutive
+** hyponymy: more specific or instance of (group within group)
+** antonymy: opposite
+*** gradable, simple, converse
+*** not necessarily polar opposites
+** synonymy: same meaning
+** etc.
+
+. Role
+* Agent
+** indicates doer of the thing
+* Patient
+* Result
+** indicates the outcome of the thing
+* Instrument
+** indicates object used to do the thing
+* Location
+* Direction
+* Target
+* Source
+* Co-role
+
+. Derivation
+* diminutive
+* augmentative
+
+. Participle
+
+. Pertainyim
+
+* is pertinent to
+
+. Domain
+* topic
+** thing is relevant in this topic
+* region
+* exemplifies
+** this is an example of this concept
+
+. Other
+* mostly for human readability
+
+
+WordNet has 4 classes (basically the open word classes)
+
+* nouns
+* verbs
+* adjectives
+* adverbs
+
+==== Synsets
+
+A *synset/sense* is a unique cluster of words that can be interchangeably used to describe a particular meaning
+
+A word can be in multiple synsets
+
+* words can have multiple meanings
+
+Synsets contain only one of the 4 classes
+
+* some relationships cross the class boundary
+
+Distinct synset of synonyms
