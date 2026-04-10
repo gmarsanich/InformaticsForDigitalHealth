@@ -56,10 +56,75 @@ CAUTION: Fairness is not guaranteed even with unbiased data
 Fairness is not directly observable
 
 * measured through metrics
+** disparities between groups
 * different metrics measure different aspects
 * can compare model behavior across groups defined by sensitive features
 ** e.g. sex, ethnicity
 ** requires sensitive features, ground truth, predictions
+
+CAUTION: different measures of fairness to not necessarily guarantee each other. For example, if Equalized Odds is applied -> Demographic Parity may still fail
+
+Fairness is also context dependent
+
+* need domain experts before making decisions
+
+=== Demographic parity
+
+Statistically demonstrate that sensitive attributes are not involved in the decision making process
+
+* need equal selection rate across groups
+** e.g. same % of patients flagged as high risk
+
+Formally:
+
+* stem:[P(\hat{Y} = 1 | A = a) = \text{missing} ]
+
+Pros:
+
+* Simple and intuitive
+* Useful for allocation problems
+** budgeting/HR
+
+Cons:
+
+* ignores the true label
+* ignores error
+** can lower model accuracy if applied improperly
+*** over/undersampling classes can skew model results -> really bad
+* not useful for diagnosis/decision support
+
+=== Equal Opportunity
+
+Tries to get equal TPR across groups
+
+* get predictions right regardless of group
+** same probability of correctly identifying positives
+
+Formally:
+
+* stem:[P(\hat{Y} = 1 | Y = 1, A = a)]
+** probability of predicting 1 given the true class being 1 and some attribute A having value a
+
+=== Equalized Odds
+
+Tries to get equal TPR and FPR across groups
+
+* more complete version of equal opportunity
+** same probability of (in)correctly identifying positives
+
+Formally:
+
+* stem:[P(\hat{Y} = 1 | Y = y, A = a) = P(\hat{Y} = 1 | Y = y, A = b) \forall y \in {0, 1}]
+** maintain same distribution while taking errors into account
+
+=== Individual Fairness
+
+If 2 instances are similar -> expect similar decision regardless of sensitive attribute
+
+If an individual is treated differently than its neighbors *over some threshold* then they are being treated unfairly
+
+* e.g. how many of the *k* nearest neighbors have the same class label
+
 
 == Fairness and Bias
 
@@ -172,3 +237,110 @@ Bias can come up in modeling as well:
 * deployment bias
 ** end user interpretation can cause perceived bias
 ** real world interactions can also cause new biases
+
+== Fair Machine Learning
+
+3 main ways of mitigating bias
+
+. Preprocessing
+
+. Acting on the ML algorithm during processing
+
+. Acting on the ML algorithm afer processing
+* not very acceptable ethically
+** e.g. flipping classes, general chicanery
+* not very used
+** use only if necessary
+
+=== Preprocessing
+
+Very simple to do
+
+* removing certain properties to avoid bias/disparity
+** manipulate data post collection
+** collect data in a way that avoids bias/disparity
+* weak relative to other techniques
+
+The main goal is to discriminate between classes but not between protected groups
+
+* i.e. discriminate between UCP and TD but not between male and female
+
+.Intuition
+The fairer the dataset -> the less discriminative the model will be
+
+This can be done by *heuristic* methods:
+
+. altering class labels
+* instances near decision boundary
+* instances in local neighborhoods
+** typically for individual fairness
+
+. assigning different weights to instances based on their group membership
+* who weighs more/less? why?
+** *Kamiran and Calders* made a method for this
+*** give higher weights to less represented groups
+*** does not enforce fairness constraints
+
+. carefully sampling from each group
+
+=== In-processing
+
+Typical models are trained to optimize some metric
+
+* accuracy, F1, etc.
+
+Fair models need to include *fairness* metrics/measures
+
+* through regularization
+* or constraints
+
+A classifier is fair *IFF* the predictive distributions for any 2 data points are at least as similar as the 2 points themselves
+
+* need similarity measure for distribution
+
+==== Learning fair representation
+
+Transform the data into a form that:
+
+* protects predictive quality of original data
+* becomes independent of sensitive attribute
+
+Simply dropping attributes is the simplest way of doing this
+
+* can cause problems during training
+** if attributes are relevant/correlated to non sensitive attributes
+
+This approach is a bit better:
+
+. Learn *prototypes*
+* define K latent prototypes (i.e. run a KMeans)
+* Each prototype is a representative patient
+
+. Soft assignment
+* assign each input to a mixture of prototypes
+** i0 = {p1: 10%, p2: 43%, etc.}
+
+. Predict
+* using probability based model
+* stem:[\hat{y} = \sum_k q_k (x) \cdot w_k]
+
+Also need to use a *fair* objective function
+
+* stem:[\min( L_{\text{recon}} + \lambda_1 L_\text{pred} + \lambda_2 L_\text{fair})]
+* stem:[L_\text{recon}] = reconstruction loss that preserves information from X and closely resembles original data
+* stem:[L_\text{pred}] = prediction loss from prediction of y -> learned representation, should predict target well
+* stem:[L_\text{fair}] = fairness loss, <formula>
+* stem:[\lambda_i] = balance the performance/fairness budget
+
+Can also apply fairness constraints to the loss function in neural networks
+
+=== Post-processing
+
+Use only if absolutely necessary
+
+* e.g. if you can't access model directly
+
+A few ways:
+
+* Filter model output and redistribute risk
+* wrap a fair explainable model onto a black box model
