@@ -128,3 +128,182 @@ Synsets contain only one of the 4 classes
 * some relationships cross the class boundary
 
 Distinct synset of synonyms
+
+== Case Grammars and Frame Semantics
+
+Larger meanings
+
+* bits of language
+** not single terms
+
+=== Filmore's case Grammars (1968)
+
+Verbs are usually classified as:
+
+* transitive
+* intransitive
+
+Works syntactically rather than semantically
+
+Filmore proposed *verb cases/frames*
+
+* verbs have properties and structures
+** keys are fixed with specific types
+** verbs can be filled with references to bits of the sentence
+
+Initial idea worked syntactically but not semantically
+
+* grammars defined with this idea were often unusable
+
+Redefined as *semantic frames*
+
+=== Frame Semantics
+
+Frames are descriptions of a type of:
+
+. event
+. or a relation
+. or an entity+its participants
+
+Each frame contains:
+
+* a doer
+** thing eating
+* a doee
+** thing being eaten
+
+Each frame consists of:
+
+* lexical units that evoke the frame (LUs)
+** basically a list of words that summon the frame
+* frame elements (FEs)
+** describe the *slots/roles* of the frame
+** some slots are optional (or *peripheral*)
+
+==== LUs and Frames
+
+The word *lung* matches the LU *lung.n*
+
+We can find out in which frames the LU appears in
+
+* in this case it could be *body parts*
+
+Which FEs constitute *body parts*?
+
+* *owner* is needed (core)
+** this lung obviously belongs to someone
+* other supplemental info
+** *body part* is also needed (core)
+* *descriptor* is peripheral
+* *subregion* is peripheral
+* *orientational location* is peripheral
+* *attachment* is peripheral
+
+Which other LUs *can* serve as body parts?
+
+* many
+** LUs can appear in other frames
+
+=== Frame Relations
+
+There are various types of frame relations:
+
+* Inheritance
+** body part inherits *shaped part*
+** body part is inherited by other frames
+* Perspective
+* Using
+* Subframe
+* Metaphor
+** metaphors evoke frames linked with literal meaning and metaphorical meaning
+* etc.
+
+==== The Concept of Role
+
+Roles are mostly disconnected from syntax
+
+* a sentence with the same meaning can be rewritten with different (legal syntaxes)
+
+The role of *agent* only applies to something with intention
+
+Roles can be used to understand the meaning of a piece of language
+
+* syntax isn't really necessary
+
+We can *reason* on frames using this concept
+
+* semantic roles can push reasoning in different directions
+** can ignore/accept different parts (e.g. the subject)
+
+=== Resources
+
+The main resource is *FrameNet* (english)
+
+* developed at Berkeley (again)
+* 13,000 word senses
+* english has ~160,000 words
+** < 10% coverage (cringe)
+* 1,200 semantic frames
+** not that many
+** very few in fact
+
+Other languages have been explored
+
+* not very useful
+
+=== Finding Frames in Text
+
+3 step program:
+
+. Find triggers
+* Find LUs that evoke specific frames
+. Classify evoked frames
+* which frames do these triggers classify
+. Extract the argument and fill the slots
+
+There is a Python library that does this as a *seq2seq* task using transformers
+
+* using ML/DL to do *symbolic* tasks
+** symbolic tasks are explainable by default
+** ML tasks are not
+** we lose explainability
+
+=== Limitations
+
+The idea of Frame Semantics is fine
+
+* the application is a human thing
+** i.e. not very scalable
+
+As languages evolve -> frames need to evolve
+
+* need to keep up
+* highly specialized domains are largely unsupported
+** i.e. the medical domain is unsupported (booo)
+
+== Reasoning in Data
+
+WordNet assigns semantics to words + establishes relationships
+
+FrameNet assigns semantics to sentences
+
+So we have semantics (in some way)
+
+We have to *reason* about it + context
+
+We can apply reasoning in code/formulations/produced language
+
+* which is fine
+
+What if we built reasoning rules *into the knowledge base?*
+
+=== Cyc Project (1984)
+
+Created by Douglas Lenat with the aim of creating the "first and most complete General Artificial Intelligence"
+
+The hypothesis was that AI fails because it lacks common sense
+
+* it lacks the unspoken rules we use to navigate reality
+** lots of knowledge cannot be easily expressed with language
+
+So they wanted to encode these rules and somehow teach them to an AI
