@@ -1,0 +1,68 @@
+= RuleX: Explainable AI for DH
+:toc:
+:toc-title: Contents
+:toclevels: 4
+:nofooter:
+:stem: latexmath
+
+== RuleX
+
+Explainable AI company
+
+* founded in 2007
+* latest product released in 2025
+
+Aims to enable anyone to make informed decisions with AI assistance
+
+* especially in life sciences and healthcare
+* also in industrial processes
+
+=== Logic Learning Machine
+
+Rule based model
+
+* different than decision tree
+
+Characteristics:
+
+* overlapping rules
+* rules are grown independently
+** less dependent on first split
+** generates different points of view of phenomenon
+** enables more stable decision boundary points
+* more meaningful decision confidence
+
+== RuleX Case Studies
+
+=== Error Detection in EHR
+
+Detected and proposed corrections to hospital discharge records
+
+* erroneous sections were marked explicitly marked by explainer
+* high performance (?) and explainable
+** automated identification and correction suggestion
+** still requires human intervention to apply corrections
+
+13x (allegedly) more effective than fully human random sample detection
+
+* i.e. some guy picks some random papers from a stack and checks if they are ok
+
+=== Tailored Diagnostic Predictions
+
+Automated clustering of different forms of PBC
+
+* 4 stable clusters
+
+=== Genetic Risk Stratification
+
+71.7% accuracy
+
+* not so bad
+* where precision/recall? where F1?
+
+Personalizes disease response based on genetic makeup and environmental background
+
+Analyzes genomic data and tries to predict PBC
+
+* generated only 38 explainable if-then rules
+** metrics are quite good as well
