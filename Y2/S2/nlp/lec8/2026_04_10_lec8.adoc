@@ -1,4 +1,4 @@
-= Semantics 1 - Symbolic Semantics and Knowledge Engineering
+= Semantics
 :toc:
 :toc-title: Contents
 :toclevels: 4
@@ -307,3 +307,180 @@ The hypothesis was that AI fails because it lacks common sense
 ** lots of knowledge cannot be easily expressed with language
 
 So they wanted to encode these rules and somehow teach them to an AI
+
+* by 1994 they defined *1,000,000* logical formulas and *100,000* terms [!!!]
+* by 2017 they defined *24,500,000* logical formulas and *1,500,000* terms [!!!]
+** all by hand (????????)
+** the system cannot evolve autonomously -> adding a rule can derail the system
+
+So far there's been no useful applications of this system
+
+* they sell stuff to hospitals and USA health insurance (boooo)
+* queries are made in CycL (proprietary language)
+* have to find which of the 25M rules work
+* also need to sign 7817984 NDAs
+
+TLDR: *CYC IS FUNCTIONALLY USELESS*
+
+* but it's an interesting critter
+
+==== Cyc Architecture
+
+Made of 3 parts:
+
+. Knowledge Base
+* real world factual knowledge
+* core theories
+* domain specific theories
+* dynamic data
+** data extracted dynamically on request
+
+. Inference Engine (1200 reasoning modules)
+* logical engines that reason on information
+** deduction
+*** classical Aristotelic reasoning (premise + rule => consequence) -> Socrates is a man + all men are mortal => Socrates is mortal
+** induction
+*** find rule given premise and consequence (scientific method according to British empiricism)
+** abduction
+*** find premise given a rule and consequence (detective reasoning)
+
+. Intelligent Data Selection
+* finds appropriate data for task
+
+Cyc aimed to address the *Knowledge Bottleneck* found in classical expert systems
+
+Early expert systems were brittle
+
+* if system doesn't have rule for thing -> can't infer
+
+Cyc wants to provide the foundational layer
+
+* i.e. common sense
+
+==== CycL language
+
+Formal language based on first order predicate calculus
+
+Uses Lisp-like prefix notation to describe relationships between constants
+
+* like `(#$predicate #$name #$category)`
+* also handles quantifiers
+
+Made up of:
+
+. Literals
+. Constants
+* individuals
+* collections
+* predicates
+* functions
+** individuals, collections, and predicates are *individuals* -> can combine them (collections of collections, predicates over functions, etc.)
+. Variables
+. Sentences
+
+Cyc implements *default logic*
+
+* not boolean
+** things can have many values (true, default true, false, default false, undetermined)
+
+Cyc also distinguishes between:
+
+* *default true* -> generally true but can have exceptions
+* *monotonically true* -> always true
+
+And has relative exceptions:
+
+* *systematic*
+** all <things> do <thing> except <individuals>
+
+==== Contradiction and Micro-Theories
+
+In traditional logic we assume x and not-x cannot be true at the same time
+
+In real world logic we can believe contradictory statements *depending on the context*
+
+Cyc structures knowledge into
+
+* foundational theory (using default logic)
+* and lots (~20,000) of micro theories related to domains/concepts
+** internally consistent
+** can contradict each other
+
+=== Reflection on General Knowledge
+
+Cyc alone is a failure
+
+* general knowledge is too big
+
+Combine Cyc-like symbolic approaches with neural systems
+
+* Hybrid approaches: check LLM answers with symbolic tools
+* Neurosymbolic approaches: build ML model that manipulates symbols directly
+
+== Formal Ontologies
+
+Cyc failed but we still need semantic symbolic approaches
+
+* deterministic
+* provable
+* interoperable
+
+Neural systems don't provide these things
+
+=== Symbolic Imperative
+
+Cyc was too ambitious and complicated
+
+* do simple things well
+
+Keep these from Cyc:
+
+* keep entities and relationships
+** with unique identifiers
+* reification
+** relationships between things are things themselves
+* human readable
+** nice to be able to understand reasoning simply by reading
+
+We could use a directed graph
+
+* G = <V, E>
+** V = entities
+** E = edges/relations
+** E \subset V = reification
+*** edges are also vertices -> relations are things (!)
+
+Add human/machine readable notations and we can get going
+
+=== RDF: Resource Description Framework
+
+Came about ~2000/2010 during semantic web period
+
+Proposed by W3C
+
+* progression of WWW
+** linking concepts instead of pages
+
+RDF uses *triples* to define pieces of knowledge
+
+* `(source node, edge type, dest node)`
+* which becomes `(subj, pred, obj)`
+* can express most structures as triples
+** (France, has-capital, Paris)
+** (France, has-attribute, capital)
+** (capital, has-type, city)
+** etc.
+
+Mapped to directional graphs with *URI* or *literals* as values (or blank)
+
+==== RDF Vocab
+
+RDF provides the foundation (syntax)
+
+RDFS provides a schema (semantics)
+
+Initially followed XML notation
+
+* new notations have come out
+** Turtle
+** SPARQL
