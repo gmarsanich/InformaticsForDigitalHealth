@@ -484,3 +484,158 @@ Initially followed XML notation
 * new notations have come out
 ** Turtle
 ** SPARQL
+
+=== Semantics and Entailment
+
+Semantic extensions exist for RDF
+
+* define entailment rules
+* can reason over RDF graphs
+** inferring new *triplets* implied by existing triplets
+
+*RDFS*
+
+* axiomatic reasoning
+** this is true because it is
+* used for hierarchy navigation/domain range verification
+
+RDFS cannot express some things:
+
+* negation
+* disjointness
+** can't say if X is a medicine then X is not a patient
+* exact cardinality
+** can't say dogs have exactly 4 legs
+
+Tools like *OWL* provide these things
+
+* more like reasoning logic
+* can do consistency checking
+** patient cannot be alive and dead at the same time
+** has specific rules for this
+
+Can also do custom tools/rules
+
+== Description Logic
+
+Not as powerful as First Order Logic
+
+* decidable (unlike FOL)
+* expressible (unlike propositional logic)
+
+=== OWL and Attributive Logic with Complement
+
+OWL is used to express ALC when reasoning on RDF
+
+
+Some constructs:
+
+. Intersection
+* in A and B
+. Union
+* in A or B
+. Negation
+* not in A
+. Existential
+* has at least one relation R to B
+. Universal
+* all relations must be individuals in B
+
+Generally if a fact is not recorded it is *False*
+
+* *closed world assumption*
+
+DLs work the opposite way:
+
+* *open world assumption*
+** if fact not in KB it is unknown
+
+=== KB, TBox, ABox
+
+KB: knowledge base
+
+* pair `<T, A>`
+** Term
+** Assertion
+
+TBox: terminological box
+
+* assertions describing concepts
+** hierarchies
+** relationships
+* a patient is a person
+
+ABox: assertional box
+
+* assertions describing specific properties of certain individuals
+* Bob is a patient
+
+A *reasoner* can reason over a KB using entailment rules
+
+* it determines an *interpretation* of some fact
+* HermIT
+** Java, *hypertableau* algorithm
+* Pellet
+** Java, *tableau* algorithm
+* ELK
+** C++, very fast
+
+==== Tableau algorithm
+
+. Converts all axioms to Negation Normal Form (NNF)
+. Negate the target query in ABox
+* prove by contradiction
+. Apply expansion rule
+* produce triples
+* intersection rule, union rule, product rule?
+** union triggers branching -> can become exponential -> can be bad
+. If find clash (A and Not A) in every branch then the original query is proven
+
+==== Formal Semantics of ALC
+
+Has *Interpretation* -> maps literal things to what they mean
+
+* maps formula to interpretation
+
+For each denotation of a name N -> maps lit(N) to concept(N)
+
+=== Querying an Ontology: SPARQL
+
+Query language for RDF KBs
+
+* inspired by SQL
+
+SPARQL conditions are real *path expressions*
+
+* describe how to traverse the RDF graph
+
+==== Using SPARQL
+
+SPARQL is a language and a protocol
+
+Can be used:
+
+. inside the application
+* Application makes SPARQL queries to a local RDF store
+
+. Between an application and client
+* Application calls remote SPARQL/RDF endpoint
+
+. some other way idk
+
+== Semantic Similarity
+
+It is useful to measure how closely 2 concepts are related
+
+* ontologies with specific relations induce a DAG
+** most commonly is-a
+** how closely dog is-a mammal
+
+Can use classic graph stuff
+
+* shortest paths (Astar, Dijkstra, BFS)
+** not generally the best measure
+* *Information Content (IC)*
+** rare concepts have very specific meanings (more specific than generic concepts)
+** probability of encountering a concept in corpus is lower the rarer it is
+** find information content of parent of lowest common ancestor of 2 concepts
