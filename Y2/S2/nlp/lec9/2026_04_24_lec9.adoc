@@ -1,0 +1,51 @@
+= Semantics 2: Distributional and Neural Semantics
+:toc:
+:toc-title: Contents
+:toclevels: 4
+:nofooter:
+:stem: latexmath
+
+== Distributional Semantics
+
+Originated from linguistics
+
+* "The meaning of a word is defined by the company it keeps"
+** language is descriptive
+
+Z.S. Harris says:
+
+* if 2 words A and B are found interchangeably in the same environment they are synonyms
+** against usual prescriptive dogma that says 2 words are synonyms if the dictionary says so
+
+J.R. Firth says:
+
+* The meaning of a word A *is* its environment
+** not necessarily what the dictionary says
+
+=== The Distributional Hypothesis
+
+The meaning of a word is not a single entity but rather a set of relations
+
+This goes against the Symbolic/Innate View (Chomsky)
+
+* language is innate through Universal Grammar
+** specific languages are versions of UG
+* syntax precedes meaning
+** syntactly correct but meaningless sentences are perfectly valid
+
+Meaning is acquired through exposure to data and not internal biology
+
+* language is learned by example
+** language is pattern matching
+*** especially co-occurrences
+*** basis of statistics/ML
+* meaning comes before syntax
+** semantic value is irrespective of syntax
+
+=== Emergent Semantics
+
+Semantics is entirely emergent from sufficiently complex systems
+
+* comes from statistical distribution of symbols
+** computed from context
+** not stored in KBs or books
