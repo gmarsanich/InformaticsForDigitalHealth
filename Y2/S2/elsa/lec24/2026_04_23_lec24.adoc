@@ -1,0 +1,100 @@
+= Italian NHS and scheduling logic
+:toc:
+:toc-title: Contents
+:toclevels: 4
+:nofooter:
+:stem: latexmath
+
+== Economic Scheduling
+
+Sets targets to achieve in some timeframe with some resource budget
+
+* I want to improve patient QoL by 10% by next year with 500k euro
+
+== Analysis Targets
+
+Healthcare operations are
+
+* complex
+* adaptive
+
+=== Dynamic/adaptive systems
+
+==== Dynamic relationships
+
+Health systems are not linear and are built from multiple adaptive relationships
+
+Organizations grow constantly from internal/external stimuli
+
+Rigid control schemes don't work
+
+==== Management Implications
+
+Planning systems need to be adaptable
+
+=== Demands and Needs
+
+=== Economic Requirements
+
+=== Scheduling Logic (wtf is Programming logic)
+
+== Organizational Complexity
+
+=== Beyond Simple Administration
+
+Healthcare is not simply hierarchical
+
+* hospital director cant tell doctor what they can/can't do
+
+Orders/procedures alone won't cut it
+
+Healthcare is a *right* -> can't operate like private company
+
+Need to use *hybrid models*
+
+* balance rights and requirements
+* balance economic sustainability
+
+==== Operational Core
+
+Operators are highly qualified specialists
+
+* hard to govern with traditional hierarchies
+
+They have a lot of decisional autonomy in their field of relevance
+
+==== Coordination
+
+Coordination != direct commands/orders
+
+Standardization of operational capabilities
+
+.Skills
+
+Educational pathways are standardized to ensure quality and uniformity in clinical work
+
+.Clinical Protocols
+
+Guidelines and diagnostic-therapeutic paths
+
+Used to ensure the same treatments are applied consistently
+
+.Professional Rules
+
+Deontological guides + consolidated best practices guide actions
+
+=== Systemic Complexity
+
+Butterfly effects of decisions
+
+==== Interdependencies
+
+Branches of healthcare are interconnected
+
+* ER -> heart surgery -> recovery
+
+Patients, procedures, operators need to interact
+
+==== Cascading effects
+
+A decision made in the ER can have ramifications throughout the system
