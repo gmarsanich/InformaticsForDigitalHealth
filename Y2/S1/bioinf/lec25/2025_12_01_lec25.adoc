@@ -51,7 +51,7 @@ Matrix multiplications can be used to count the number of paths between 2 nodes 
 
 This is called the *matrix power*
 
-* stem:[(A^k)_{ij}] -> number of paths of length stem:[k] between nodes stem:[(i, j)] 
+* stem:[(A^k)_{ij}] -> number of paths of length stem:[k] between nodes stem:[(i, j)]
 ** proteins with common interactors indicates that they are somewhat involved with each other
 ** summing the 1s of every cell of every matrix gives us the connectivity of the graph
 *** summing the 1s of every row tells us how many nodes are connected to the node of the corresponding number
@@ -178,10 +178,10 @@ The product of stem:[\mathbf{L} \cdot \mathbf{c}] is a vector stem:[\mathbf{u}]
 
 * positive values
 ** net outflow, will lose signal
-** e.g. if stem:[u[1\] \gt 0] means they are giving more than they are receiving 
+** e.g. if stem:[u[1\] \gt 0] means they are giving more than they are receiving
 * negative values
 ** net inflow, will receive signal
-** e.g. if stem:[u[1\] \lt 0] means they are giving more than they are receiving
+** e.g. if stem:[u[1\] \lt 0] means they are receiving more than they are giving
 
 == Sparsity and Computational Implications
 
@@ -202,7 +202,7 @@ Where:
 * stem:[M] is the number of known interactions between elements of the proteome
 ** a small fraction of all possible interactions
 
-More efficient data structures are used instead 
+More efficient data structures are used instead
 
 * entire matrices have complexity stem:[O(N^{2})]
 
@@ -311,7 +311,7 @@ Measures average distance to all other nodes, which indicates metabolic efficien
 ++++
 C_C(v) = \frac{N-1}{\sum_u d(v, u)}
 ++++
-* measures the efficiency with which a node can reach all other nodes in the network 
+* measures the efficiency with which a node can reach all other nodes in the network
 ** stem:[d(v, u)] is the shortest path distance
 
 High stem:[C_C] indicates high speed information transfer
@@ -355,7 +355,7 @@ The importance of a node is proportional to the importance of its neighbors
 
 where:
 
-* stem:[\lambda] is the largest eigenvalue 
+* stem:[\lambda] is the largest eigenvalue
 * stem:[x] is the eigenvector corresponding to stem:[\lambda]
 
 .Generank/Pagerank
@@ -390,7 +390,7 @@ Brute force approaches to finding communities often do not work in practice
 
 * bionets are huge
 
-Modularity stem:[Q] indicatesmeasures how strongly a network is modularized
+Modularity stem:[Q] measures how strongly a network is modularized
 
 * how many modules/subgraphs there are
 ** higher -> more modular
@@ -476,7 +476,7 @@ If a protein/gene is associated to a specific phenotype/disease:
 * input stem:[\mathbf{Y}]: binary/weighted vector of known initial genes
 ** differential analysis between gene expression in healthy cells and diseased cells
 ** this tells you the genes/proteins involved in the disease
-* output stem:[\mathbf{F}]: score vector that measures the relevance of each gene based on its connectivity to the initial seed set 
+* output stem:[\mathbf{F}]: score vector that measures the relevance of each gene based on its connectivity to the initial seed set
 
 === Iterative propagation equation
 
