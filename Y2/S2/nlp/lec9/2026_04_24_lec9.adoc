@@ -49,3 +49,135 @@ Semantics is entirely emergent from sufficiently complex systems
 * comes from statistical distribution of symbols
 ** computed from context
 ** not stored in KBs or books
+
+=== Formalizing Context
+
+With V = vocab, D = doc collection
+
+The context of a word w in V is a multiset of words occurring in D in a window of size k around w
+
+* if 2 words are used in the same context they likely share semantic properties
+** proportion, not count/calculation
+
+=== Term-Document Matrix
+
+Matrix M -> V * D, M_ij = count of word i in doc j
+
+* nice and simple
+* however:
+** big docs have more words -> numerically dominate small docs
+** common words appear much more often -> numerically dominate rarer words
+
+This is where TF-IDF can come in handy
+
+=== Term-Context Matrix
+
+CAUTION: by word we mean instance of a word
+
+We drop the idea of a document and we focus on context
+
+* theoretically single documents don't influence meaning
+
+V^2 matrix
+
+* each term is a column
+* each term is also a row
+
+We add 1 for every word in the matrix that appears in the context of the current target word
+
+This gives us 3 statistics:
+
+. row sum for target
+. column sum for context
+* how many target words am i in context with?
+. total windowed pairs
+
+This will produce skewed data
+
+* fine for now
+* can deal with it later
+
+CAUTION: these matrices tend to be *very* sparse. More sparse if the context size is too big
+
+==== Better Context Definition
+
+Setting a fixed window of -k +k is kind of sad
+
+* more of a window than real semantic context
+
+Many types of defining context:
+
+* Dependency features
+** size k neighborhood on graph built using dependency tree
+** preserves relationship between relatively distant words that are related by dependency parsin
+* Positional Context
+** takes distance into account
+** context c is a pair -> (c, n) where c is the word, n is the number of hops
+* Directional Context
+** sentences are sequential -> reading the same sentence backwards may or may not make sense
+
+==== Pointwise Mutual Information
+
+We can normalize the statistics from earlier with the total counts to get probabilities
+
+We can then use these to define a PMI
+
+* we can also force positive values for rare cases using `max`
+** if we get a negative log -> set to 0 -> no big deal
+
+=== Count-Wise Embeddings
+
+We can use PPMI to generate count based embeddings
+
+* LexVec
+* GloVe
+* WOVe
+
+Since the TCM is sparse the PPMI matrix will also be sparse -> can be compressed using:
+
+* Singular Value Decomposition (SVD)
+** can't reconstruct matrix completely
+** can approximate a new matrix with highly similar values
+* Non Negative Matrix Factorization
+* QR with pivot
+
+Pick one and go with it
+
+* SVD tends to produce the best approximation
+
+Once they are defined they can be saved and they never change (provided we use the same corpora)
+
+* they are *static*
+
+Even with SVD, PPMI are very sparse and very high dimensional
+
+* storage takes O(n^2)
+* SVD computation takes O(n^3) time (!!!) and O(n^2) space (!!!)
+
+What if we could predict a decent approximation of a denser embedding matrix?
+
+=== Neural Embeddings
+
+We could a model to predict a word given its context
+
+If prediction is good:
+
+* model weights must necessarily be able to encode the meaning
+
+==== Word2Vec
+
+Combines CBOW and skip-grams using log-linear models
+
+* having the same word 3 times doesn't increase the meaning by 3
+** have to find some other way of representing words linearly
+
+*CBOW* tries to predict the center word
+
+* Takes in one-hot encoded vectors of the k-context words
+* input vecotrs are multiplied by weight matrix and averaged/summed
+** they lose their order
+
+*Skip-gram* tries to predict the context of the center word
+
+* takes in one hot encoded vector of central word w_t
+* produces
