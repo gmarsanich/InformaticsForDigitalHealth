@@ -156,7 +156,7 @@ Even with SVD, PPMI are very sparse and very high dimensional
 
 What if we could predict a decent approximation of a denser embedding matrix?
 
-=== Neural Embeddings
+== Neural Embeddings
 
 We could a model to predict a word given its context
 
@@ -164,7 +164,7 @@ If prediction is good:
 
 * model weights must necessarily be able to encode the meaning
 
-==== Word2Vec
+=== Word2Vec
 
 Combines CBOW and skip-grams using log-linear models
 
@@ -181,3 +181,27 @@ Combines CBOW and skip-grams using log-linear models
 
 * takes in one hot encoded vector of central word w_t
 * produces
+
+==== Context Window Size
+
+Low k values favor close distance sytactic and functional similarity
+
+* more mechanical
+* syntactic role
+
+High k values favor topical and associative similarity
+
+* semantic role
+
+In DH -> medium/high K tend to be better
+
+* medical text doesn't always follow the classical syntax rules
+
+==== Analogy and Arithmetic
+
+Word2Vec spaces have linear compositionality
+
+* which is a big deal
+* it encodes *linguistic analogy*
+
+Captures syntactic and semantic relations
