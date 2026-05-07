@@ -205,3 +205,188 @@ Word2Vec spaces have linear compositionality
 * it encodes *linguistic analogy*
 
 Captures syntactic and semantic relations
+
+==== Issues with Word2Vec
+
+Very influential but has some issues
+
+. Entirely local
+* based on k previous and next words
+* misses global context of document
+. Order independent
+* based on bag of words that ignores order
+** order of words can change semantics
+. Contex independent
+* each word has 1 associated vector
+** polysemous words are averaged (bad)
+. Blind to OOV words
+* word not in training -> word doesn't exist
+. Skewed towards common words
+* rare words get bad vectors
+
+=== GloVe
+
+Uses a different context definition
+
+* tries to get *global* context
+* uses co-occurrence matrix of all members of the document
+** matrix of size `n_words * n_words` where cells hold number of co-occurrences
+** uses a bias and a weighting function to avoid common pairs dominating the loss
+
+It minimizes the difference between the dot product of 2 vectors and the log of their co-occurrence frequency
+
+* basically quantifies how anomalous a co-occurrence pair is
+* can learn how words relate to each other relative to other words
+** penumonia is related to cough
+** hepatitis is related to cough differently
+
+=== Saving Morphology
+
+Word2Vec and GloVe operate on *single words*
+
+* 1 word = 1 vector
+* we lose morphology
+
+Need to preserve morphology somehow
+
+=== FastText
+
+Developed by Facebook (pre-Meta) for sentence classification
+
+* really fast
+* low memory
+* handles typos and stuff
+
+Represents words as a bag of n-grams
+
+* typically `n in range(3, 6)` for English but can be learned
+** e.g. `Hepatitis = [Hepa, epat, pati, atit, titi, itis]`
+
+[CAUTION]
+.Picking n-grams
+====
+Choosing the right `n` can be tricky
+
+* Medical language can require high `n` (5, 6, 7) that can filter out smaller relevant morphemes
+* Too small -> not useful,
+* Too large -> can't isolate
+====
+
+Vectors are leared for each n-gram and scored with context vector
+
+* context windows
+* context paths
+* whatever
+* certain n-grams should be more informative than others
+
+==== FastText for DH
+
+FT is good for DH:
+
+. Handles morphology
+* can learn suffixes regardless of root word
+** e.g. -itis => inflammation
+. Robust to typos
+* very similar words will have similar n-grams/high n-gram overlap
+. Handles OOV terms
+* can construct vectors from n-grams
+** knows what n-grams mean
+. Very efficient
+* smaller vocabs using n-grams
+
+=== The problem with Static Embeddings
+
+Regardless of exact method we still get 1 word = 1 vector independent from context
+
+* In NL context can change the meaning of a word
+* Static embeddings sort of average all the known meanings of a word
+** opposing meanings will average to 0
+
+=== Contextual embeddings
+
+Instead of mapping 1 word to 1 vector we can map an *instance* of a word to a vector
+
+* The same word in a a different context will have similar but different vectors
+
+Models can generate a vector for a word given a context
+
+* using a larger context
+
+==== Using Sequential Models
+
+We could use a sequential model (RNN, LSTM) since NL can be interpreted as a sequence of tokens
+
+However:
+
+. Parallelizability
+* sequential models can't easily be parallelized
+* really bad for efficiency
+** bottlenecking happens
+
+. Forgetfulness
+* early tokens in long sequences can lose their power
+** *vanishing gradient*
+
+So what do we do?
+
+== Transformers
+
+They are probably our best bet
+
+* easy to parallelize
+* very large context windows
+** constant path length -> all pairs are considered in context
+** regardless of word distance
+
+=== Encoder-Decoder Architectures
+
+Made of 2 parts:
+
+. Encoders generate a deep bidirectional representation of the input sequence
+* highly semantic representation
+. Decoders use autoregressive generation with masked attention
+* generate output from semantic representation given by encoder
+
+These rely on:
+
+. multi-head attention
+. position-wise FFNNs
+
+=== Positional Encoding
+
+We want to work on sets and keep order/positional information
+
+This changes for even or odd position
+
+* even: stem:[\sin \frac{\text{pos}}{10,000^{2i/d_{model}}}]
+* odd:  stem:[\cos \frac{\text{pos}}{10,000^{2i/d_{model}}}]
+
+10,000 is arbitrary
+
+* just needs to be larger than the size of the vector
+
+==== Why sinusoidal PE?
+
+. Linear relationships
+* can use affine matrices to rotate the encoding (???)
+* self attention can learn relationships by using their relative position
+. Translation invariance
+* the dot product of the encodings is inversely correlated with size of k
+** learns locality bias
+
+At the end of the day it's an additive position embedding method
+
+==== Other options
+
+The basic idea is still to encode position as a geometric transformation
+
+. Rotary Positional Embeddings (RoPE)
+* used by modern LLMs
+* multiplicative
+* like 2% more efficient
+
+=== Attention Mechanism
+
+Attention is used to weigh parts of the context
+
+* more important -> high weight
