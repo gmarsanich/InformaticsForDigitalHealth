@@ -390,3 +390,176 @@ The basic idea is still to encode position as a geometric transformation
 Attention is used to weigh parts of the context
 
 * more important -> high weight
+
+==== Content-Addressable memory
+
+Accessing by index is kind of useless
+
+We can treat a sentence as a *searchable database*
+
+* each word asks something to other words
+
+Using *Query*, *Key*, *Value* to do role-based
+
+* soft lookup
+* answers are fuzzy
+
+.Query
+* Matrix *Q*
+* sort of a question
+** token asks rest of sentence
+** "I am a dosage. Which drug am I referring to?"
+
+.Key
+* Matrix *K*
+** words are labeled according to what they offer
+** "I am Warfarin. My label says Drug"
+
+.Value
+* Matrix *V*
+** payload conveying semantics
+** "this is the semantic vector for Warfarin"
+
+==== Multiple Perspectives
+
+The same word can convey different meanings to other words
+
+* doctor POV -> girl is patient
+* Warfarin POV -> girl is consumer
+
+Different QKV projections separate roles
+
+* Word's Q can look for Patient role
+* Word's K can signal its role
+** consumer, subject, patient
+* Words's V encodes a different relation for each attention head
+
+==== Relevance
+
+How do we weigh the word/token?
+
+The same input token X is projected into 3 different spaces -> model can filter by relevance
+
+stem:[Q \cdot K] computes how well a pair of terms match -> use match score to get weighted V sum
+
+* Q, K, V are learned during training
+* projects embeddings into questions, keys, values
+
+Sentences become *dynamic graphs*
+
+* no longer sequence of vectors
+
+==== Attention
+
+Attention is:
+
+[stem]
+++++
+\text{Attention}(Q, K, V) = \text{softmax}\frac{QK^T}{\sqrt{d_k}}V
+++++
+
+In Multi-Head Attention we use multiple attention heads to ask more questions to find the best
+
+* asking a single question is not that informative
+* we can easily ask multiple questions in parallel
+
+Concatenate compressed output of multiple attention heads
+
+* for each head we get independent projection matrices
+
+Questions become more and more abstract as we pass through more and more transformer blocks
+
+* T1 = who did what?
+* T2 = <something abstract>
+
+=== Position-wise Feed-Forward blocks
+
+Usually 2 layer MLP with ReLU between them
+
+* higher dimensionality than transformer
+** like 4x transformer dimension
+
+Parameters are free
+
+* totally unconstrained
+* transformer can kind of do whatever
+
+Model can learn semantic indicators
+
+=== Encoder vs Decoder
+
+Bidirectional encoders allow tokens to attend to all other tokens
+
+* good for understanding tasks and information extraction
+
+Causal masking in decoders
+
+* prevents information flow from future tokens
+** can't use the future to generate the future
+
+== Advanced Architectures
+
+=== BERT (2018)
+
+Instead of predicting k from seq[:k] tokens it looks at the entire sequence forward and backward
+
+* uses only encoder part of transformer
+* trained on tons of unlabelled text data
+** fine-tuned for specific tasks
+
+Training loop:
+
+. Randomly take a pair of maksed sentences
+* enables lots of applications for free
+** classification, IR/IE, question answering, dialogue, semantic relationships, etc.
+** apparently old idea from ancient logicians
+** pairs can be used to model all of mathematics
+. Tokenize
+. Embed (normal and special tokens)
+. Feed to transformers and such
+
+Then fine-tuned (supervised)
+
+* task specific
+* weights are modified according to specific training
+
+==== Tokenization
+
+Uses WordPiece
+
+* similar to BPE
+* joins 2 tokens if they appear together more often than their individual probabilities
+
+Produces k vectors per word unlike FastText and BPE
+
+==== Next Sentence Prediction
+
+Can also be used for *Next Sentence Prediction*
+
+* frame training as binary classification
+** given a pair SA, SB, can SB follow SA in the original text?
+
+==== Masked Language Model
+
+Most famous for *Masked Language Model*
+
+Uses 3 special tokens:
+
+. CLS
+* marks starting of pair
+. SEP
+* marks separation
+. MASK
+* marks hidden bit of text
+
+How?
+
+. take sequence
+. randomly hide 15% of tokens
+* of this 15%:
+** 80% of the time hide with MASK
+** 10% of the time replace with random word
+** 10% of the time leave original word
+** prevents chicanery if encounters OOV at inference time
+
+Learns to fill in the blanks by predicting hidden tokens
