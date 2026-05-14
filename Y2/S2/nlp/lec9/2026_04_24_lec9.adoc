@@ -563,3 +563,79 @@ How?
 ** prevents chicanery if encounters OOV at inference time
 
 Learns to fill in the blanks by predicting hidden tokens
+
+==== BERT Lessons
+
+* Specialized corpora are essential
+** need to fine tune on specific topics to be useful
+* Vocabulary matters
+* Knowledge can be injected
+** using pair (A, B) paradigm to inject knowledge -> fine tune
+* Extraction vs generation
+** uses encoder only
+** understanding+information extraction
+
+=== GPT 2018
+
+Uses trained Decoder part of Transformer
+
+* can't see future because it generates tokens
+
+GPT power grew exponentially
+
+* GPT-1 had 117 million parameters with 512 tokens of context
+* GPT-4 has 1.7 *trillion* parameters with *128k* tokens of context
+** has emergent behavior
+
+==== Autoregressive Generation
+
+GPT models produce 1 token at a time
+
+* use output to extend input
+
+Computes the joint probability of a sequence of tokens
+
+* find each x to maximize the likelihood of the entire sequence
+
+==== Inference and sampling
+
+At inference it produces a vector of logits for every token in the vocabulary
+
+* logits become probabilities from softmax
+** token-relative probablities are modified by *temperature* parameter stem:[T]
+** stem:[T \gt 0], increasing stem:[T] lowers determinism of predictions
+
+==== Dialogue in GPT
+
+GPTs are stateless -> pure functions, no side effects
+
+* no memory
+
+*Dialogue* happens by giving the GPT the *entire previous history* with the new bits added to it
+
+* extremely inefficient
+** but has nice side effects of improving context
+* when we hit context window things are dropped
+
+Special tokens are used to encode the input to support dialogue
+
+* `[system]`: system prompt
+* `[user]`: user prompt
+* `[assistant]`: GPT response
+
+Chatbots use some other techniques:
+
+* Supervised Fine Tuning
+* Reinfocement Learning from Human Feedback
+
+==== Problems with GPTs
+
+.Nice hallucinations
+* optimizing models for fluid conversation can prioritize nice but fake answers
+* really bad
+
+
+.Messy memory
+* LLM memory is just its context window
+** unstructured and dirty
+* can get confused
