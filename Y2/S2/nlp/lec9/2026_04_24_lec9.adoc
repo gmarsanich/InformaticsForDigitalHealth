@@ -603,6 +603,7 @@ At inference it produces a vector of logits for every token in the vocabulary
 
 * logits become probabilities from softmax
 ** token-relative probablities are modified by *temperature* parameter stem:[T]
+** used during generation
 ** stem:[T \gt 0], increasing stem:[T] lowers determinism of predictions
 
 ==== Dialogue in GPT
@@ -632,8 +633,9 @@ Chatbots use some other techniques:
 
 .Nice hallucinations
 * optimizing models for fluid conversation can prioritize nice but fake answers
+** i.e. provides most likely sequence of tokens
+** not necessarily *true*
 * really bad
-
 
 .Messy memory
 * LLM memory is just its context window
