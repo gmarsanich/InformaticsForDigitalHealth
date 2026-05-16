@@ -1,0 +1,58 @@
+= ELSA - HTA balance
+:toc:
+:toc-title: Contents
+:toclevels: 4
+:nofooter:
+:stem: latexmath
+
+== Financial accounting - old approach
+
+Money in vs money out
+
+Simple but limited
+
+== Economic accounting - new approach
+
+Money in vs money out
+
+* why in?
+* why out?
+* how much?
+** justifiable?
+
+== What is balance?
+
+Representation of used resources
+
+=== Informative function
+
+Makes economic structure visible and explainable
+
+=== Accountability
+
+Allows transparency for stakeholders
+
+=== Managerial function
+
+Gives baseline of information to make decisions
+
+=== Programming function
+
+man
+
+== Representing consumption
+
+Old device is not necessarily the same as new device
+
+* device bought x years ago cannot be considered to have equal performance (???)
+
+Need to represent degradation
+
+* device degradation
+* enonomic degradation
+
+Need to put money aside to deal with legal issues and whatever
+
+Keeping track of debts is useful too
+
+* I hate this class

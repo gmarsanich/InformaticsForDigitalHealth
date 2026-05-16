@@ -49,3 +49,595 @@ Semantics is entirely emergent from sufficiently complex systems
 * comes from statistical distribution of symbols
 ** computed from context
 ** not stored in KBs or books
+
+=== Formalizing Context
+
+With V = vocab, D = doc collection
+
+The context of a word w in V is a multiset of words occurring in D in a window of size k around w
+
+* if 2 words are used in the same context they likely share semantic properties
+** proportion, not count/calculation
+
+=== Term-Document Matrix
+
+Matrix M -> V * D, M_ij = count of word i in doc j
+
+* nice and simple
+* however:
+** big docs have more words -> numerically dominate small docs
+** common words appear much more often -> numerically dominate rarer words
+
+This is where TF-IDF can come in handy
+
+=== Term-Context Matrix
+
+CAUTION: by word we mean instance of a word
+
+We drop the idea of a document and we focus on context
+
+* theoretically single documents don't influence meaning
+
+V^2 matrix
+
+* each term is a column
+* each term is also a row
+
+We add 1 for every word in the matrix that appears in the context of the current target word
+
+This gives us 3 statistics:
+
+. row sum for target
+. column sum for context
+* how many target words am i in context with?
+. total windowed pairs
+
+This will produce skewed data
+
+* fine for now
+* can deal with it later
+
+CAUTION: these matrices tend to be *very* sparse. More sparse if the context size is too big
+
+==== Better Context Definition
+
+Setting a fixed window of -k +k is kind of sad
+
+* more of a window than real semantic context
+
+Many types of defining context:
+
+* Dependency features
+** size k neighborhood on graph built using dependency tree
+** preserves relationship between relatively distant words that are related by dependency parsin
+* Positional Context
+** takes distance into account
+** context c is a pair -> (c, n) where c is the word, n is the number of hops
+* Directional Context
+** sentences are sequential -> reading the same sentence backwards may or may not make sense
+
+==== Pointwise Mutual Information
+
+We can normalize the statistics from earlier with the total counts to get probabilities
+
+We can then use these to define a PMI
+
+* we can also force positive values for rare cases using `max`
+** if we get a negative log -> set to 0 -> no big deal
+
+=== Count-Wise Embeddings
+
+We can use PPMI to generate count based embeddings
+
+* LexVec
+* GloVe
+* WOVe
+
+Since the TCM is sparse the PPMI matrix will also be sparse -> can be compressed using:
+
+* Singular Value Decomposition (SVD)
+** can't reconstruct matrix completely
+** can approximate a new matrix with highly similar values
+* Non Negative Matrix Factorization
+* QR with pivot
+
+Pick one and go with it
+
+* SVD tends to produce the best approximation
+
+Once they are defined they can be saved and they never change (provided we use the same corpora)
+
+* they are *static*
+
+Even with SVD, PPMI are very sparse and very high dimensional
+
+* storage takes O(n^2)
+* SVD computation takes O(n^3) time (!!!) and O(n^2) space (!!!)
+
+What if we could predict a decent approximation of a denser embedding matrix?
+
+== Neural Embeddings
+
+We could a model to predict a word given its context
+
+If prediction is good:
+
+* model weights must necessarily be able to encode the meaning
+
+=== Word2Vec
+
+Combines CBOW and skip-grams using log-linear models
+
+* having the same word 3 times doesn't increase the meaning by 3
+** have to find some other way of representing words linearly
+
+*CBOW* tries to predict the center word
+
+* Takes in one-hot encoded vectors of the k-context words
+* input vecotrs are multiplied by weight matrix and averaged/summed
+** they lose their order
+
+*Skip-gram* tries to predict the context of the center word
+
+* takes in one hot encoded vector of central word w_t
+* produces
+
+==== Context Window Size
+
+Low k values favor close distance sytactic and functional similarity
+
+* more mechanical
+* syntactic role
+
+High k values favor topical and associative similarity
+
+* semantic role
+
+In DH -> medium/high K tend to be better
+
+* medical text doesn't always follow the classical syntax rules
+
+==== Analogy and Arithmetic
+
+Word2Vec spaces have linear compositionality
+
+* which is a big deal
+* it encodes *linguistic analogy*
+
+Captures syntactic and semantic relations
+
+==== Issues with Word2Vec
+
+Very influential but has some issues
+
+. Entirely local
+* based on k previous and next words
+* misses global context of document
+. Order independent
+* based on bag of words that ignores order
+** order of words can change semantics
+. Contex independent
+* each word has 1 associated vector
+** polysemous words are averaged (bad)
+. Blind to OOV words
+* word not in training -> word doesn't exist
+. Skewed towards common words
+* rare words get bad vectors
+
+=== GloVe
+
+Uses a different context definition
+
+* tries to get *global* context
+* uses co-occurrence matrix of all members of the document
+** matrix of size `n_words * n_words` where cells hold number of co-occurrences
+** uses a bias and a weighting function to avoid common pairs dominating the loss
+
+It minimizes the difference between the dot product of 2 vectors and the log of their co-occurrence frequency
+
+* basically quantifies how anomalous a co-occurrence pair is
+* can learn how words relate to each other relative to other words
+** penumonia is related to cough
+** hepatitis is related to cough differently
+
+=== Saving Morphology
+
+Word2Vec and GloVe operate on *single words*
+
+* 1 word = 1 vector
+* we lose morphology
+
+Need to preserve morphology somehow
+
+=== FastText
+
+Developed by Facebook (pre-Meta) for sentence classification
+
+* really fast
+* low memory
+* handles typos and stuff
+
+Represents words as a bag of n-grams
+
+* typically `n in range(3, 6)` for English but can be learned
+** e.g. `Hepatitis = [Hepa, epat, pati, atit, titi, itis]`
+
+[CAUTION]
+.Picking n-grams
+====
+Choosing the right `n` can be tricky
+
+* Medical language can require high `n` (5, 6, 7) that can filter out smaller relevant morphemes
+* Too small -> not useful,
+* Too large -> can't isolate
+====
+
+Vectors are leared for each n-gram and scored with context vector
+
+* context windows
+* context paths
+* whatever
+* certain n-grams should be more informative than others
+
+==== FastText for DH
+
+FT is good for DH:
+
+. Handles morphology
+* can learn suffixes regardless of root word
+** e.g. -itis => inflammation
+. Robust to typos
+* very similar words will have similar n-grams/high n-gram overlap
+. Handles OOV terms
+* can construct vectors from n-grams
+** knows what n-grams mean
+. Very efficient
+* smaller vocabs using n-grams
+
+=== The problem with Static Embeddings
+
+Regardless of exact method we still get 1 word = 1 vector independent from context
+
+* In NL context can change the meaning of a word
+* Static embeddings sort of average all the known meanings of a word
+** opposing meanings will average to 0
+
+=== Contextual embeddings
+
+Instead of mapping 1 word to 1 vector we can map an *instance* of a word to a vector
+
+* The same word in a a different context will have similar but different vectors
+
+Models can generate a vector for a word given a context
+
+* using a larger context
+
+==== Using Sequential Models
+
+We could use a sequential model (RNN, LSTM) since NL can be interpreted as a sequence of tokens
+
+However:
+
+. Parallelizability
+* sequential models can't easily be parallelized
+* really bad for efficiency
+** bottlenecking happens
+
+. Forgetfulness
+* early tokens in long sequences can lose their power
+** *vanishing gradient*
+
+So what do we do?
+
+== Transformers
+
+They are probably our best bet
+
+* easy to parallelize
+* very large context windows
+** constant path length -> all pairs are considered in context
+** regardless of word distance
+
+=== Encoder-Decoder Architectures
+
+Made of 2 parts:
+
+. Encoders generate a deep bidirectional representation of the input sequence
+* highly semantic representation
+. Decoders use autoregressive generation with masked attention
+* generate output from semantic representation given by encoder
+
+These rely on:
+
+. multi-head attention
+. position-wise FFNNs
+
+=== Positional Encoding
+
+We want to work on sets and keep order/positional information
+
+This changes for even or odd position
+
+* even: stem:[\sin \frac{\text{pos}}{10,000^{2i/d_{model}}}]
+* odd:  stem:[\cos \frac{\text{pos}}{10,000^{2i/d_{model}}}]
+
+10,000 is arbitrary
+
+* just needs to be larger than the size of the vector
+
+==== Why sinusoidal PE?
+
+. Linear relationships
+* can use affine matrices to rotate the encoding (???)
+* self attention can learn relationships by using their relative position
+. Translation invariance
+* the dot product of the encodings is inversely correlated with size of k
+** learns locality bias
+
+At the end of the day it's an additive position embedding method
+
+==== Other options
+
+The basic idea is still to encode position as a geometric transformation
+
+. Rotary Positional Embeddings (RoPE)
+* used by modern LLMs
+* multiplicative
+* like 2% more efficient
+
+=== Attention Mechanism
+
+Attention is used to weigh parts of the context
+
+* more important -> high weight
+
+==== Content-Addressable memory
+
+Accessing by index is kind of useless
+
+We can treat a sentence as a *searchable database*
+
+* each word asks something to other words
+
+Using *Query*, *Key*, *Value* to do role-based
+
+* soft lookup
+* answers are fuzzy
+
+.Query
+* Matrix *Q*
+* sort of a question
+** token asks rest of sentence
+** "I am a dosage. Which drug am I referring to?"
+
+.Key
+* Matrix *K*
+** words are labeled according to what they offer
+** "I am Warfarin. My label says Drug"
+
+.Value
+* Matrix *V*
+** payload conveying semantics
+** "this is the semantic vector for Warfarin"
+
+==== Multiple Perspectives
+
+The same word can convey different meanings to other words
+
+* doctor POV -> girl is patient
+* Warfarin POV -> girl is consumer
+
+Different QKV projections separate roles
+
+* Word's Q can look for Patient role
+* Word's K can signal its role
+** consumer, subject, patient
+* Words's V encodes a different relation for each attention head
+
+==== Relevance
+
+How do we weigh the word/token?
+
+The same input token X is projected into 3 different spaces -> model can filter by relevance
+
+stem:[Q \cdot K] computes how well a pair of terms match -> use match score to get weighted V sum
+
+* Q, K, V are learned during training
+* projects embeddings into questions, keys, values
+
+Sentences become *dynamic graphs*
+
+* no longer sequence of vectors
+
+==== Attention
+
+Attention is:
+
+[stem]
+++++
+\text{Attention}(Q, K, V) = \text{softmax}\frac{QK^T}{\sqrt{d_k}}V
+++++
+
+In Multi-Head Attention we use multiple attention heads to ask more questions to find the best
+
+* asking a single question is not that informative
+* we can easily ask multiple questions in parallel
+
+Concatenate compressed output of multiple attention heads
+
+* for each head we get independent projection matrices
+
+Questions become more and more abstract as we pass through more and more transformer blocks
+
+* T1 = who did what?
+* T2 = <something abstract>
+
+=== Position-wise Feed-Forward blocks
+
+Usually 2 layer MLP with ReLU between them
+
+* higher dimensionality than transformer
+** like 4x transformer dimension
+
+Parameters are free
+
+* totally unconstrained
+* transformer can kind of do whatever
+
+Model can learn semantic indicators
+
+=== Encoder vs Decoder
+
+Bidirectional encoders allow tokens to attend to all other tokens
+
+* good for understanding tasks and information extraction
+
+Causal masking in decoders
+
+* prevents information flow from future tokens
+** can't use the future to generate the future
+
+== Advanced Architectures
+
+=== BERT (2018)
+
+Instead of predicting k from seq[:k] tokens it looks at the entire sequence forward and backward
+
+* uses only encoder part of transformer
+* trained on tons of unlabelled text data
+** fine-tuned for specific tasks
+
+Training loop:
+
+. Randomly take a pair of maksed sentences
+* enables lots of applications for free
+** classification, IR/IE, question answering, dialogue, semantic relationships, etc.
+** apparently old idea from ancient logicians
+** pairs can be used to model all of mathematics
+. Tokenize
+. Embed (normal and special tokens)
+. Feed to transformers and such
+
+Then fine-tuned (supervised)
+
+* task specific
+* weights are modified according to specific training
+
+==== Tokenization
+
+Uses WordPiece
+
+* similar to BPE
+* joins 2 tokens if they appear together more often than their individual probabilities
+
+Produces k vectors per word unlike FastText and BPE
+
+==== Next Sentence Prediction
+
+Can also be used for *Next Sentence Prediction*
+
+* frame training as binary classification
+** given a pair SA, SB, can SB follow SA in the original text?
+
+==== Masked Language Model
+
+Most famous for *Masked Language Model*
+
+Uses 3 special tokens:
+
+. CLS
+* marks starting of pair
+. SEP
+* marks separation
+. MASK
+* marks hidden bit of text
+
+How?
+
+. take sequence
+. randomly hide 15% of tokens
+* of this 15%:
+** 80% of the time hide with MASK
+** 10% of the time replace with random word
+** 10% of the time leave original word
+** prevents chicanery if encounters OOV at inference time
+
+Learns to fill in the blanks by predicting hidden tokens
+
+==== BERT Lessons
+
+* Specialized corpora are essential
+** need to fine tune on specific topics to be useful
+* Vocabulary matters
+* Knowledge can be injected
+** using pair (A, B) paradigm to inject knowledge -> fine tune
+* Extraction vs generation
+** uses encoder only
+** understanding+information extraction
+
+=== GPT 2018
+
+Uses trained Decoder part of Transformer
+
+* can't see future because it generates tokens
+
+GPT power grew exponentially
+
+* GPT-1 had 117 million parameters with 512 tokens of context
+* GPT-4 has 1.7 *trillion* parameters with *128k* tokens of context
+** has emergent behavior
+
+==== Autoregressive Generation
+
+GPT models produce 1 token at a time
+
+* use output to extend input
+
+Computes the joint probability of a sequence of tokens
+
+* find each x to maximize the likelihood of the entire sequence
+
+==== Inference and sampling
+
+At inference it produces a vector of logits for every token in the vocabulary
+
+* logits become probabilities from softmax
+** token-relative probablities are modified by *temperature* parameter stem:[T]
+** used during generation
+** stem:[T \gt 0], increasing stem:[T] lowers determinism of predictions
+
+==== Dialogue in GPT
+
+GPTs are stateless -> pure functions, no side effects
+
+* no memory
+
+*Dialogue* happens by giving the GPT the *entire previous history* with the new bits added to it
+
+* extremely inefficient
+** but has nice side effects of improving context
+* when we hit context window things are dropped
+
+Special tokens are used to encode the input to support dialogue
+
+* `[system]`: system prompt
+* `[user]`: user prompt
+* `[assistant]`: GPT response
+
+Chatbots use some other techniques:
+
+* Supervised Fine Tuning
+* Reinfocement Learning from Human Feedback
+
+==== Problems with GPTs
+
+.Nice hallucinations
+* optimizing models for fluid conversation can prioritize nice but fake answers
+** i.e. provides most likely sequence of tokens
+** not necessarily *true*
+* really bad
+
+.Messy memory
+* LLM memory is just its context window
+** unstructured and dirty
+* can get confused

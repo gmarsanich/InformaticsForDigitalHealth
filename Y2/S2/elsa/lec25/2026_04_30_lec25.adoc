@@ -1,0 +1,367 @@
+= ELSA - Supply and Demand
+:toc:
+:toc-title: Contents
+:toclevels: 4
+:nofooter:
+:stem: latexmath
+
+== Services demand
+
+Funnel like design
+
+* wide entry
+* narrows through process
+
+Kind of like this:
+
+. Total need (my head hurts)
+. Expressed demand (I need aspirin)
+. Satisfied demand (I got aspirin)
+
+This needs care to avoid overuse/unnecesary allocation
+
+Generally based on historical data with incremental logic
+
+* works ok but can be inefficient
+
+A more *strategic* approach would be better
+
+* integrate historical data with current/real needs
+** epidemiological study
+* reallocate resources to more pressing matters
+
+== Systemic Cause Analysis
+
+Visible symptoms and deep causes
+
+VS:
+
+* overcrowded ER
+* system feels inefficient
+
+
+DC:
+
+* no territorial filters
+* poor management
+
+As usual symptoms are caused by deep issues
+
+* they dont just happen
+
+
+== Planning vs Programming (???)
+
+=== Planning
+
+* long term
+** can change throughout process
+* defines strategic view
+* focuses on external efficiency and health targets
+
+=== Programming
+
+* short term
+* operational targets
+** more practical
+* focuses on internal efficiency and resource usage
+* links strategic plan with daily operations
+
+=== Strategic Planning
+
+We:
+
+* define a mission
+* define a vision
+* shit piss fuck
+
+=== Operational Programming
+
+Translates political decisions to tangible results
+
+. Strategic direction
+. Operational targets
+. Actions and resources
+
+=== Iterative process and agility
+
+. Review
+* what do we need to do/improve/change?
+. Environment analysis
+* monitoring emerging requirements
+* external changes
+. Targets
+* defining measurable and realistic objectives
+. Execution
+* run it and get feedback from clinical procedures
+
+=== Integrated governmental function
+
+. Programming
+* define health objectives and strategic priorities
+. Budgeting
+* allocate resources (money or human)
+. Performance
+* measure performance
+
+=== Programming levels
+
+. Strategic (company)
+* general direction, vision, mission
+. Tactical (department)
+* department directors, coordination, resource integration
+. Operational (staff)
+* boots on the ground
+
+=== Example: chronic illnesses
+
+Strategy:
+
+* identifying ageing as a high priority condition
+
+Tactic:
+
+* increase usability of local care centers
+
+Operation:
+
+* run remote monitoring, checkups, etc.
+
+=== Negotiation process
+
+. Management
+* focus on economic sustainability and general health targets
+* reach regional health targets
+
+. Clinicians
+* focus on care quality and professional autonomy
+
+. Admin
+* focus on rule following and procedural correctness
+
+==== Commitment and Execution
+
+Involvement:
+
+* clinics need to commit to succeed in budgeting
+* participative involvement (bottom up) rather than imperative (top down)
+
+=== Key messages
+
+. complexity is part of the game
+. human capital is main engine of care processes
+. vertical coherence between strategy and budget is important
+. final objective is ALWAYS good health outcomes for citizens
+
+== Budgeting
+
+We need to turn general objectives into concrete operations
+
+=== What is a budget?
+
+It is a quantitative model for a predefined period (typically a year)
+
+Need to ensure that we can meet objectives with resources in budget
+
+The overall budget is a combination of smaller budgets
+
+* HR budget
+* RnD budget
+* Care budget
+* etc.
+
+Budget components
+
+. Quantified program
+* define targets and resources
+. Cause-effect model
+* simulates impact of operations on costs
+. Coherence tool
+* aligns decisions made by different departments towards common target
+
+=== Why budget?
+
+* Decision coherence
+** keep everyone on the same page
+* Economic sustainability
+** make sure we don't go broke
+* Learning+control
+** idk
+
+=== Budget logic
+
+Spending logic:
+
+. Variables:
+* operation volume
+* unit costs and prices
+* work hours
+. Inputs:
+* growth targets
+* pricing policies
+* quality standards
+. Structural limits:
+* capacity
+* financial resources
+* spending ceilings
+. Relations:
+* total cost
+** unit price * quantity
+* profit margin
+** gross income - costs
+* producton requirement
+
+Not just spending logic:
+
+* line-item budget
+** see above
+* global budget
+** total spending limit
+* program budget
+** links resources to specific health goals
+* performance-based
+** rewards something???
+
+3 main types:
+
+==== Input based
+* Personnel
+* Drugs
+* Physical goods
+
+How many ibuprofens did we buy last year? Get 20% more
+
+Also contains *line-item budgeting*
+
+* individual items have costs
+* historic costs affect new budgeting decisions
+* does not take performance/output into account
+** blind to results
+* blindly/semi blindly increasing previous budgets can be inefficient
+
+and *global budgeting*
+
+* overall spending ceiling
+* you have x dolans -> spend them however
+** still have to spend reasonably
+* more freedom for management
+** can optimize more
+* can also penalize quality to fit everything within the budget
+** selecting cheaper patients to keep costs low
+
+and also *peformance based budgeting*
+
+* budgets are allocated according to performance targets and requirements
+** e.g. correlate budget to outcome quality -> not easy
+* requires low latency data to change budgeting logic
+** integrating clinical/administrative data almost in real time
+* different hospital departments have different complexities
+** managing them is complex
+
+==== Program budgeting
+
+where tf do thees come out of
+
+Resources are aggregated by health programs instead of administrative units
+
+* vaccination campaigns
+* oncology
+
+Horizontal integration
+
+* buget affects slices of treatment cycle
+** follows patient
+
+==== Output based
+Focuses on performed activities
+
+* How many visits did the clinic perform?
+
+Volume-based resources
+
+==== Outcome based
+Similar to output
+
+More focused on health outcomes
+
+=== Budgeting steps
+
+. Historical analysis
+. Targets and hypotheses
+* blindly increasing budget for some department without taking interdependencies into account is useless
+. Numerical translation
+. Verification and negotiation
+
+== Budgeting in healthcare
+
+Economic sustainability isn't the only target
+
+We want to ensure high quality care
+
+* production planning
+* coordination between hospital-territory
+** avoiding bottlenecks, overworking certain facilities
+* responsibilization of clinical staff
+** operations, costs, quality
+
+Budgeting links political vision to operational management
+
+It has many roles specific to healthcare
+
+* guaranteeing Minimum Assistance Levels
+** responding to healthcare needs
+* financial constraints
+** dealing with regional/national spending budgets
+** ensuring economical sustainability
+
+Budget becomes a contract
+
+* targets have resources
+* targets have to be achieved using resources in some time frame
+
+We can't pick single pieces
+
+* need to integrate multiple budgeting logics
+* some are more appropriate for some tasks
+
+=== Management role
+
+Managment has to deal with clinical staff and organizational processes
+
+* balancing healthcare demands with other needs
+
+They manage resources/targets
+
+* balancing effectiveness with efficiency
+
+They become responsible for targets
+
+=== Budget Classes
+
+Many types
+
+==== Activity budget
+
+Activity volumes
+
+* we can fit 100 people in this hospital
+* we can do 50 endocrinology visits per month
+* we can do house calls 3 times a week
+
+==== Costs budget
+
+Quantification of costs
+
+* cardiology needs 10 pacemakers -> pacemaker cost * 10
+* external services
+** canteen
+** janitorial services
+* specialist consultants
+
+==== Staff budget
+
+Contract costs + human capital
+
+==== Investment budget
+
+Buying new technology and infrastructure
