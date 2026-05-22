@@ -1,0 +1,281 @@
+= Neurosymbolic Integration
+:toc:
+:toc-title: Contents
+:toclevels: 4
+:nofooter:
+:stem: latexmath
+
+== Neuro-Symbolic systems (NeSy)
+
+NeSy systems integrate symbolic and neural approaches
+
+* reasoning & structured knowledge
+** formal rules
+** codified knowledge
+* learning & perception
+** subsymbolic parts
+*** single tokeNeSy
+
+=== NeSy in Digital Health
+
+NeSy systems are a very good idea for DH
+
+* neural nets are powerful but bad at checking pattern violatioNeSy
+* symbolic systems are less powerful but very good at checking pattern violation
+
+Grounding neural predictioNeSy with symbolic and explainable rules is the goal for critical decisioNeSy
+
+CAUTION: these systems aren't perfect. They can make mistakes. It is acceptable for a NeSy system to return "IDK" if it prevents damage
+
+NeSy systems are nicer for medical device certification
+
+* pure black box NNs have issues because of unpredictability, hallucinations, and unexplainability
+* NeSy systems have explainability, transparency, and reproducibility built in
+
+
+
+=== Thinking, Fast and Slow
+
+Book by Daniel Kahneman
+
+Says that human brain is made of 2 systems:
+
+. System 1 (patterNeSy, stereotypes, generalization)
+* sympathetic nervous system
+* automatic
+* fast
+* reactive/reflexive
+* intuitive
+* heuristic
+
+. System 2 (planning, deduction, deliberation)
+* parasympathetic nervous system
+* slow
+* deliberate
+* expeNeSyive
+** logical
+** analytical
+* rule-based
+
+He says both are necessary for humaNeSy and should be good for AI
+
+The distinction isn't actually this clean and the science behind it is kind of iffy
+
+* but it's a nice way of describing it
+
+== Kautz Taxonomy
+
+Henry Kautz proposes 6 NeSy architectures
+
+=== 1. Symbolic Neuro Symbolic
+
+Pipeline style architecture
+
+. Symbolic thing (in)
+* e.g. documents
+. Neural thing (during)
+* vector embeddings
+. Symbolic thing (out)
+* one-hot encoded embeddings
+
+=== 2. Symbolic[neuro]
+
+Program calls neural component as a subroutine
+
+* e.g. AlphaGo
+** enumerate all possible moves (normal program)
+** decide goodness of current move (neural sub)
+* also AlphaFold
+
+=== 3. Neuro | Symbolic
+
+Usually done in image processing
+
+* pixels = subsymbolic
+* neural converts subsymbolic to symbolic and processed by symbolic processor
+
+=== 4. Neuro:Symbolic -> Neuro
+
+Kind of weird
+
+* train NN on symbolically solvable cases of some problem
+** e.g. integrals
+* NN should learn to generalize
+
+=== 5. Neuro_{Symbolic}
+
+Build neural networks
+
+* replace formula inside neuron (tanh of whatever) with symbolic stuff
+* apply backprop on logic instead of normal numbers
+
+=== 6. Neuro[Symbolic]
+
+Neural net calls symbolic program as subroutine (how?)
+
+* NN learns _when_ to call symbolic component
+
+== Retrieval Augmented Generation (RAG) and Knowledge-Augmented Generation (KAG)
+
+Practical NeSy integration:
+
+. *Retrieval*: uses embedding techniques to find corresponding nodes in a DB
+* given a query x and target response y -> LM estimates conditional prob
+. *Augmentation*: injects retrieved information and other stuff into LLM prompt
+* RAGs have external knowledge source D -> set of documents/chunks of text/something with text
+* retrieval function finds subset Z of D that are relevant to x (bi-encoder, similarity in latent vector space)
+. *Generation*: the LLM produces text constrained by retrieved information
+* generator P (LLM with parameters theta) computes probability of the sequence y by conditioning on x (query) and Z
+** RAG-sequence: same set of docs to generate entire sequence
+** RAG-token: retrieve/prioritize different docs for each y generated
+. *Objective function*: maximize log-likelihood of correct y given x where z are latent variables
+
+=== Documents vs Knowledge
+
+The source is unstructured docs written in NL
+
+* documents != knowledge
+
+=== Knowledge-Augmented Generation (KAG)
+
+Same schema as RAG
+
+* retriever finds set of triples of Facts from structured KB
+** graphs, ontologies
+* generation is conditioned on F
+
+== Logic Tensor Networks
+
+Non-standard and weird
+
+* interesting and useful
+* bridges neural learning with logic
+* models abductive reasoning
+* learns FOL reasoning
+
+Type 5 architecture
+
+* Neuro_{Symbolic}
+
+Maps logical symbols to tensors in vector space
+
+* embeddings can be used for constants
+* predicates and functions are a whole ordeal
+** both need to be differentiable for backprop
+* FOL formulas are fuzzy -> continuous [0, 1]
+* Learning objective is satisfying a truth value of some knowledge base
+** learn weights such that truthiness value is as close to 1 as possible
+
+Some success
+
+* hard to scale
+* small axiom sets work well
+* big sets cause problems
+
+=== Real logic
+
+LTNs operate on *real logic*
+
+* domain is real valued tensors
+
+Made of:
+
+Grounding Logic -> tensor maps
+
+. Constants -> embeddings
+. Predicates -> neural classifiers
+. Functions -> Neural regression
+
+=== Fuzzy Semantics
+
+LTN uses T-norms
+
+Semantic concepts are expressed with products and sums
+
+* Conjunction
+* Disjunction
+* Negation
+* Implication
+** Reichenback
+** Lukasiewicz
+
+Quantifiers are handled by Generalized Mean Aggregators
+
+* decides how true/false the predicate is
+** if it's almost true for almost everyone how true is it for everyone?
+** as p grows -> emphasizes lower truth values, penalizes violations
+** p is learnable
+
+Existential quantifiers aggregate truth values for separate instances
+
+* formula is somewhat true if average truth across all instances is high
+
+=== LTN for NLP
+
+Given a sentence S:
+
+. Embedding layer -> ground constants (tokens) into vectors using BERT
+. Neural Predicates -> define a predicate isA(x, Label) as an MLP with sigmoid
+. Constraint Injection -> define logic rules from KB
+. Loss function -> L = 1 - satisfiability(k)
+
+==== Learning By Constraint Satisfaction
+
+LTNs learn from unlabeled data by enforcing consistency with constraints
+
+Constraints include:
+
+* mutual exclusion
+* symmetry
+* transitivity
+* etc.
+
+=== LTN application
+
+2025 study on diabetes prediction
+
+Uses:
+
+* trainable thresholds
+** `GlucoseNormal` predicates have threshold tau for normality - adapts to data, respects clinical bounds
+** `Differentiable Axioms`
+*** if GlucoseDiabetic(x) -> Diabetic(x)
+
+Performs quite well (allegedly) and reasoning is explained
+
+* each reasoning has confidence degree
+* constraints are maintained
+
+== Model Context Protocol (MCP)
+
+Standardization of Type 6 taxonomy
+
+* neural components learn when and how to invoke symbolic components
+
+Critical advantage that tasks that are easier to accurately solve symbolically are solved symbolically
+
+* avoids hallucinations and other chicanery
+
+=== MCP components
+
+4 components:
+
+. Host
+* machine where LLM lives
+** Google/OpenAI server, local machine with LLM
+. Client
+* interfaces that live within the host
+* they know how to talk to logic servers
+. Server
+* providers that expose resources/tools
+. Interface
+* communication thing
+* JSON/RPC over stdio/SSE
+
+=== MCP Flow
+
+idk
+
+requests are made in english using json
+
+see later
